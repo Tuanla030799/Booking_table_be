@@ -1,0 +1,241 @@
+create database sunshine;
+drop database sunshine;
+use sunshine;
+go
+
+CREATE TABLE tbl_deposit
+(
+	DepositId bigint primary key identity(1,1),
+    Deposit bigint DEFAULT 0,
+    TotalPersons int DEFAULT 0,
+    Created DATETIME DEFAULT GETDATE()
+);
+go
+
+
+CREATE TABLE tbl_table
+(
+	Id bigint primary key identity(1,1),
+    TableName NVARCHAR(20) not null unique,
+    Seat int DEFAULT 0,
+	StillEmpty int not null
+);
+go
+
+CREATE TABLE tbl_point
+(
+	PointId bigint primary key identity(1,1),
+    Price bigint DEFAULT 0,
+    PointPercent float DEFAULT 0,
+	Created DATETIME DEFAULT GETDATE()
+);
+go
+
+CREATE TABLE tbl_customer
+(
+      Id  bigint PRIMARY KEY identity(1,1),
+      Email NVARCHAR(40) not null unique,
+	  PhoneNumber VARCHAR(15) not null,
+      FullName NVARCHAR(255) not null,
+      PassWord varchar(255) not null,
+      TotalMoney bigint DEFAULT 0
+);
+go
+
+go
+CREATE TABLE tbl_bankaccount
+(
+   Id bigint primary key identity(1,1),
+   AccountNo NVARCHAR(20) not null unique,
+   Balance bigint DEFAULT 0,
+   Status int DEFAULT 0,
+   Email NVARCHAR(40) not null,
+   constraint fk_BankaccountCustomer foreign key (Email) references tbl_customer(Email)
+);
+go
+
+CREATE TABLE tbl_booking
+(
+	id bigint primary key identity(1,1),
+	BookingID NVARCHAR(255) not null unique,
+    Email NVARCHAR(40) not null,
+    BookingTime datetime not null,
+    TotalSeats int DEFAULT 0 ,
+	DepositId bigint DEFAULT 0,
+	bookingStatus int DEFAULT 0,
+    constraint fk_BookingDeposit foreign key (DepositId) references tbl_deposit(DepositId),
+    constraint fk_BookingCustomer foreign key (Email) references tbl_customer(Email)
+);
+go
+CREATE TABLE tbl_bookinginfo
+(
+	Id bigint primary key identity(1,1),
+    BookingID NVARCHAR(255) not null,
+    TableName NVARCHAR(20) not null,
+    constraint fk_BookinginfoBooking foreign key (BookingID) references tbl_booking(BookingID),
+    constraint fk_BookinginfoTable foreign key (TableName) references tbl_table(TableName)
+);
+go
+
+create table tbl_bill
+(
+	id  bigint primary key identity(1,1) not null,
+	BillId NVARCHAR(255) not null unique,
+    PointID bigint not null,
+    BookingID NVARCHAR(255) not null,
+    Discount BIGINT DEFAULT 0,
+	BillStatus int default 0,
+	PayDate datetime not null,
+    constraint fk_BillPoints foreign key (PointID) references tbl_point(PointID),
+    constraint fk_BillBooking foreign key (BookingID) references tbl_booking(BookingID)
+);
+go
+
+create table tbl_food
+(
+	FoodId bigint primary key identity(1,1) not null,
+    FoodName NVARCHAR(30) not null,
+	FoodImage Image,
+    FoodPrice bigint DEFAULT 0,
+	FoodStatus int default 1,
+	Created DATETIME DEFAULT GETDATE()
+);
+go
+
+create table tbl_billinfo
+(
+	Id bigint primary key identity(1,1) not null,
+    BillID NVARCHAR(255) not null,
+    Quantity int not null,
+    FoodID BIGINT not null,
+    constraint fk_BillInfoBill foreign key (BillID) references tbl_bill(BillID),
+    constraint fk_BillInfoFood foreign key (FoodID) references tbl_food(FoodID)
+);
+go
+
+create table tbl_response_status_code
+(
+	Id bigint primary key identity(1,1),
+    responseStatusCode NVARCHAR(255) unique,
+	responseStatusMessage NVARCHAR(255)
+);
+go
+
+
+alter table tbl_food
+add constraint food_price check (FoodPrice >= 0);
+go
+
+alter table tbl_deposit
+add constraint check_deposit check (Deposit >= 0);
+go
+
+alter table tbl_bankaccount
+add constraint check_balance check (Balance >= 0);
+go
+
+alter table tbl_customer
+add constraint check_total_money check (TotalMoney >= 0);
+go
+
+alter table tbl_point
+add constraint check_point_price check (Price >= 0);
+go
+
+
+alter table tbl_billinfo
+add constraint check_quantity_billinfo check (Quantity >= 0);
+go
+
+----------------------------------------------------------------------------------------------------------
+INSERT INTO tbl_deposit(Deposit, TotalPersons) VALUES (100000, 2);
+INSERT INTO tbl_deposit(Deposit, TotalPersons) VALUES ( 200000, 4);
+INSERT INTO tbl_deposit( Deposit, TotalPersons) VALUES ( 300000, 8);
+INSERT INTO tbl_deposit( Deposit, TotalPersons) VALUES ( 300000, 8);
+INSERT INTO tbl_deposit(Deposit, TotalPersons) VALUES ( 100000, 1);
+INSERT INTO tbl_deposit(Deposit, TotalPersons) VALUES ( 500000, 1000);
+go
+
+
+
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 1', 2,1);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 2', 2,3);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 3', 4,3);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 4', 4,6);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 5', 6,0);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 6', 6,1);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 7', 15,0);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 8', 15,0);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn 9', 16,0);
+INSERT INTO tbl_table(TableName, Seat,StillEmpty) VALUES (N'Bàn ghép', 100);
+go
+
+INSERT INTO tbl_point(Price, PointPercent) VALUES (0, 0);
+INSERT INTO tbl_point(Price, PointPercent) VALUES (1000000, 0.05);
+INSERT INTO tbl_point(Price, PointPercent) VALUES (2000000, 0.1);
+INSERT INTO tbl_point(Price, PointPercent) VALUES (3000000, 0.15);
+INSERT INTO tbl_point(Price, PointPercent) VALUES (3000000, 0.17);
+INSERT INTO tbl_point(Price, PointPercent) VALUES (1000000000, 0.2);
+go
+
+
+INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney) VALUES ('pvminh@gmail.com', '0796164361', N'Phí Văn Minh', '$2a$10$JtAQTcqWDiKf84h2oF/ytOF3yqouJuUAOdsgjGsBs5ALEQsDNcyLy', 5000);
+INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney) VALUES ('sunshine87lethanhnghi@gmail.com', '0999999999', N'Nhà hàng Sunshine', '$2a$10$Z/9I/3iLntVnRZoCITDT.OJTaEoQpJ6AOtaa8peZz81eNTO2FjgIy', 8000);
+INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney) VALUES ('haind1@vimo.vn', '0978675678', N'Nguyễn Đình Hải', '$2a$10$QldpC9h4Sw4jiR9Nmq5Mt.zKMLZOQxYt8tfZ16n.E935l64tOK4ma', 5000);
+INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney) VALUES ('tranphuduan@gmail.com', '0978675678', N'Nguyễn Đình Hải', '$2a$10$QldpC9h4Sw4jiR9Nmq5Mt.zKMLZOQxYt8tfZ16n.E935l64tOK4ma', 5000);
+
+go
+
+delete tbl_Customer where email='tranphuduan@gmail.com'
+
+INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('5469879547877', 200000000, 'haind1@vimo.vn', 1);
+INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('5469879547869', 10000, 'haind1@vimo.vn', 0);
+INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('8686868686868', 0, 'sunshine87lethanhnghi@gmail.com', 1);
+go
+
+
+INSERT INTO tbl_food( FoodName, FoodPrice, FoodImage) VALUES ( N'Cá mập', 50000, '');
+INSERT INTO tbl_food(FoodName, FoodPrice, FoodImage) VALUES ( N'Cá voi', 50000, '');
+INSERT INTO tbl_food(FoodName, FoodPrice, FoodImage) VALUES (N'Cá heo', 100000, '');
+go;
+
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('ADD_ACCOUNT_SUCCESS',N'Thêm tai khoản ngân hàng thành công!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('ACCOUNT_EXISTED',N'Tài khoản ngân hàng đã tồn tại!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('EDIT_USER_SUCCESS',N'Thay đổi thông tin thành công');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+ VALUES('EDIT_USER_FAILED',N'Thay đổi thông tin thất bại!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('USER_NOT_FOUND',N'Không tìm thấy tài khoản!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('BAD_REQUEST',N'Có lỗi xảy ra!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('TIME_INVALID',N'Thời gian đặt bàn trong khoảng 8:00 - 22:59!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('ADD_FOOD_SUCCESS',N'Thêm món ăn thành công!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('ADD_FOOD_FAILED',N'Thêm món ăn thất bại!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('PAY_SUCCESS',N'PAY_SUCCESS("Thanh toán thành công!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('PAY_FAILED',N'Tài khoản không đủ tiền!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('CANCEL_BOOKING_SUCCESS',N'Huỷ đặt bàn thành công!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('EMPLOYEE_CANCEL_BOOKING',N'Đợi nhân viên xác nhận!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('INVALID_EMAIL_FORMAT',N'Định dạng email không hợp lệ!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('INVALID_PASSWORD_FORMAT',N'Định dạng password không hợp lệ!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('EMAIL_EXISTED',N'Email đã tồn tại!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('SUCCESS',N'Thành công!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('EMAIL_PASS_NOT_CORRECT',N'Email hoặc Password không đúng!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('INVALID_NAME_FORMAT',N'Định dạng tên không hợp lệ!');
+INSERT INTO tbl_response_status_code(responseStatusCode,responseStatusMessage)
+VALUES('TABLE_OFF',N'Hết bàn!');
