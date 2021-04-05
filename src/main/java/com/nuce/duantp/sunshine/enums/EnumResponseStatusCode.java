@@ -15,12 +15,14 @@ public enum EnumResponseStatusCode {
     CANCEL_BOOKING_SUCCESS("Huỷ đặt bàn thành công!"),
     EMPLOYEE_CANCEL_BOOKING_SUCCESS("Đợi nhân viên xác nhận!"),
     INVALID_EMAIL_FORMAT("Định dạng email không hợp lệ!"),
+    INVALID_PHONE_FORMAT("Định dạng số điện thoại không hợp lệ!"),
     INVALID_NAME_FORMAT("Định dạng tên không hợp lệ!"),
     INVALID_PASSWORD_FORMAT("Định dạng password không hợp lệ!"),
     EMAIL_EXISTED("Email đã tồn tại!"),
     SUCCESS("Thành công!"),
     TABLE_OFF("Hết bàn!"),
     EMAIL_PASS_NOT_CORRECT("Email hoặc Password không đúng!"),
+    OLD_PASS_NOT_CORRECT("Password cũ không đúng!"),
     TEST("Test");
 
     public final String label;

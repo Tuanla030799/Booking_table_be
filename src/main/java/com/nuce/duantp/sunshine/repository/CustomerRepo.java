@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface CustomerRepo extends CrudRepository<tbl_Customer, Long> {
     Optional<tbl_Customer> findById(Long id);
     Optional<tbl_Customer> findByEmail(String email);
-
+//    tbl_Customer findByEmail(String email);
     Boolean existsByEmail(String email);
     @Query("select c from tbl_Customer c where c.email=?1")
     tbl_Customer findCustomerByEmail(String email);

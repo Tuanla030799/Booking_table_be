@@ -1,5 +1,6 @@
 package com.nuce.duantp.sunshine.model;
 
+import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tbl_Customer")
+@Table(name = "tbl_customer")
 
 public class tbl_Customer {
     @Id
@@ -55,11 +56,9 @@ public class tbl_Customer {
         this.password = customer.password;
         this.totalMoney = customer.totalMoney;
     }
-    public tbl_Customer(tbl_Customer customer,int i) {
-        this.email = customer.email;
-        this.phoneNumber = customer.phoneNumber;
-        this.fullName = customer.fullName;
-        this.password = customer.password;
-        this.totalMoney = customer.totalMoney+i;
+
+    public tbl_Customer(UpdateUserReq req) {
+        this.setPhoneNumber(req.getPhoneNumber());
+        this.setFullName(req.getFullName());
     }
 }

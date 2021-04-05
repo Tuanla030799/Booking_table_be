@@ -21,11 +21,11 @@ public class TestService {
 
     @Transactional(readOnly = false, rollbackFor = IllegalArgumentException.class)
     public void test(tbl_Customer customer) {
-        tbl_Customer cus = new tbl_Customer(customer, 100);
+
         tbl_Table tbl_table = new tbl_Table("b1", 100);
         tableRepo.save(tbl_table);
         customerRepo.save(customer);
-        customerRepo.save(cus);
+
     }
 
 

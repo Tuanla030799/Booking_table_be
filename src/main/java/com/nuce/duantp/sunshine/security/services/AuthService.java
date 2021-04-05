@@ -1,18 +1,17 @@
 package com.nuce.duantp.sunshine.security.services;
 
 
-import com.nuce.duantp.format.CheckEmail;
-import com.nuce.duantp.format.CheckNameCustomer;
-import com.nuce.duantp.format.CheckPass;
-import com.nuce.duantp.format.FormatMoney;
+import com.nuce.duantp.format.*;
 import com.nuce.duantp.sunshine.dto.request.LoginRequest;
 import com.nuce.duantp.sunshine.dto.request.SignupRequest;
 import com.nuce.duantp.sunshine.dto.response.JwtResponse;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.model.TokenLiving;
 import com.nuce.duantp.sunshine.model.UserDetailsImpl;
 import com.nuce.duantp.sunshine.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
+import com.nuce.duantp.sunshine.repository.TokenLiveRepo;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 //import com.phamtan.base.email.data_structure.EmailContentData;
@@ -61,8 +60,8 @@ public class AuthService {
     @Autowired
     private Configuration configuration;
 
-//    @Autowired
-//    private EmailService emailService;
+    @Autowired
+    TokenLiveRepo tokenLiveRepo;
 
     public ResponseEntity<MessageResponse> registerConsumer(@RequestBody SignupRequest signupRequest) {
         if (!CheckEmail.checkEmail(signupRequest.getEmail())) {
@@ -75,6 +74,12 @@ public class AuthService {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse(EnumResponseStatusCode.INVALID_PASSWORD_FORMAT));
+        }
+
+        if (!CheckPhoneNumber.checkPhone(signupRequest.getPhoneNumber())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse(EnumResponseStatusCode.INVALID_PHONE_FORMAT));
         }
 
         if (!CheckNameCustomer.checkName(signupRequest.getFullName())) {
@@ -149,7 +154,16 @@ public class AuthService {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
-            Optional<tbl_Customer> customer=customerRepo.findByEmail(loginRequest.getEmail());
+
+//            TokenLiving tokenLiving = tokenLiveRepo.findByEmail(loginRequest.getEmail());
+//            if(tokenLiving==null){
+//                tokenLiving.setEmail(loginRequest.getEmail());
+//            }
+//
+//            tokenLiving.setToken(jwt);
+//            tokenLiveRepo.save(tokenLiving);
+
+            Optional<tbl_Customer> customer = customerRepo.findByEmail(loginRequest.getEmail());
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             return ResponseEntity.ok(new JwtResponse(jwt, "Bearer", userDetails.getEmail()));
         } catch (AuthenticationException e) {

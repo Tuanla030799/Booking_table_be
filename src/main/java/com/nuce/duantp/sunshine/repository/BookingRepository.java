@@ -32,8 +32,8 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, Long> {
     @Query(nativeQuery = true, value = "exec pr_CancelBooking @email =:email,@bookingId =:bookingId")
     String cancelBooking(@Param("email") String email, @Param("bookingId") String bookingId);
 
-    @Query(nativeQuery = true, value = "exec pr_CancelBookingAdmin @email =:email,@bookingId =:bookingId")
-    String cancelBookingAdmin(@Param("email") String email, @Param("bookingId") String bookingId);
+    @Query(nativeQuery = true, value = "exec pr_CancelBookingAdmin @bookingId =:bookingId")
+    String cancelBookingAdmin(@Param("bookingId") String bookingId);
 
 //
 //    @Query(nativeQuery = true, value = "exec pr_test @text = :text")
