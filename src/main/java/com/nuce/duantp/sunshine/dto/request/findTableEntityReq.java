@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderFoodReq {
-    private String billId;
-    private String bookingId;
-    private List<FoodReq> foodList;
+public class findTableEntityReq {
+    private int seat;
+    private String bookingTime;
 }

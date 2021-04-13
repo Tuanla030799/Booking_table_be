@@ -5,12 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderFoodReq {
-    private String billId;
-    private String bookingId;
-    private List<FoodReq> foodList;
+public class FoodReq {
+    private int quantity;
+    private Long foodId;
 }

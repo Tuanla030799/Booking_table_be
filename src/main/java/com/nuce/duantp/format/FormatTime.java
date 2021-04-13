@@ -10,4 +10,5 @@ public class FormatTime {
         calendar.add(Calendar.HOUR_OF_DAY, 7);
         return calendar.getTime();
     }
+
 }

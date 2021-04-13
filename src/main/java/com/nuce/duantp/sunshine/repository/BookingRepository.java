@@ -15,9 +15,11 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, Long> {
     @Override
     List<tbl_Booking> findAll();
 
-    @Query(nativeQuery = true, value = "exec pr_Booking @Email =:Email,@BookingTime=:BookingTime,@AccountNo=:AccountNo,@TotalSeats =:TotalSeats")
+    @Query(nativeQuery = true, value = "exec pr_Booking @Email =:Email,@BookingTime=:BookingTime," +
+            "@AccountNo=:AccountNo,@TotalSeats =:TotalSeats,@TableName=:tableName")
     String bookingTable(@Param("Email") String Email, @Param("BookingTime") String BookingTime,
-                        @Param("AccountNo") String AccountNo, @Param("TotalSeats") int TotalSeats);
+                        @Param("AccountNo") String AccountNo, @Param("TotalSeats") int TotalSeats,
+                        @Param("tableName") String tableName);
 
     @Query(nativeQuery = true, value = "exec pr_Order @Email =:Email,@BookingId =:BookingId,@BillId =:BillId," +
             "@Quantity =:Quantity,@FoodID =:FoodID")
@@ -35,7 +37,6 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, Long> {
     @Query(nativeQuery = true, value = "exec pr_CancelBookingAdmin @bookingId =:bookingId")
     String cancelBookingAdmin(@Param("bookingId") String bookingId);
 
-//
-//    @Query(nativeQuery = true, value = "exec pr_test @text = :text")
-//    String test(@Param("text") String text);
+    List<tbl_Booking> findByBookingStatusAndTableNameAndBookingTimeBetween(int status,String tableName,
+                                                                              Date timeStart,Date timeEnd);
 }

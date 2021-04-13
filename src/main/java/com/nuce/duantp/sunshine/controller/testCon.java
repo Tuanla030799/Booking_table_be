@@ -1,12 +1,20 @@
 package com.nuce.duantp.sunshine.controller;
 
 import com.nuce.duantp.sunshine.JasperReports.ReportService;
+import com.nuce.duantp.sunshine.config.TimeUtils;
+import com.nuce.duantp.sunshine.dto.request.findTableEntityReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.model.tbl_Booking;
 import com.nuce.duantp.sunshine.model.tbl_Customer;
 import com.nuce.duantp.sunshine.model.tbl_ResponseStatusCode;
+import com.nuce.duantp.sunshine.model.tbl_Table;
+import com.nuce.duantp.sunshine.repository.BookingRepository;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.repository.ResponseStatusCodeRepo;
+import com.nuce.duantp.sunshine.repository.TableRepo;
+import com.nuce.duantp.sunshine.scoped.User;
+import com.nuce.duantp.sunshine.scoped.UserScopedBean;
 import com.phamtan.base.email.data_structure.EmailContentData;
 import com.phamtan.base.email.request.EmailRequest;
 import com.phamtan.base.email.service.EmailService;
@@ -20,16 +28,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/test")
@@ -44,9 +52,10 @@ public class testCon {
     @Autowired
     private OneSignalService oneSignalService;
 
-//    @Autowired
+    @Autowired
+    User userScopedBean;
+    //    @Autowired
 //    MailService mailService;
-
     //    @GetMapping("/report")
 //    public String generateReport() throws FileNotFoundException, JRException {
 //        String fileName="generateReport";
@@ -74,26 +83,10 @@ public class testCon {
         Template template = configuration.getTemplate("email.ftl");
         EmailRequest emailRequest = new EmailRequest();
         List<EmailContentData> contents = new ArrayList<>();
-        EmailContentData emailContentData = EmailContentData.builder()
-                .key(EmailEnum.FILE)
-                .name("duan.pdf")
-                .data("D:\\Nuce\\doantonghop\\src\\main\\resources\\static\\generateReport.pdf")
-                .build();
-        EmailContentData imageConten = EmailContentData.builder()
-                .key(EmailEnum.IMAGE)
-                .name("asbnotebook")
-                .data("D:\\Nuce\\doantonghop\\src\\main\\resources\\static\\asbnotebook.png")
-                .build();
-        EmailContentData nameContentData = EmailContentData.builder()
-                .key(EmailEnum.TEXT)
-                .name("name")
-                .data("do thi dieulinh")
-                .build();
-        EmailContentData valueContentData = EmailContentData.builder()
-                .key(EmailEnum.TEXT)
-                .name("value")
-                .data(" value ")
-                .build();
+        EmailContentData emailContentData = EmailContentData.builder().key(EmailEnum.FILE).name("duan.pdf").data("D:\\Nuce\\doantonghop\\src\\main\\resources\\static\\generateReport.pdf").build();
+        EmailContentData imageConten = EmailContentData.builder().key(EmailEnum.IMAGE).name("asbnotebook").data("D:\\Nuce\\doantonghop\\src\\main\\resources\\static\\asbnotebook.png").build();
+        EmailContentData nameContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("name").data("do thi dieulinh").build();
+        EmailContentData valueContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("value").data(" value ").build();
         contents.add(emailContentData);
         contents.add(nameContentData);
         contents.add(valueContentData);
@@ -130,6 +123,7 @@ public class testCon {
     CustomerRepo customer;
     @Autowired
     ResponseStatusCodeRepo responseStatusCodeRepo;
+
     @PostMapping("send-mail")
     public void sendMail(@RequestBody tbl_Customer customer) {
         testService.test(customer);
@@ -137,22 +131,76 @@ public class testCon {
 
     @PostMapping("test_call")
     public ResponseEntity<MessageResponse> testcall(@RequestBody String str) {
-      String str1=customer.test(str);
-        tbl_ResponseStatusCode responseStatusCode= responseStatusCodeRepo.findByResponseStatusCode(str1);
-        MessageResponse response=new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()),
-                responseStatusCode.getResponseStatusMessage());
+        String str1 = customer.test(str);
+        tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str1);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
 
     @ExceptionHandler()
-    public String testHandler(Exception ex){
+    public String testHandler(Exception ex) {
         System.out.println(ex.getMessage());
-        return "internal :"+ex.getMessage();
+        return "internal :" + ex.getMessage();
     }
+
     @GetMapping("/re")
-    public ResponseEntity<?> testResponse(){
+    public ResponseEntity<?> testResponse() {
         return new ResponseEntity<>(EnumResponseStatusCode.ACCOUNT_EXISTED.label, HttpStatus.OK);
     }
 
+    @GetMapping("/notify-test")
+    public void notifyTest() throws URISyntaxException {
+        NotificationRequest notificationRequest = new NotificationRequest();
+        notificationRequest.setAppId(appId);
+        notificationRequest.setChromeWebIcon("https://picsum.photos/200");
+        HashMap<String, Map<String, String>> data = new HashMap<>();
+        Map<String, String> content1 = new HashMap<>();
+        content1.put("en", "do thi dieu linh");
+        notificationRequest.setContents(content1);
+        DataDetail dataDetail = new DataDetail();
+        dataDetail.setKey("foo");
+        dataDetail.setValue("bar");
+        HashMap<String, DataDetail> data1 = new HashMap<>();
+        notificationRequest.setData(data1);
+        oneSignalService.createNotify(notificationRequest);
+    }
+
+
+    @GetMapping("/tests")
+    public String test(Model model) {
+        userScopedBean.setEmail("duantp");
+        String data = userScopedBean.getEmail();
+        System.out.println("test1" + data);
+        return null;
+    }
+
+    @GetMapping("/tests2")
+    public String test2(Model model) {
+
+        String data = userScopedBean.getEmail();
+        System.out.println("test 2 =====" + data);
+        return null;
+    }
+
+    @Autowired
+    TableRepo tableRepo;
+    @Autowired
+    BookingRepository bookingRepository;
+
+    @GetMapping("/get-table")
+    public String gettable(@RequestBody findTableEntityReq tableEntityReq) throws ParseException {
+        String tableName = null;
+        List<tbl_Table> tableList = tableRepo.findBySeatGreaterThanEqualOrderBySeatAsc(tableEntityReq.getSeat());
+        for (tbl_Table table : tableList) {
+            Date date1 = TimeUtils.minusDate(Timestamp.valueOf(tableEntityReq.getBookingTime()), -3, "HOUR");
+            Date date2 = TimeUtils.minusDate(Timestamp.valueOf(tableEntityReq.getBookingTime()), 3, "HOUR");
+            List<tbl_Booking> bookingList = bookingRepository.findByBookingStatusAndTableNameAndBookingTimeBetween(0, table.getTablename(), date1, date2);
+            if (bookingList.size() < table.getStillEmpty()) {
+                tableName = table.getTablename();
+                break;
+            }
+        }
+        return tableName;
+    }
 }

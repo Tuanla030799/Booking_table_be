@@ -38,6 +38,8 @@ public class tbl_Booking {
     @Column(name = "bookingStatus") //dùng để xe boking đã thnh toán chưa: 0: là chưa thanh toán , 1:đã thanh toán
     private int bookingStatus;
 
+    @Column(name = "tableName")
+    private String tableName;
 
 
 

@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Calendar;
 import java.util.Date;
 
 public class TimeUtils {
@@ -31,5 +32,21 @@ public class TimeUtils {
         LocalDateTime zdt = LocalDateTime.ofInstant(Instant.ofEpochMilli(time),
                 ZoneId.of("Asia/Ho_Chi_Minh"));
         return zdt;
+    }
+    public static Date minusDate(Date date,int i,String type){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        if(type.equals("HOUR")){
+            cal.add(Calendar.HOUR, i);
+        }
+        if(type.equals("MINUTE")){
+            cal.add(Calendar.MINUTE, i);
+        }
+        Date oneHourBack = cal.getTime();
+        return oneHourBack;
+    }
+    public static Date convertStringToDate(String str) throws ParseException {
+        Date date=new SimpleDateFormat("dd-M-yyyy hh:mm:ss").parse(str);
+        return date;
     }
 }
