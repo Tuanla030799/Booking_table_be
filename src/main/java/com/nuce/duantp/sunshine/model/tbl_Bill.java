@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -15,6 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_bill")
+@EntityListeners(AuditingEntityListener.class)
 public class tbl_Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

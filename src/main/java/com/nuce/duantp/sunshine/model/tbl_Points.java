@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +15,8 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_point")
+@EntityListeners(AuditingEntityListener.class)
+
 public class tbl_Points {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +28,9 @@ public class tbl_Points {
 
     @Column(name = "pointPercent")
     private float pointPercent;
+
+    @Column(name = "pointStatus")
+    private int pointStatus =1;
 
     @Column(name = "created")
     @CreatedDate

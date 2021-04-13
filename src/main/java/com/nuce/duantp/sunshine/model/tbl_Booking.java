@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_booking")
+@EntityListeners(AuditingEntityListener.class)
 public class tbl_Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +44,9 @@ public class tbl_Booking {
     @Column(name = "tableName")
     private String tableName;
 
-
+    @Column(name = "created")
+    @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    private Date created;
 
 }
