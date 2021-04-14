@@ -22,6 +22,7 @@ public enum EnumResponseStatusCode {
     EMAIL_EXISTED("Email đã tồn tại!"),
     SUCCESS("Thành công!"),
     TABLE_OFF("Hết bàn!"),
+    TOKEN_DIE("Đăng nhập lại để tiếp tục!"),
     EMAIL_PASS_NOT_CORRECT("Email hoặc Password không đúng!"),
     OLD_PASS_NOT_CORRECT("Password cũ không đúng!"),
     TEST("Test");

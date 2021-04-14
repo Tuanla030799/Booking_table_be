@@ -1,2 +1,0 @@
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(true,'changeResetPasswordStatus','1','15 0/1 * * * *','test schedule in database','job chay vao giay thu 15 cua tung phut')

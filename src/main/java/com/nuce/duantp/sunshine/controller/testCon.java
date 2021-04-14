@@ -2,6 +2,7 @@ package com.nuce.duantp.sunshine.controller;
 
 import com.nuce.duantp.sunshine.JasperReports.ReportService;
 import com.nuce.duantp.sunshine.config.TimeUtils;
+import com.nuce.duantp.sunshine.config.schedule.model.RemoveLiveToken;
 import com.nuce.duantp.sunshine.dto.request.findTableEntityReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
@@ -24,6 +25,8 @@ import com.phamtan.base.onesingnal.inout.request.NotificationRequest;
 import com.phamtan.base.onesingnal.service.OneSignalService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -203,4 +206,27 @@ public class testCon {
         }
         return tableName;
     }
+
+    private Logger LOGGER = LoggerFactory.getLogger(testCon.class);
+
+    @GetMapping("/aa")
+    public String dd(){
+       return index();
+    }
+    @Autowired
+    RemoveLiveToken removeLiveToken;
+    @GetMapping("/test-loving-token")
+    public void dqd(){
+       removeLiveToken.run();
+    }
+
+    public String index() {
+        LOGGER.error("Message logged at ERROR level");
+        LOGGER.warn("Message logged at WARN level");
+        LOGGER.info("Message logged at INFO level");
+        LOGGER.debug("Message logged at DEBUG level");
+
+        return "Howdy! Check out the Logs to see the output...";
+    }
+
 }

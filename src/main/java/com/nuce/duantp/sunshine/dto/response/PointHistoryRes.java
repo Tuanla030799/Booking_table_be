@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HistoryPointRes {
+public class PointHistoryRes {
     private Date timeUse;
     private Long pointUser;
     private Long cumulativePoints;

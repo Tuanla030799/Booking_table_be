@@ -8,9 +8,11 @@ import com.nuce.duantp.sunshine.dto.response.JwtResponse;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 
+import com.nuce.duantp.sunshine.model.TokenLiving;
 import com.nuce.duantp.sunshine.model.UserDetailsImpl;
 import com.nuce.duantp.sunshine.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
+import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 //import com.phamtan.base.email.data_structure.EmailContentData;
@@ -66,6 +68,8 @@ public class AuthService {
     @Autowired
     private Configuration configuration;
 
+    @Autowired
+    private TokenLivingRepo tokenLivingRepo;
 
     @Autowired
     private EmailService emailService;
@@ -165,13 +169,17 @@ public class AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
 
-//            TokenLiving tokenLiving = tokenLiveRepo.findByEmail(loginRequest.getEmail());
-//            if(tokenLiving==null){
-//                tokenLiving.setEmail(loginRequest.getEmail());
-//            }
-//
-//            tokenLiving.setToken(jwt);
-//            tokenLiveRepo.save(tokenLiving);
+
+            TokenLiving tokenLiving = tokenLivingRepo.findByEmail(loginRequest.getEmail());
+            if(tokenLiving==null){
+                TokenLiving tokenLiving1=new TokenLiving(loginRequest.getEmail(),jwt);
+                tokenLivingRepo.save(tokenLiving1);
+            }
+            else{
+                tokenLiving.setToken(jwt);
+                tokenLivingRepo.save(tokenLiving);
+            }
+
 
             Optional<tbl_Customer> customer = customerRepo.findByEmail(loginRequest.getEmail());
             String role=customer.get().getRole().toString();

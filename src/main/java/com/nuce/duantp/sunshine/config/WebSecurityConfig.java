@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/sunshine/**").permitAll()
-                .anyRequest().permitAll();
+                .anyRequest().authenticated();
 //		.and()
 //		.logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout")).logoutSuccessUrl("/api/auth/signup");
 

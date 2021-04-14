@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface PointsRepo extends CrudRepository<tbl_Points, Long> {
-
        List<tbl_Points>  findAllByPrice(Long price);
+       tbl_Points findByPointId(Long pointId);
 }
 

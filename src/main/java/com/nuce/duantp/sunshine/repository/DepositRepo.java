@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface DepositRepo extends CrudRepository<tbl_Deposit, Long> {
-
        List<tbl_Deposit>  findAllByTotalPersons(int totalPerson);
+       tbl_Deposit findByDepositId(Long depositId);
 }
 

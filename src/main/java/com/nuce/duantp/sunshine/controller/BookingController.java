@@ -4,15 +4,17 @@ import com.nuce.duantp.sunshine.dto.request.BookingReq;
 import com.nuce.duantp.sunshine.dto.request.CancelBookingReq;
 import com.nuce.duantp.sunshine.dto.request.OrderFoodReq;
 import com.nuce.duantp.sunshine.dto.request.PayReq;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
+import com.nuce.duantp.sunshine.dto.response.MessageResponse;
+import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.service.BookingServiceImpl;
+import com.nuce.duantp.sunshine.service.TokenLivingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
@@ -22,26 +24,44 @@ public class BookingController {
     BookingServiceImpl bookingService;
     @Autowired
     AuthTokenFilter authTokenFilter;
-
+    @Autowired
+    TokenLivingService tokenLivingService;
     @PostMapping("/booking")
     public ResponseEntity<?> booking(@RequestBody BookingReq bookingReq, HttpServletRequest req) {
+        if(tokenLivingService.checkTokenLiving(req)){
+            return bookingService.bookingTable(bookingReq,req);
+        }
+        MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
 
-        return bookingService.bookingTable(bookingReq,req);
     }
 
     @PostMapping("/order-food")
     public ResponseEntity<?> orderFood(@RequestBody OrderFoodReq orderFoodReq, HttpServletRequest req) {
-        return bookingService.orderFood(orderFoodReq,req);
+        if(tokenLivingService.checkTokenLiving(req)){
+            return bookingService.orderFood(orderFoodReq,req);
+        }
+        MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
     }
 
     @PostMapping("/pay-bill")
     public ResponseEntity<?> pay(@RequestBody PayReq payReq, HttpServletRequest req) {
-        return bookingService.pay(payReq,req);
+        if(tokenLivingService.checkTokenLiving(req)){
+            return bookingService.pay(payReq,req);
+        }
+        MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/cancel-booking")
     public ResponseEntity<?> cancelBooking(@RequestBody CancelBookingReq cancelBookingReq, HttpServletRequest req) {
-        return bookingService.cancelBooking(cancelBookingReq,req);
+        if(tokenLivingService.checkTokenLiving(req)){
+            return bookingService.cancelBooking(cancelBookingReq,req);
+        }
+        MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
 

@@ -6,6 +6,7 @@ import com.nuce.duantp.format.CheckPhoneNumber;
 import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
+import com.nuce.duantp.sunshine.dto.response.UserDetail;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
@@ -64,6 +65,10 @@ public class UserService {
         }
     }
 
+    public UserDetail userDetail(HttpServletRequest req){
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        return new UserDetail(customer);
+    }
 
 
 }

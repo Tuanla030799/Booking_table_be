@@ -1,22 +1,25 @@
 package com.nuce.duantp.sunshine.controller;
 
-import com.nuce.duantp.format.CheckPass;
-import com.nuce.duantp.format.MyStringRandomGen;
 import com.nuce.duantp.sunshine.dto.request.LoginRequest;
 import com.nuce.duantp.sunshine.dto.request.SignupRequest;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
+import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.model.TokenLiving;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
+import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
 import com.nuce.duantp.sunshine.scoped.User;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 import com.nuce.duantp.sunshine.security.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -46,10 +49,12 @@ public class AuthController {
     @Resource(name = "userBean")
     User user;
 
+    @Autowired
+    TokenLivingRepo tokenLivingRepo;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateConsumer(@Valid @RequestBody LoginRequest loginRequest) {
-//        System.out.printf(loginRequest.getEmail() + "  " + loginRequest.getPassword());
-        user.setEmail(loginRequest.getEmail());
+        user.setEmail(loginRequest.getEmail()); //lấy ra máy đang sử dụng user
         return authService.login(loginRequest);
     }
 
@@ -58,25 +63,17 @@ public class AuthController {
         return authService.registerConsumer(signupRequest);
     }
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<MessageResponse> logoutConsumer() {
-//        return ResponseEntity
-//                .ok()
-//                .body(new MessageResponse(HttpStatus.OK.value(), "Success"));
-//    }
-
-    @GetMapping("/forgot-password")
-    public ResponseEntity<MessageResponse> ForgotPassword(@RequestParam("email")String email){
-        MyStringRandomGen msr = new MyStringRandomGen();
-        String password=msr.generateRandomString();
-        System.out.println(password);
-        while ((!CheckPass.checkPassword(password))){
-            password=msr.generateRandomString();
-            System.out.println(password);
-        }
-        System.out.println("\nforgot pass"+email);
-        return authService.ForgotPassword(email,password);
+    @PostMapping("/logout")
+    public ResponseEntity<MessageResponse> logoutConsumer(HttpServletRequest req) {
+        String authTokenHeader = req.getHeader("Authorization");
+        String[] splits = authTokenHeader.split(" ");
+        TokenLiving tokenLiving= tokenLivingRepo.findByToken(splits[1]);
+        tokenLivingRepo.delete(tokenLiving);
+        MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.SUCCESS);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
+
+
 
 
 }
