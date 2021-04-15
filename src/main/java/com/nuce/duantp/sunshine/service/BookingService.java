@@ -87,7 +87,12 @@ public class BookingService {
 
     public ResponseEntity<?> pay(PayReq payReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        String str = bookingRepository.pay(customer.get().getEmail(), payReq.getAccountNo(), payReq.getBookingId(), payReq.getDiscount());
+        String str="aa";
+        /*
+        * TODO:
+        *  thay đổi pay, thêm khuyến mãi vào
+        * */
+//        String str = bookingRepository.pay(customer.get().getEmail(), payReq.getAccountNo(), payReq.getBookingId(), payReq.getDiscount());
         tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
         if (str.contains("SUCCESS")) {

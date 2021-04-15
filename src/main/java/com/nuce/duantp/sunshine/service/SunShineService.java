@@ -4,12 +4,14 @@ import com.nuce.duantp.sunshine.dto.response.MoneyPayRes;
 import com.nuce.duantp.sunshine.model.*;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SunShineService {
@@ -30,6 +32,7 @@ public class SunShineService {
     @Autowired
     DepositRepo depositRepo;
 
+    private Logger LOGGER= LoggerFactory.getLogger(SunShineService.class);
     public List<String> getListCustomer() {
         List<String> list = new ArrayList<>();
         List<tbl_Customer> customerList = customerRepo.findAllByRole("USERS");
@@ -54,10 +57,9 @@ public class SunShineService {
         return money;
     }
 
-    public List<MoneyPayRes> allMoneyPayCustomer(String str) {
+    public List<MoneyPayRes> allMoneyPayCustomer(List<String> customerList) {
         List<MoneyPayRes> moneyPayResList = new ArrayList<>();
-        List<String> customerList = getListCustomer();
-      //  for (String str : customerList) {
+        for (String str : customerList) {
             float money = 0L;
             List<tbl_Booking> booking = bookingRepo.findAllByEmailAndBookingStatus(str, 1);
             for (tbl_Booking booking1 : booking) {
@@ -66,13 +68,25 @@ public class SunShineService {
             }
             MoneyPayRes moneyPayRes = new MoneyPayRes(str, money);
             moneyPayResList.add(moneyPayRes);
-      //  }
+        }
         return moneyPayResList;
     }
 
-    public void updateBeneficiary(String str) {
-        List<MoneyPayRes> list = allMoneyPayCustomer(str);
-        tbl_Beneficiary tbl_beneficiary = beneficiaryRepo.findTop1ByTotalBillLessThanEqualOrderByTotalBillDesc(Long.valueOf(str));
-        System.out.println(tbl_beneficiary);
+    public void updateBeneficiary() {
+        List<String> customerList = getListCustomer();
+        List<MoneyPayRes> list = allMoneyPayCustomer(customerList);
+        for(MoneyPayRes data: list){
+            tbl_Beneficiary beneficiary =
+                    beneficiaryRepo.findTop1ByTotalBillLessThanEqualOrderByTotalBillDesc((long) data.getMoneyPay());
+            Optional<tbl_Customer> customer=customerRepo.findByEmail(data.getEmail());
+            if(!customer.get().getBeneficiary().equals(beneficiary.getBeneficiaryName())){
+                LOGGER.warn("Job update Beneficiary for email "+customer.get().getEmail()+
+                                " from "+customer.get().getBeneficiary()+ " to "+beneficiary.getBeneficiaryName()
+                                +" with totalBill = "+data.getMoneyPay(),
+                        SunShineService.class);
+                customer.get().setBeneficiary(beneficiary.getBeneficiaryName());
+                customerRepo.save(customer.get());
+            }
+        }
     }
 }

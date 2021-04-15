@@ -3,6 +3,7 @@ package com.nuce.duantp.sunshine.controller;
 import com.nuce.duantp.format.CheckPass;
 import com.nuce.duantp.format.MyStringRandomGen;
 import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
+import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/forgot-password/{email}")
-    public ResponseEntity<MessageResponse> ForgotPassword(@PathVariable String email) {
+    public ResponseEntity<MessageResponse> forgotPassword(@PathVariable String email) {
         MyStringRandomGen msr = new MyStringRandomGen();
         String password = msr.generateRandomString();
         System.out.println(password);
@@ -48,7 +49,15 @@ public class UserController {
             password = msr.generateRandomString();
             System.out.println(password);
         }
-        System.out.println("\nforgot pass" + email);
         return authService.ForgotPassword(email, password);
+    }
+
+    @PutMapping("/update-user")
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserReq updateUserReq, HttpServletRequest req) {
+        if (tokenLivingService.checkTokenLiving(req)) {
+            return userService.updateUser(updateUserReq, req);
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 }

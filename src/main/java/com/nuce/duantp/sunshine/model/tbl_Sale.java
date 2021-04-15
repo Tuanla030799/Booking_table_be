@@ -17,7 +17,7 @@ import java.util.Date;
 @Table(name = "tbl_Promotions")
 @EntityListeners(AuditingEntityListener.class)
 
-public class tbl_Promotions extends BaseEntity{
+public class tbl_Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "promotionsId")
@@ -38,11 +38,14 @@ public class tbl_Promotions extends BaseEntity{
     @Column(name = "beneficiary")
     private String beneficiary; //người được hưởng khuyễn mãi
 
+    @Column(name = "percentDiscount")//phần trăm khuyến mãi
+    private float percentDiscount;
 
-//    @Column(name = "created")
-//    @CreatedDate
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-//    private Date created;
+
+    @Column(name = "created")
+    @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    private Date created;
 
 
 

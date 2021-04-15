@@ -1,18 +1,15 @@
 package com.nuce.duantp.sunshine.config.schedule;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
-import com.nuce.duantp.sunshine.model.TokenLiving;
 import com.nuce.duantp.sunshine.model.tbl_Booking;
 import com.nuce.duantp.sunshine.repository.BookingRepository;
-import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component
 public class AutoCancelBooking implements Runnable {

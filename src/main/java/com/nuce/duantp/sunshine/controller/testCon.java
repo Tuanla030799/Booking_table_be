@@ -241,6 +241,6 @@ public class testCon {
     SunShineService sunShineService;
     @GetMapping("/test-auto-update")
     public void testup(@RequestBody String str){
-       sunShineService.updateBeneficiary(str);
+       sunShineService.updateBeneficiary();
     }
 }

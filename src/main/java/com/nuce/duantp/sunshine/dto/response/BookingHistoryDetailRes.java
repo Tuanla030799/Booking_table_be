@@ -35,10 +35,12 @@ public class BookingHistoryDetailRes {
 
     private Long point;
 
+    private float moneyPay;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date payDate;
 
-    public BookingHistoryDetailRes(tbl_Booking booking, tbl_Bill bill) {
+    public BookingHistoryDetailRes(tbl_Booking booking, tbl_Bill bill,float money) {
         tbl_Deposit deposit=depositRepo.findByDepositId(booking.getDepositId());
         tbl_Points points=pointsRepo.findByPointId(bill.getPointId());
 
@@ -49,5 +51,6 @@ public class BookingHistoryDetailRes {
         this.tableName=booking.getTableName();
         this.point=points.getPrice();
         this.payDate=bill.getPayDate();
+        this.moneyPay=money;
     }
 }
