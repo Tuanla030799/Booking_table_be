@@ -2,7 +2,8 @@ package com.nuce.duantp.sunshine.controller;
 
 import com.nuce.duantp.sunshine.JasperReports.ReportService;
 import com.nuce.duantp.sunshine.config.TimeUtils;
-import com.nuce.duantp.sunshine.config.schedule.model.RemoveLiveToken;
+import com.nuce.duantp.sunshine.config.schedule.AutoCancelBooking;
+import com.nuce.duantp.sunshine.config.schedule.RemoveLiveToken;
 import com.nuce.duantp.sunshine.dto.request.findTableEntityReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
@@ -15,7 +16,6 @@ import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.repository.ResponseStatusCodeRepo;
 import com.nuce.duantp.sunshine.repository.TableRepo;
 import com.nuce.duantp.sunshine.scoped.User;
-import com.nuce.duantp.sunshine.scoped.UserScopedBean;
 import com.phamtan.base.email.data_structure.EmailContentData;
 import com.phamtan.base.email.request.EmailRequest;
 import com.phamtan.base.email.service.EmailService;
@@ -229,4 +229,10 @@ public class testCon {
         return "Howdy! Check out the Logs to see the output...";
     }
 
+    @Autowired
+    AutoCancelBooking autoCancelBooking;
+    @GetMapping("/test-auto-cancel")
+    public void testCancel(){
+        autoCancelBooking.run();
+    }
 }

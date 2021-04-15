@@ -18,7 +18,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Service
 public class UserService {
     @Autowired
@@ -30,6 +31,8 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+    
     public ResponseEntity<?> changePassword(ChangePasswordReq changePasswordReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (passwordEncoder.matches(changePasswordReq.getOldPass(), customer.get().getPassword())) {
@@ -40,6 +43,8 @@ public class UserService {
             } else {
                 customer.get().setPassword(passwordEncoder.encode(changePasswordReq.getNewPass()));
                 customerRepo.save(customer.get());
+                LOGGER.warn("Change password success by " + customer.get().getEmail(), UserService.class);
+
                 return ResponseEntity
                         .ok()
                         .body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
@@ -61,6 +66,7 @@ public class UserService {
         } else {
             tbl_Customer customer1 = new tbl_Customer(updateUserReq);
             customerRepo.save(customer1);
+            LOGGER.warn("update info success by " + customer.get().getEmail()+"\n"+updateUserReq, UserService.class);
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
         }
     }

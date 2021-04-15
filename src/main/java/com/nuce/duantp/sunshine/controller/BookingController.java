@@ -7,7 +7,7 @@ import com.nuce.duantp.sunshine.dto.request.PayReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
-import com.nuce.duantp.sunshine.service.BookingServiceImpl;
+import com.nuce.duantp.sunshine.service.BookingService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api/customer")
 public class BookingController {
     @Autowired
-    BookingServiceImpl bookingService;
+    BookingService bookingService;
     @Autowired
     AuthTokenFilter authTokenFilter;
     @Autowired

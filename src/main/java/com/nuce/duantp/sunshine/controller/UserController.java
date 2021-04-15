@@ -39,16 +39,16 @@ public class UserController {
 
     }
 
-    @GetMapping("/forgot-password")
-    public ResponseEntity<MessageResponse> ForgotPassword(@RequestParam("email") String email) {
-                   MyStringRandomGen msr = new MyStringRandomGen();
-            String password = msr.generateRandomString();
+    @GetMapping("/forgot-password/{email}")
+    public ResponseEntity<MessageResponse> ForgotPassword(@PathVariable String email) {
+        MyStringRandomGen msr = new MyStringRandomGen();
+        String password = msr.generateRandomString();
+        System.out.println(password);
+        while ((!CheckPass.checkPassword(password))) {
+            password = msr.generateRandomString();
             System.out.println(password);
-            while ((!CheckPass.checkPassword(password))) {
-                password = msr.generateRandomString();
-                System.out.println(password);
-            }
-            System.out.println("\nforgot pass" + email);
-            return authService.ForgotPassword(email, password);
+        }
+        System.out.println("\nforgot pass" + email);
+        return authService.ForgotPassword(email, password);
     }
 }
