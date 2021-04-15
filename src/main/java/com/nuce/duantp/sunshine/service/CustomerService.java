@@ -59,8 +59,11 @@ public class CustomerService {
         List<tbl_Booking> bookingList = bookingRepository.findByEmail(customer.get().getEmail());
         List<BookingHistoryRes> data = new ArrayList<>();
         for (tbl_Booking booking : bookingList) {
-            BookingHistoryRes data1 = new BookingHistoryRes(booking);
-            data.add(data1);
+            /*
+            * TODO fix
+            * */
+//            BookingHistoryRes data1 = new BookingHistoryRes(booking);
+//            data.add(data1);
         }
         return data;
     }

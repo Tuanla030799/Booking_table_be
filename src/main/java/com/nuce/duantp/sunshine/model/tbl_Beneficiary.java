@@ -14,35 +14,28 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tbl_Promotions")
+@Table(name = "tbl_Beneficiary")
 @EntityListeners(AuditingEntityListener.class)
-
-public class tbl_Promotions extends BaseEntity{
+public class tbl_Beneficiary extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "promotionsId")
-    private Long promotionsId;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "promotionsTitel")
-    private String promotionsTitel;
+    @Column(name = "beneficiaryName")
+    private String beneficiaryName;
 
-    @Column(name = "promotionsDitail")
-    private String promotionsDitail;
-
-    @Column(name = "promotionsImage", length = 1000)
-    private String promotionsImage;
-
-    @Column(name = "promotionsStatus")
-    private int promotionsStatus;
-
-    @Column(name = "beneficiary")
-    private String beneficiary; //người được hưởng khuyễn mãi
-
+    @Column(name = "totalBill")
+    private Long totalBill;
 
 //    @Column(name = "created")
 //    @CreatedDate
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 //    private Date created;
+
+    @Column(name = "beneficiaryStatus")
+    private int beneficiaryStatus;
+
 
 
 

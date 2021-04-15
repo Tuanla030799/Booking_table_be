@@ -37,6 +37,9 @@ public class tbl_Customer {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "beneficiary")
+    private String beneficiary;
+
     public tbl_Customer(String email, String phoneNumber, String fullName, String password, Long totalMoney) {
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -44,6 +47,7 @@ public class tbl_Customer {
         this.password = password;
         this.totalMoney = totalMoney;
         this.role="USERS";
+        this.beneficiary="CUSTOMER";
     }
 
     public tbl_Customer(String email, String phoneNumber, String fullName, String password) {
@@ -52,6 +56,7 @@ public class tbl_Customer {
         this.fullName = fullName;
         this.password = password;
         this.role="USERS";
+        this.beneficiary="CUSTOMER";
     }
 
     public tbl_Customer(tbl_Customer customer) {
@@ -61,11 +66,11 @@ public class tbl_Customer {
         this.password = customer.password;
         this.totalMoney = customer.totalMoney;
         this.role="USERS";
+        this.beneficiary="CUSTOMER";
     }
 
     public tbl_Customer(UpdateUserReq req) {
         this.setPhoneNumber(req.getPhoneNumber());
         this.setFullName(req.getFullName());
-        this.role="USERS";
     }
 }

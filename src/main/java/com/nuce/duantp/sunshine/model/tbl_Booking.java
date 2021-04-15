@@ -44,6 +44,9 @@ public class tbl_Booking {
     @Column(name = "tableName")
     private String tableName;
 
+    @Column(name = "percentDiscount")//phần trăm khuyến mãi
+    private float percentDiscount;
+
     @Column(name = "created")
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")

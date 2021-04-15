@@ -24,11 +24,12 @@ public class BookingHistoryRes {
 
     private String bookingStatus;
 
-
-    public BookingHistoryRes(tbl_Booking booking) {
+    private float moneyPay;
+    public BookingHistoryRes(tbl_Booking booking,float moneyPay) {
         this.bookingTime=booking.getBookingTime();
         tbl_Deposit deposit=depositRepo.findByDepositId(booking.getDepositId());
         this.deposit=deposit.getDeposit();
         this.bookingStatus=booking.getBookingStatus()==1?"Đã thanh toán!":"Chưa thanh toán!";
+        this.moneyPay=moneyPay;
     }
 }

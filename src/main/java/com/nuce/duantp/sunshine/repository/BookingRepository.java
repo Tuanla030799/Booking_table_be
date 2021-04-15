@@ -41,4 +41,6 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, Long> {
     List<tbl_Booking> findByBookingStatus(int status);
 
     List<tbl_Booking> findByBookingStatusAndBookingTimeLessThan(int status,Date bookingTime);
+
+//    List<tbl_Booking> findByBookingStatusAndEmail(int status,String email);
 }

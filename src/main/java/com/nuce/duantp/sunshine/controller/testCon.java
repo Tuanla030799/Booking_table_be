@@ -16,6 +16,7 @@ import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.repository.ResponseStatusCodeRepo;
 import com.nuce.duantp.sunshine.repository.TableRepo;
 import com.nuce.duantp.sunshine.scoped.User;
+import com.nuce.duantp.sunshine.service.SunShineService;
 import com.phamtan.base.email.data_structure.EmailContentData;
 import com.phamtan.base.email.request.EmailRequest;
 import com.phamtan.base.email.service.EmailService;
@@ -234,5 +235,12 @@ public class testCon {
     @GetMapping("/test-auto-cancel")
     public void testCancel(){
         autoCancelBooking.run();
+    }
+
+    @Autowired
+    SunShineService sunShineService;
+    @GetMapping("/test-auto-update")
+    public void testup(@RequestBody String str){
+       sunShineService.updateBeneficiary(str);
     }
 }
