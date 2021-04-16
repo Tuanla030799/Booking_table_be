@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class PayReq {
-    private String accountNo;
-    private String bookingId;
-    private Long discount;
-    private Long saleId;
+@NoArgsConstructor
+public class NewsReq {
+    private String promotionsTitle;
+
+    private String promotionsDetail;
+
+    private String promotionsImage;
 }

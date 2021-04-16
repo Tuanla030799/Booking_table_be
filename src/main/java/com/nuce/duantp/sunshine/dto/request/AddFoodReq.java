@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class PayReq {
-    private String accountNo;
-    private String bookingId;
-    private Long discount;
-    private Long saleId;
+@NoArgsConstructor
+public class AddFoodReq {
+    private String foodName;
+
+    private Long foodPrice;
+
+    private String describe;
+
 }

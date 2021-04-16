@@ -1,6 +1,7 @@
 package com.nuce.duantp.sunshine.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nuce.duantp.sunshine.dto.request.AddFoodReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,12 @@ public class tbl_Food {
     @Column(name = "foodName")
     private String foodName;
 
+    @Column(name = "describe")
+    private String describe;
+
+    @Column(name = "foodImage")
+    private String foodImage;
+
     @Column(name = "foodPrice")
     private Long foodPrice;
 
@@ -34,9 +41,12 @@ public class tbl_Food {
     private Date created;
 
     @Column(name = "foodStatus")
-    private int foodStatus;
+    private int foodStatus =1;
 
-
-
-
+    public tbl_Food(AddFoodReq addFoodReq) {
+        this.describe=addFoodReq.getDescribe();
+        this.foodName=addFoodReq.getFoodName();
+        this.foodPrice=addFoodReq.getFoodPrice();
+        this.foodStatus=1;
+    }
 }

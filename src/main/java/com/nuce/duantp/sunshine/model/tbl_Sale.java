@@ -1,6 +1,7 @@
 package com.nuce.duantp.sunshine.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nuce.duantp.sunshine.dto.request.SaleReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,26 +15,26 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tbl_Promotions")
+@Table(name = "tbl_Sale")
 @EntityListeners(AuditingEntityListener.class)
 
 public class tbl_Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "promotionsId")
-    private Long promotionsId;
+    @Column(name = "saleId")
+    private Long saleId;
 
-    @Column(name = "promotionsTitel")
-    private String promotionsTitel;
+    @Column(name = "saleTitel")
+    private String saleTitle;
 
-    @Column(name = "promotionsDitail")
-    private String promotionsDitail;
+    @Column(name = "saleDitail")
+    private String saleDetail;
 
-    @Column(name = "promotionsImage", length = 1000)
-    private String promotionsImage;
+    @Column(name = "saleImage")
+    private String saleImage;
 
-    @Column(name = "promotionsStatus")
-    private int promotionsStatus;
+    @Column(name = "saleStatus")
+    private int saleStatus;
 
     @Column(name = "beneficiary")
     private String beneficiary; //người được hưởng khuyễn mãi
@@ -47,6 +48,12 @@ public class tbl_Sale {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date created;
 
-
-
+    public tbl_Sale(SaleReq saleReq) {
+        this.saleTitle=saleReq.getSaleTitle();
+        this.saleDetail=saleReq.getSaleDetail();
+        this.saleImage=saleReq.getSaleImage();
+        this.saleStatus=1;
+        this.beneficiary=saleReq.getBeneficiary();
+        this.percentDiscount= saleReq.getPercentDiscount();
+    }
 }

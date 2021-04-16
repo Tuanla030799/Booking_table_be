@@ -9,6 +9,7 @@ import com.nuce.duantp.sunshine.dto.response.PointHistoryRes;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.model.tbl_BankAccount;
 import com.nuce.duantp.sunshine.model.tbl_Customer;
+import com.nuce.duantp.sunshine.model.tbl_Sale;
 import com.nuce.duantp.sunshine.repository.AccountRepo;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.service.CustomerService;
@@ -58,9 +59,12 @@ public class CustomerController {
 
     @GetMapping("/get-list-acc")
     public List<tbl_BankAccount> getLitAcc(HttpServletRequest req) {
-        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        List<tbl_BankAccount> list = accountRepo.findByEmail(customer.get().getEmail());
-        return list;
+        if (tokenLivingService.checkTokenLiving(req)) {
+            Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+            List<tbl_BankAccount> list = accountRepo.findByEmail(customer.get().getEmail());
+            return list;
+        } else return null;
+
     }
 
     @PostMapping("/add-bank-acc")
@@ -72,4 +76,13 @@ public class CustomerController {
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/get-list-sale-for-user")
+    public List<tbl_Sale> getListSaleForUser( HttpServletRequest req) {
+        if (tokenLivingService.checkTokenLiving(req)) {
+            Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+            return customerService.getListSaleForUser(customer.get().getEmail());
+        }
+        return null;
+
+    }
 }

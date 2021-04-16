@@ -44,8 +44,8 @@ public class tbl_Booking {
     @Column(name = "tableName")
     private String tableName;
 
-    @Column(name = "percentDiscount")//phần trăm khuyến mãi
-    private float percentDiscount;
+    @Column(name = "saleId")//phần trăm khuyến mãi
+    private Long saleId;
 
     @Column(name = "created")
     @CreatedDate

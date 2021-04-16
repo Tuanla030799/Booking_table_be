@@ -26,7 +26,7 @@ public class TokenLiving{
     @Column(name = "email")
     private String email;
 
-    @Column(name = "token")
+    @Column(name = "token", length = 1000)
     private String token;
 
     @Column(name = "created")

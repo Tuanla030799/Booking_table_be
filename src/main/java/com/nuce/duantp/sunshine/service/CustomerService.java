@@ -6,14 +6,8 @@ import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.response.PointHistoryRes;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.tbl_Bill;
-import com.nuce.duantp.sunshine.model.tbl_Booking;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
-import com.nuce.duantp.sunshine.model.tbl_ResponseStatusCode;
-import com.nuce.duantp.sunshine.repository.BillRepo;
-import com.nuce.duantp.sunshine.repository.BookingRepository;
-import com.nuce.duantp.sunshine.repository.CustomerRepo;
-import com.nuce.duantp.sunshine.repository.ResponseStatusCodeRepo;
+import com.nuce.duantp.sunshine.model.*;
+import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +37,8 @@ public class CustomerService {
     private ResponseStatusCodeRepo responseStatusCodeRepo;
     @Autowired
     SunShineService sunShineService;
+    @Autowired
+    SaleRepo saleRepo;
     private Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
 
     public List<PointHistoryRes> viewHistoryPointUse(HttpServletRequest req) {
@@ -96,5 +92,9 @@ public class CustomerService {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
+    public List<tbl_Sale> getListSaleForUser(String email){
+        tbl_Customer customer=customerRepo.findCustomerByEmail(email);
+        List<tbl_Sale> saleList=saleRepo.findBySaleStatusAndBeneficiary(1,customer.getBeneficiary());
+        return saleList;
+    }
 }

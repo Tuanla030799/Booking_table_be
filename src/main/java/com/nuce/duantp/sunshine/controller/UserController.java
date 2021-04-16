@@ -5,6 +5,7 @@ import com.nuce.duantp.format.MyStringRandomGen;
 import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
+import com.nuce.duantp.sunshine.dto.response.UserDetail;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.security.services.AuthService;
@@ -59,5 +60,13 @@ public class UserController {
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/get-user-detail")
+    public UserDetail userDetail(HttpServletRequest req){
+        if (tokenLivingService.checkTokenLiving(req)) {
+            return userService.userDetail(req);
+        }
+        else return null;
     }
 }

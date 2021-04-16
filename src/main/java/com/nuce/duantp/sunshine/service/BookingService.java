@@ -6,11 +6,10 @@ import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.model.*;
-import com.nuce.duantp.sunshine.repository.BillRepo;
-import com.nuce.duantp.sunshine.repository.BookingRepository;
-import com.nuce.duantp.sunshine.repository.ResponseStatusCodeRepo;
-import com.nuce.duantp.sunshine.repository.TableRepo;
+import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 @Service
 public class BookingService {
     @Autowired
@@ -35,8 +33,10 @@ public class BookingService {
     TableRepo tableRepo;
     @Autowired
     BillRepo billRepo;
-
+    @Autowired
+    SaleRepo saleRepo;
     private Logger LOGGER = LoggerFactory.getLogger(BookingService.class);
+
     public ResponseEntity<?> bookingTable(BookingReq bookingReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
 
@@ -72,11 +72,10 @@ public class BookingService {
 
     public ResponseEntity<?> orderFood(OrderFoodReq orderFoodReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        tbl_Bill bill=billRepo.findByBookingId(orderFoodReq.getBookingId());
+        tbl_Bill bill = billRepo.findByBookingId(orderFoodReq.getBookingId());
         String str = "ADD_FOOD_SUCCESS";
         for (FoodReq data : orderFoodReq.getFoodList()) {
-            str = bookingRepository.orderFood(orderFoodReq.getBookingId(), bill.getBillId(), data.getQuantity(),
-                    data.getFoodId());
+            str = bookingRepository.orderFood(orderFoodReq.getBookingId(), bill.getBillId(), data.getQuantity(), data.getFoodId());
         }
         LOGGER.warn("Booking table success by " + customer.get().getEmail() + "\n" + orderFoodReq, BookingService.class);
         tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
@@ -87,12 +86,9 @@ public class BookingService {
 
     public ResponseEntity<?> pay(PayReq payReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        String str="aa";
-        /*
-        * TODO:
-        *  thay đổi pay, thêm khuyến mãi vào
-        * */
-//        String str = bookingRepository.pay(customer.get().getEmail(), payReq.getAccountNo(), payReq.getBookingId(), payReq.getDiscount());
+        tbl_Sale sale =saleRepo.findBySaleId(payReq.getSaleId());
+        String str = bookingRepository.pay(customer.get().getEmail(), payReq.getAccountNo(), payReq.getBookingId(),
+                payReq.getDiscount(),sale.getPercentDiscount(),sale.getSaleId());
         tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
         if (str.contains("SUCCESS")) {
@@ -113,20 +109,19 @@ public class BookingService {
         tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
         if (str.contains("SUCCESS")) {
-            LOGGER.warn("Cancel booking success by " + customer.get().getEmail() + "\n" + cancelBookingReq,
-                    BookingService.class);
+            LOGGER.warn("Cancel booking success by " + customer.get().getEmail() + "\n" + cancelBookingReq, BookingService.class);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 
-    public ResponseEntity<?> cancelBookingAdmin(CancelBookingReq cancelBookingReq,String email) {
+    public ResponseEntity<?> cancelBookingAdmin(CancelBookingReq cancelBookingReq, String email) {
         String str = bookingRepository.cancelBookingAdmin(cancelBookingReq.getBookingId());
         tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
         if (str.contains("SUCCESS")) {
-            LOGGER.warn("Cancel booking success by admin " + email + "\n" + cancelBookingReq,BookingService.class);
+            LOGGER.warn("Cancel booking success by admin " + email + "\n" + cancelBookingReq, BookingService.class);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

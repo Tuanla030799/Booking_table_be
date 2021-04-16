@@ -25,6 +25,11 @@ public enum EnumResponseStatusCode {
     TOKEN_DIE("Đăng nhập lại để tiếp tục!"),
     EMAIL_PASS_NOT_CORRECT("Email hoặc Password không đúng!"),
     OLD_PASS_NOT_CORRECT("Password cũ không đúng!"),
+    ENABLE_FOOD_SUCCESS("Xoá món ăn thành công !"),
+    ENABLE_NEWS_SUCCESS("Xoá tin tức thành công !"),
+    ADD_NEWS_SUCCESS("Thêm tin tức thành công !"),
+    ENABLE_SALE_SUCCESS("Xoá sale thành công !"),
+    ADD_SALE_SUCCESS("Thêm sale thành công !"),
     TEST("Test");
 
     public final String label;

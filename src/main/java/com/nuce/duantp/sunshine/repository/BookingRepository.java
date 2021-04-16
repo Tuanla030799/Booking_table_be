@@ -22,10 +22,10 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, Long> {
     String orderFood(@Param("BookingId") String BookingId, @Param("BillId") String BillId, @Param("Quantity") int Quantity, @Param("FoodID") Long FoodID);
 
     @Query(nativeQuery = true, value = "exec pr_Pay @email =:email, @accountNo =:accountNo,@bookingId =:bookingId," +
-            "@discount =:discount,@percentDiscount=:percentDiscount")
+            "@discount =:discount,@percentDiscount=:percentDiscount,@saleId=:saleId")
     String pay(@Param("email") String email, @Param("accountNo") String accountNo,
                @Param("bookingId") String bookingId, @Param("discount") Long discount,
-               @Param("percentDiscount") float percentDiscount);
+               @Param("percentDiscount") float percentDiscount,@Param("saleId") float saleId);
 
     @Query(nativeQuery = true, value = "exec pr_CancelBooking @email =:email,@bookingId =:bookingId")
     String cancelBooking(@Param("email") String email, @Param("bookingId") String bookingId);

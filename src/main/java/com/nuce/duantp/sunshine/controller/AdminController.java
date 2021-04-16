@@ -1,9 +1,6 @@
 package com.nuce.duantp.sunshine.controller;
 
-import com.nuce.duantp.sunshine.dto.request.CancelBookingReq;
-import com.nuce.duantp.sunshine.dto.request.DepositReq;
-import com.nuce.duantp.sunshine.dto.request.OrderFoodReq;
-import com.nuce.duantp.sunshine.dto.request.PointReq;
+import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.model.tbl_Booking;
@@ -124,4 +121,71 @@ public class AdminController {
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
 
     }
+
+    @PostMapping("/add-food-in-menu")
+    public ResponseEntity<?> addFoodInMenu(@RequestBody AddFoodReq addFoodReq, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.addFoodInMenu(addFoodReq,customer.get().getEmail());
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @PostMapping("/enable-food")
+    public ResponseEntity<?> enableFood(@RequestBody List<String> foodIdList, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.enableFood(foodIdList,customer.get().getEmail());
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @PostMapping("/add-news")
+    public ResponseEntity<?> addNews(@RequestBody NewsReq newsReq, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.addNews(newsReq,customer.get().getEmail());
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @PostMapping("/enable-news")
+    public ResponseEntity<?> enableNews(@RequestBody List<String> newsIdList, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.enableNews(newsIdList,customer.get().getEmail());
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @PostMapping("/add-sale")
+    public ResponseEntity<?> addSale(@RequestBody SaleReq saleReq, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.addSale(saleReq,customer.get().getEmail());
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @PostMapping("/enable-sale")
+    public ResponseEntity<?> enableSale(@RequestBody List<String> saleIdList, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.enableSale(saleIdList,customer.get().getEmail());
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
 }

@@ -1,9 +1,6 @@
 package com.nuce.duantp.sunshine.service;
 
-import com.nuce.duantp.sunshine.dto.request.DepositReq;
-import com.nuce.duantp.sunshine.dto.request.FoodReq;
-import com.nuce.duantp.sunshine.dto.request.OrderFoodReq;
-import com.nuce.duantp.sunshine.dto.request.PointReq;
+import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.model.*;
@@ -45,7 +42,12 @@ public class AdminService {
     @Autowired
     BillInfoRepo billInfoRepo;
     private Logger LOGGER = LoggerFactory.getLogger(AdminService.class);
-
+    @Autowired
+    private FoodRepo foodRepo;
+    @Autowired
+    private PromotionsRepo promotionsRepo;
+    @Autowired
+    private SaleRepo saleRepo;
     public void exportReport(String fileName) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
         List<tbl_Customer> employees = (List<tbl_Customer>) repository.findAll();
@@ -107,10 +109,67 @@ public class AdminService {
                 billInfoRepo.save(billInfo);
             }
         }
-        LOGGER.warn("add food by " + email + "\n" + orderFoodReq, AdminService.class);
-
+        LOGGER.warn("add food for customer by " + email + "\n" + orderFoodReq, AdminService.class);
         tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    public ResponseEntity<?> addFoodInMenu(AddFoodReq addFoodReq, String email) {
+        String str = "ADD_FOOD_SUCCESS";
+        tbl_Food food=new tbl_Food(addFoodReq);
+        foodRepo.save(food);
+        LOGGER.warn("add food by " + email + "\n" + addFoodReq, AdminService.class);
+        tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> enableFood(List<String> foodIdList, String email) {
+        for(String foodId:foodIdList){
+            tbl_Food food=foodRepo.findByFoodId(Long.valueOf(foodId));
+            food.setFoodStatus(0);
+            foodRepo.save(food);
+        }
+        LOGGER.warn("enable Food by " + email + "\n" + foodIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_FOOD_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> addNews(NewsReq newsReq, String email) {
+        tbl_Promotions promotions=new tbl_Promotions(newsReq);
+        promotionsRepo.save(promotions);
+        LOGGER.warn("add news by " + email + "\n" + newsReq, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_NEWS_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> enableNews(List<String> newsIdList, String email) {
+        for(String newId:newsIdList){
+           tbl_Promotions promotions=promotionsRepo.findByPromotionsId(Long.valueOf(newId));
+           promotions.setPromotionsStatus(0);
+            promotionsRepo.save(promotions);
+        }
+        LOGGER.warn("enable news by " + email + "\n" + newsIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_NEWS_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> addSale(SaleReq saleReq, String email) {
+        tbl_Sale sale=new tbl_Sale(saleReq);
+        LOGGER.warn("add sale by " + email + "\n" + saleReq, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_SALE_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> enableSale(List<String> saleIdList, String email) {
+        for(String saleId:saleIdList){
+            tbl_Sale sale=saleRepo.findBySaleId(Long.valueOf(saleId));
+            saleRepo.save(sale);
+        }
+        LOGGER.warn("enable sale by " + email + "\n" + saleIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_SALE_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

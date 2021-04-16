@@ -243,4 +243,9 @@ public class testCon {
     public void testup(@RequestBody String str){
        sunShineService.updateBeneficiary();
     }
+
+    @GetMapping("/testr")
+    public void testwerew(@RequestParam(name = "email") String email,@RequestParam(name = "id") int id){
+        System.out.println("emial "+email+"\nid "+id);
+    }
 }
