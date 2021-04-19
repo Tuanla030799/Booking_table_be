@@ -23,7 +23,7 @@ public class tbl_Bill {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "billId")
+    @Column(name = "billId",unique = true)
     private String billId;
 
     @Column(name = "pointId")
@@ -42,4 +42,19 @@ public class tbl_Bill {
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date payDate;
+
+    public tbl_Bill(tbl_Bill bill,Long pointId) {
+        this.billId=bill.getBillId();
+        this.pointId=pointId;
+        this.bookingId=bill.getBookingId();
+        this.discount=bill.getDiscount();
+    }
+
+    public tbl_Bill(String billId, Long pointId, String bookingId, Long discount, int billStatus) {
+        this.billId = billId;
+        this.pointId = pointId;
+        this.bookingId = bookingId;
+        this.discount = discount;
+        this.billStatus = billStatus;
+    }
 }

@@ -29,5 +29,10 @@ public class tbl_BankAccount {
     @Column(name = "email")
     private String email;
 
-
+    public tbl_BankAccount(String accountNo, Long balance, int status, String email) {
+        this.accountNo = accountNo;
+        this.balance = balance;
+        this.status = status;
+        this.email = email;
+    }
 }

@@ -1,8 +1,10 @@
 package com.nuce.duantp.sunshine.config.schedule;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
+import com.nuce.duantp.sunshine.dto.request.CancelBookingReq;
 import com.nuce.duantp.sunshine.model.tbl_Booking;
 import com.nuce.duantp.sunshine.repository.BookingRepository;
+import com.nuce.duantp.sunshine.service.BookingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import java.util.List;
 public class AutoCancelBooking implements Runnable {
     @Autowired
     BookingRepository bookingRepository;
+    @Autowired
+    BookingService bookingService;
     private Logger LOGGER = LoggerFactory.getLogger(AutoCancelBooking.class);
     @Override
     public void run() {
@@ -23,7 +27,8 @@ public class AutoCancelBooking implements Runnable {
             Date date = new Date();
             Date date1 = TimeUtils.minusDate(data.getBookingTime(), 15, "MINUTE");
             if(date.compareTo(date1)>0){
-                bookingRepository.cancelBookingAdmin(data.getBookingId());
+                CancelBookingReq cancelBookingReq=new CancelBookingReq(data.getBookingId());
+                bookingService.cancelBookingAdmin(cancelBookingReq,data.getEmail());
                 LOGGER.warn("Job auto cancel booking with bookingId =  " + data.getBookingId(),
                         AutoCancelBooking.class);
 

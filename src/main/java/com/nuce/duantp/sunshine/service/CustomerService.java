@@ -39,6 +39,8 @@ public class CustomerService {
     SunShineService sunShineService;
     @Autowired
     SaleRepo saleRepo;
+    @Autowired
+    private AccountRepo accountRepo;
     private Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
 
     public List<PointHistoryRes> viewHistoryPointUse(HttpServletRequest req) {
@@ -82,14 +84,23 @@ public class CustomerService {
 
     public ResponseEntity<?> addAccount(AddAccReq addAccReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        String str = customerRepo.addAccount(addAccReq.getEmail(), addAccReq.getAccountNo());
-        tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
-        if (str.contains("SUCCESS")) {
+        tbl_BankAccount account= accountRepo.findByAccountNo(addAccReq.getAccountNo());
+        if(account==null){
+            List<tbl_BankAccount> bankAccountList=accountRepo.findByEmail(addAccReq.getEmail());
+            for(tbl_BankAccount data:bankAccountList){
+                data.setStatus(0);
+                accountRepo.save(data);
+            }
+            tbl_BankAccount acc=new tbl_BankAccount(addAccReq.getAccountNo(),1000000L,1,addAccReq.getEmail());
+            accountRepo.save(acc);
             LOGGER.warn("Add AccountAno by " + customer.get().getEmail() + "\n" + addAccReq, CustomerService.class);
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_ACCOUNT_SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
+
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ACCOUNT_EXISTED);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
     }
 
     public List<tbl_Sale> getListSaleForUser(String email){

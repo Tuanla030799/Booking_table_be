@@ -7,14 +7,8 @@ import com.nuce.duantp.sunshine.config.schedule.RemoveLiveToken;
 import com.nuce.duantp.sunshine.dto.request.findTableEntityReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.tbl_Booking;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
-import com.nuce.duantp.sunshine.model.tbl_ResponseStatusCode;
-import com.nuce.duantp.sunshine.model.tbl_Table;
-import com.nuce.duantp.sunshine.repository.BookingRepository;
-import com.nuce.duantp.sunshine.repository.CustomerRepo;
-import com.nuce.duantp.sunshine.repository.ResponseStatusCodeRepo;
-import com.nuce.duantp.sunshine.repository.TableRepo;
+import com.nuce.duantp.sunshine.model.*;
+import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.scoped.User;
 import com.nuce.duantp.sunshine.service.SunShineService;
 import com.phamtan.base.email.data_structure.EmailContentData;
@@ -128,18 +122,18 @@ public class testCon {
     @Autowired
     ResponseStatusCodeRepo responseStatusCodeRepo;
 
-    @PostMapping("send-mail")
-    public void sendMail(@RequestBody tbl_Customer customer) {
-        testService.test(customer);
-    }
+//    @PostMapping("send-mail")
+//    public void sendMail(@RequestBody tbl_Customer customer) {
+//        testService.test(customer);
+//    }
 
-    @PostMapping("test_call")
-    public ResponseEntity<MessageResponse> testcall(@RequestBody String str) {
-        String str1 = customer.test(str);
-        tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str1);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
+//    @PostMapping("test_call")
+//    public ResponseEntity<MessageResponse> testcall(@RequestBody String str) {
+//        String str1 = customer.test(str);
+//        tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str1);
+//        MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
+//        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+//    }
 
 
     @ExceptionHandler()
@@ -257,4 +251,19 @@ public class testCon {
     public void test1(@PathVariable String name){
 
     }
+    @Autowired
+    BillRepo billRepo;
+    @PostMapping("/test-transaction")
+    public void registerConsumer(@RequestBody tbl_Bill bill) {
+        testService.testTransaction(bill);
+//        ModelMapper mapper=new ModelMapper();
+//        tbl_Bill bill1=mapper.map(bill,tbl_Bill.class);
+//        billRepo.save(bill1);
+//        tbl_Bill bill2=new tbl_Bill(bill,12L);
+//        billRepo.save(bill2);
+    }
+//        @ExceptionHandler(ArithmeticException.class)
+//    public String testException(){
+//        return "exception mej roi";
+//    }
 }

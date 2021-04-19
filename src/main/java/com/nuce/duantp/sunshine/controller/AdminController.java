@@ -91,7 +91,7 @@ public class AdminController {
     public ResponseEntity<?> orderFood(@RequestBody OrderFoodReq orderFoodReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if(tokenLivingService.checkTokenLiving(req)&& customer.get().getRole().equals("ADMIN")){
-            return bookingService.orderFood(orderFoodReq,req);
+            return bookingService.orderFood(orderFoodReq,customer.get().getEmail());
         }
         MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);

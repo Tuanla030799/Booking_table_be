@@ -6,6 +6,7 @@ import com.nuce.duantp.sunshine.dto.request.OrderFoodReq;
 import com.nuce.duantp.sunshine.dto.request.PayReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.model.tbl_Customer;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.service.BookingService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
@@ -39,7 +41,8 @@ public class BookingController {
     @PostMapping("/order-food")
     public ResponseEntity<?> orderFood(@RequestBody OrderFoodReq orderFoodReq, HttpServletRequest req) {
         if(tokenLivingService.checkTokenLiving(req)){
-            return bookingService.orderFood(orderFoodReq,req);
+            Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+            return bookingService.orderFood(orderFoodReq,customer.get().getEmail());
         }
         MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);

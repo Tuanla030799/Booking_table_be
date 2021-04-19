@@ -48,6 +48,9 @@ public class AdminService {
     private NewsRepo newsRepo;
     @Autowired
     private SaleRepo saleRepo;
+    @Autowired
+    private BookingService bookingService;
+
     public void exportReport(String fileName) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
         List<tbl_Customer> employees = (List<tbl_Customer>) repository.findAll();
@@ -98,11 +101,12 @@ public class AdminService {
 
     public ResponseEntity<?> addFoodInBooking(OrderFoodReq orderFoodReq, String email) {
         tbl_Bill bill = billRepo.findByBookingId(orderFoodReq.getBookingId());
+        tbl_Booking booking = bookingRepository.findByBookingId(orderFoodReq.getBookingId());
         String str = "ADD_FOOD_SUCCESS";
         for (FoodReq data : orderFoodReq.getFoodList()) {
             tbl_BillInfo billInfo = billInfoRepo.findByBillIdAndFoodId(bill.getBillId(), data.getFoodId());
             if (billInfo == null) {
-                str = bookingRepository.orderFood(orderFoodReq.getBookingId(), bill.getBillId(), data.getQuantity(), data.getFoodId());
+                bookingService.orderFood(orderFoodReq, booking.getEmail());
             } else {
                 int quantity = billInfo.getQuantity() + data.getQuantity();
                 billInfo.setQuantity(quantity);
@@ -117,7 +121,7 @@ public class AdminService {
 
     public ResponseEntity<?> addFoodInMenu(AddFoodReq addFoodReq, String email) {
         String str = "ADD_FOOD_SUCCESS";
-        tbl_Food food=new tbl_Food(addFoodReq);
+        tbl_Food food = new tbl_Food(addFoodReq);
         foodRepo.save(food);
         LOGGER.warn("add food by " + email + "\n" + addFoodReq, AdminService.class);
         tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
@@ -126,8 +130,8 @@ public class AdminService {
     }
 
     public ResponseEntity<?> enableFood(List<String> foodIdList, String email) {
-        for(String foodId:foodIdList){
-            tbl_Food food=foodRepo.findByFoodId(Long.valueOf(foodId));
+        for (String foodId : foodIdList) {
+            tbl_Food food = foodRepo.findByFoodId(Long.valueOf(foodId));
             food.setFoodStatus(0);
             foodRepo.save(food);
         }
@@ -137,7 +141,7 @@ public class AdminService {
     }
 
     public ResponseEntity<?> addNews(NewsReq newsReq, String email) {
-        tbl_News promotions=new tbl_News(newsReq);
+        tbl_News promotions = new tbl_News(newsReq);
         newsRepo.save(promotions);
         LOGGER.warn("add news by " + email + "\n" + newsReq, AdminService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_NEWS_SUCCESS);
@@ -145,9 +149,9 @@ public class AdminService {
     }
 
     public ResponseEntity<?> enableNews(List<String> newsIdList, String email) {
-        for(String newId:newsIdList){
-            tbl_News news= newsRepo.findByNewsId(Long.valueOf(newId));
-           news.setNewsStatus(0);
+        for (String newId : newsIdList) {
+            tbl_News news = newsRepo.findByNewsId(Long.valueOf(newId));
+            news.setNewsStatus(0);
             newsRepo.save(news);
         }
         LOGGER.warn("enable news by " + email + "\n" + newsIdList, AdminService.class);
@@ -156,15 +160,15 @@ public class AdminService {
     }
 
     public ResponseEntity<?> addSale(SaleReq saleReq, String email) {
-        tbl_Sale sale=new tbl_Sale(saleReq);
+        tbl_Sale sale = new tbl_Sale(saleReq);
         LOGGER.warn("add sale by " + email + "\n" + saleReq, AdminService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_SALE_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     public ResponseEntity<?> enableSale(List<String> saleIdList, String email) {
-        for(String saleId:saleIdList){
-            tbl_Sale sale=saleRepo.findBySaleId(Long.valueOf(saleId));
+        for (String saleId : saleIdList) {
+            tbl_Sale sale = saleRepo.findBySaleId(Long.valueOf(saleId));
             saleRepo.save(sale);
         }
         LOGGER.warn("enable sale by " + email + "\n" + saleIdList, AdminService.class);

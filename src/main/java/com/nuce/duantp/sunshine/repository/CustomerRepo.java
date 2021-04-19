@@ -18,11 +18,8 @@ public interface CustomerRepo extends CrudRepository<tbl_Customer, Long> {
     @Query("select c from tbl_Customer c where c.email=?1")
     tbl_Customer findCustomerByEmail(String email);
 
-    @Query(nativeQuery = true, value = "exec pr_test @text = :text")
-    String test(@Param("text") String text);
-
-    @Query(nativeQuery = true, value = "exec pr_insertAcc @inputEmail =:inputEmail,@inputAcc =:inputAcc")
-    String addAccount(@Param("inputEmail") String inputEmail, @Param("inputAcc") String inputAcc);
+//    @Query(nativeQuery = true, value = "exec pr_insertAcc @inputEmail =:inputEmail,@inputAcc =:inputAcc")
+//    String addAccount(@Param("inputEmail") String inputEmail, @Param("inputAcc") String inputAcc);
 
     List<tbl_Customer> findAllByRole(String role);
 }

@@ -20,6 +20,7 @@ public enum EnumResponseStatusCode {
     INVALID_NAME_FORMAT("Định dạng tên không hợp lệ!"),
     INVALID_PASSWORD_FORMAT("Định dạng password không hợp lệ!"),
     EMAIL_EXISTED("Email đã tồn tại!"),
+    BILL_NOT_EXIST("Đơn hàng không tồn tại!"),
     SUCCESS("Thành công!"),
     TABLE_OFF("Hết bàn!"),
     TOKEN_DIE("Đăng nhập lại để tiếp tục!"),

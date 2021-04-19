@@ -10,5 +10,7 @@ import java.util.List;
 public interface PointsRepo extends CrudRepository<tbl_Points, Long> {
        List<tbl_Points>  findAllByPrice(Long price);
        tbl_Points findByPointId(Long pointId);
+       tbl_Points findByPrice(Long price);
+       tbl_Points findTopByPriceGreaterThanEqualOrderByPriceAscCreatedDesc(Long price);
 }
 
