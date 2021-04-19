@@ -15,36 +15,36 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tbl_Promotions")
+@Table(name = "tbl_News")
 @EntityListeners(AuditingEntityListener.class)
 
-public class tbl_Promotions {
+public class tbl_News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "promotionsId")
-    private Long promotionsId;
+    @Column(name = "newsId")
+    private Long newsId;
 
-    @Column(name = "promotionsTitel")
-    private String promotionsTitle;
+    @Column(name = "newsTitle")
+    private String newsTitle;
 
-    @Column(name = "promotionsDitail")
-    private String promotionsDetail;
+    @Column(name = "newsDetail")
+    private String newsDetail;
 
-    @Column(name = "promotionsImage")
-    private String promotionsImage;
+    @Column(name = "newsImage")
+    private String newsImage;
 
-    @Column(name = "promotionsStatus")
-    private int promotionsStatus;
+    @Column(name = "newsStatus")
+    private int newsStatus;
 
     @Column(name = "created")
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date created;
 
-    public tbl_Promotions(NewsReq newsReq) {
-        this.promotionsDetail=newsReq.getPromotionsDetail();
-        this.promotionsTitle=newsReq.getPromotionsTitle();
-        this.promotionsImage=newsReq.getPromotionsImage();
-        this.promotionsStatus=1;
+    public tbl_News(NewsReq newsReq) {
+        this.newsDetail =newsReq.getNewsDetail();
+        this.newsTitle =newsReq.getNewsTitle();
+        this.newsImage =newsReq.getNewsImage();
+        this.newsStatus =1;
     }
 }

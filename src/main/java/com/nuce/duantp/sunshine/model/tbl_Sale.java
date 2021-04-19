@@ -27,7 +27,7 @@ public class tbl_Sale {
     @Column(name = "saleTitel")
     private String saleTitle;
 
-    @Column(name = "saleDitail")
+    @Column(name = "saleDetail")
     private String saleDetail;
 
     @Column(name = "saleImage")

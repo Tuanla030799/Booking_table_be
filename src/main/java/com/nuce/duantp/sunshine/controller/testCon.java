@@ -244,8 +244,17 @@ public class testCon {
        sunShineService.updateBeneficiary();
     }
 
-    @GetMapping("/testr")
+    @GetMapping("/api")
     public void testwerew(@RequestParam(name = "email") String email,@RequestParam(name = "id") int id){
+
+
+
+
         System.out.println("emial "+email+"\nid "+id);
+    }
+
+    @GetMapping("/api/{name}")
+    public void test1(@PathVariable String name){
+
     }
 }

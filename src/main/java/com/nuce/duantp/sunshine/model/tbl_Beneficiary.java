@@ -28,10 +28,10 @@ public class tbl_Beneficiary extends BaseEntity{
     @Column(name = "totalBill")
     private Long totalBill;
 
-//    @Column(name = "created")
-//    @CreatedDate
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-//    private Date created;
+    @Column(name = "created")
+    @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    private Date created;
 
     @Column(name = "beneficiaryStatus")
     private int beneficiaryStatus;

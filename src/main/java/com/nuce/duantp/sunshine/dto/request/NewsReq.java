@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewsReq {
-    private String promotionsTitle;
+    private String newsTitle;
 
-    private String promotionsDetail;
+    private String newsDetail;
 
-    private String promotionsImage;
+    private String newsImage;
 }

@@ -45,7 +45,7 @@ public class AdminService {
     @Autowired
     private FoodRepo foodRepo;
     @Autowired
-    private PromotionsRepo promotionsRepo;
+    private NewsRepo newsRepo;
     @Autowired
     private SaleRepo saleRepo;
     public void exportReport(String fileName) throws FileNotFoundException, JRException {
@@ -137,8 +137,8 @@ public class AdminService {
     }
 
     public ResponseEntity<?> addNews(NewsReq newsReq, String email) {
-        tbl_Promotions promotions=new tbl_Promotions(newsReq);
-        promotionsRepo.save(promotions);
+        tbl_News promotions=new tbl_News(newsReq);
+        newsRepo.save(promotions);
         LOGGER.warn("add news by " + email + "\n" + newsReq, AdminService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_NEWS_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -146,9 +146,9 @@ public class AdminService {
 
     public ResponseEntity<?> enableNews(List<String> newsIdList, String email) {
         for(String newId:newsIdList){
-           tbl_Promotions promotions=promotionsRepo.findByPromotionsId(Long.valueOf(newId));
-           promotions.setPromotionsStatus(0);
-            promotionsRepo.save(promotions);
+            tbl_News news= newsRepo.findByNewsId(Long.valueOf(newId));
+           news.setNewsStatus(0);
+            newsRepo.save(news);
         }
         LOGGER.warn("enable news by " + email + "\n" + newsIdList, AdminService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_NEWS_SUCCESS);

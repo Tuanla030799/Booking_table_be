@@ -36,7 +36,7 @@ public class SunShineService {
     @Autowired
     SaleRepo saleRepo;
     @Autowired
-    PromotionsRepo promotionsRepo;
+    NewsRepo newsRepo;
     private Logger LOGGER = LoggerFactory.getLogger(SunShineService.class);
 
     public List<String> getListCustomer() {
@@ -104,9 +104,9 @@ public class SunShineService {
     }
 
     public List<PromotionsRes> getAllPromotions() {
-        List<tbl_Promotions> promotionsList = promotionsRepo.findByPromotionsStatus(1);
+        List<tbl_News> promotionsList = newsRepo.findByNewsStatus(1);
         List<PromotionsRes> promotionsResList = new ArrayList<>();
-        for (tbl_Promotions data : promotionsList) {
+        for (tbl_News data : promotionsList) {
             PromotionsRes promotionsRes = new PromotionsRes(data);
             promotionsResList.add(promotionsRes);
         }
