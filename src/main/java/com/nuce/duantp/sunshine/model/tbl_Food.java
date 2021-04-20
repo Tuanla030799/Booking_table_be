@@ -26,8 +26,8 @@ public class tbl_Food {
     @Column(name = "foodName")
     private String foodName;
 
-    @Column(name = "describe")
-    private String describe;
+    @Column(name = "describes")
+    private String describes;
 
     @Column(name = "foodImage")
     private String foodImage;
@@ -44,7 +44,7 @@ public class tbl_Food {
     private int foodStatus =1;
 
     public tbl_Food(AddFoodReq addFoodReq) {
-        this.describe=addFoodReq.getDescribe();
+        this.describes =addFoodReq.getDescribe();
         this.foodName=addFoodReq.getFoodName();
         this.foodPrice=addFoodReq.getFoodPrice();
         this.foodStatus=1;
