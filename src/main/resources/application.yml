@@ -1,9 +1,0 @@
-server:
-  port: ${SERVER_PORT}
-  error:
-    include-stacktrace: on_trace_param
-  shutdown: graceful
-
-spring:
-  profiles:
-    active: ${NRM_PROFILE}
