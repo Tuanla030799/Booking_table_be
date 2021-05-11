@@ -55,6 +55,25 @@ public class AdminController {
 
     }
 
+    @GetMapping("/export-bill/{bookingId}")
+    public ResponseEntity<?> exportBill(@PathVariable(name = "bookingId") String bookingId, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            try {
+                adminService.exportBill(bookingId);
+                MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.SUCCESS, EnumResponseStatusCode.SUCCESS.label);
+                return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+            } catch (Exception e) {
+                e.printStackTrace();
+                MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.BAD_REQUEST, EnumResponseStatusCode.BAD_REQUEST.label);
+                return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+            }
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
     @PostMapping("/cancel-booking-admin")
     public ResponseEntity<?> cancelBookingAdmin(@RequestBody CancelBookingReq cancelBookingReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);

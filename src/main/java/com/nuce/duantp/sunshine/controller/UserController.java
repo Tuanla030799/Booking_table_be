@@ -37,7 +37,7 @@ public class UserController {
             return userService.changePassword(changePasswordReq, req);
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
-        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
 
     }
 

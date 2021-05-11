@@ -32,28 +32,35 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     private Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-    
+
     public ResponseEntity<?> changePassword(ChangePasswordReq changePasswordReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        if (passwordEncoder.matches(changePasswordReq.getOldPass(), customer.get().getPassword())) {
+        try{
+          if (passwordEncoder.matches(changePasswordReq.getOldPass(), customer.get().getPassword())) {
             if (!CheckPass.checkPassword(changePasswordReq.getNewPass())) {
-                return ResponseEntity
-                        .badRequest()
-                        .body(new MessageResponse(EnumResponseStatusCode.INVALID_PASSWORD_FORMAT));
+              return ResponseEntity
+                .ok()
+                .body(new MessageResponse(EnumResponseStatusCode.INVALID_PASSWORD_FORMAT));
             } else {
-                customer.get().setPassword(passwordEncoder.encode(changePasswordReq.getNewPass()));
-                customerRepo.save(customer.get());
-                LOGGER.warn("Change password success by " + customer.get().getEmail(), UserService.class);
+              customer.get().setPassword(passwordEncoder.encode(changePasswordReq.getNewPass()));
+              customerRepo.save(customer.get());
+              LOGGER.warn("Change password success by " + customer.get().getEmail(), UserService.class);
 
-                return ResponseEntity
-                        .ok()
-                        .body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
+              return ResponseEntity
+                .ok()
+                .body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
             }
-        } else {
+          } else {
             return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse(EnumResponseStatusCode.OLD_PASS_NOT_CORRECT));
+              .ok()
+              .body(new MessageResponse(EnumResponseStatusCode.OLD_PASS_NOT_CORRECT));
+          }
+        }catch (Exception e){
+          return ResponseEntity
+            .badRequest()
+            .body(new MessageResponse(EnumResponseStatusCode.BAD_REQUEST));
         }
+
     }
 
     public ResponseEntity<?> updateUser(UpdateUserReq updateUserReq, HttpServletRequest req) {

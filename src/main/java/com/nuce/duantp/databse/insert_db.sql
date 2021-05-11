@@ -6,6 +6,7 @@ CREATE TABLE `tbl_deposit`
     `depositId` bigint primary key AUTO_INCREMENT,
     `deposit` bigint DEFAULT 0,
     `totalPersons` int DEFAULT 0,
+    `depositStatus` int default 1,
     `created` DATETIME DEFAULT NOW()
 );
 
@@ -101,18 +102,18 @@ CREATE TABLE `tbl_bankaccount`
     constraint fk_BankaccountCustomer foreign key (Email) references tbl_customer(Email)
 );
 
-CREATE TABLE tbl_booking
+CREATE TABLE `tbl_booking`
 (
     `id` bigint primary key AUTO_INCREMENT,
-	`BookingID` NVARCHAR(255) not null unique,
+	`BookingID` NVARCHAR(255) unique,
 	`bookingStatus` int DEFAULT 0,
-	`BookingTime` datetime not null,
+	`BookingTime` datetime,
 	`Created` DATETIME DEFAULT NOW(),
 	`DepositId` bigint DEFAULT 0,
-    `Email` NVARCHAR(40) not null,
+    `Email` NVARCHAR(40) ,
 	`TotalSeats` int DEFAULT 0 ,
-    `saleId` bigint not null,
-	`TableName` NVARCHAR(20) not null,
+    `saleId` bigint,
+	`TableName` NVARCHAR(20),
     constraint fk_BookingDeposit foreign key (DepositId) references tbl_deposit(DepositId),
 	constraint fk_BookingSale foreign key (saleId) references tbl_Sale(saleId),
     constraint fk_BookingCustomer foreign key (Email) references tbl_customer(Email),
@@ -128,12 +129,12 @@ create table `tbl_bill`
     `BookingID` NVARCHAR(255),
     `Discount` BIGINT DEFAULT 0,
     `BillStatus` int default 0,
-    `PayDate` datetime default 0,
+    `PayDate` datetime,
     constraint fk_BillPoints foreign key (PointID) references tbl_point(PointID),
     constraint fk_BillBooking foreign key (BookingID) references tbl_booking(BookingID)
 );
 
-create table tbl_food
+create table `tbl_food`
 (
     `FoodId` bigint primary key AUTO_INCREMENT not null,
 	`Created` DATETIME DEFAULT NOW(),
@@ -144,7 +145,7 @@ create table tbl_food
 	`FoodStatus` int default 1
 );
 
-create table tbl_billinfo
+create table `tbl_billinfo`
 (
     `Id` bigint primary key AUTO_INCREMENT,
     `BillID` NVARCHAR(255),
@@ -184,14 +185,13 @@ alter table tbl_point
 alter table tbl_billinfo
     add constraint check_quantity_billinfo check (Quantity > 0);
     
-    
-  INSERT INTO tbl_deposit(Deposit, TotalPersons) VALUES (100000, 2);
-INSERT INTO tbl_deposit(Deposit, TotalPersons) VALUES ( 200000, 4);
-INSERT INTO tbl_deposit( Deposit, TotalPersons) VALUES ( 300000, 8);
-INSERT INTO tbl_deposit( Deposit, TotalPersons) VALUES ( 300000, 8);
-INSERT INTO tbl_deposit(Deposit, TotalPersons) VALUES ( 100000, 1);
-INSERT INTO tbl_deposit(Deposit, TotalPersons) VALUES ( 500000, 1000);
 
+INSERT INTO tbl_deposit(Deposit, TotalPersons,depositStatus) VALUES (100000, 2,1);
+INSERT INTO tbl_deposit(Deposit, TotalPersons,depositStatus) VALUES ( 200000, 4,1);
+INSERT INTO tbl_deposit( Deposit, TotalPersons,depositStatus) VALUES ( 300000, 8,1);
+INSERT INTO tbl_deposit( Deposit, TotalPersons,depositStatus) VALUES ( 300000, 8,1);
+INSERT INTO tbl_deposit(Deposit, TotalPersons,depositStatus) VALUES ( 100000, 1,1);
+INSERT INTO tbl_deposit(Deposit, TotalPersons,depositStatus) VALUES ( 500000, 1000,1);
 
 
 
@@ -223,14 +223,21 @@ Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values(
 Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values('REGULAR',1,50000);
 Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values('CUSTOMER',1,10000);
 
+insert into tbl_sale(saleTitel,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile','detail','image',1,'VIP',0.1);
+insert into tbl_sale(saleTitel,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile','detail','image',1,'VIP',0.2);
+insert into tbl_sale(saleTitel,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile','detail','image',1,'VIP',0.3);
+insert into tbl_sale(saleTitel,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile','detail','image',1,'VIP',0.4);
+insert into tbl_sale(saleTitel,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile','detail','image',1,'VIP',0.5);
+
+
 
 insert into tbl_role(role,roleName) values('USERS',N'Khách Hàng');
 insert into tbl_role(role,roleName) values('ADMIN',N'Nhân Viên');
 
 
-INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('pvminh@gmail.com', '0796164361', N'Phí Văn Minh', '$2a$10$JtAQTcqWDiKf84h2oF/ytOF3yqouJuUAOdsgjGsBs5ALEQsDNcyLy', 5000,'USERS','CUSTOMER');
-INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('sunshine87lethanhnghi@gmail.com', '0999999999', N'Nhà hàng Sunshine', '$2a$10$JtAQTcqWDiKf84h2oF/ytOF3yqouJuUAOdsgjGsBs5ALEQsDNcyLy', 8000,'ADMIN','VIP');
-INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('haind1@vimo.vn', '0978675678', N'Nguyễn Đình Hải', '$2a$10$QldpC9h4Sw4jiR9Nmq5Mt.zKMLZOQxYt8tfZ16n.E935l64tOK4ma', 5000,'USERS','CUSTOMER');
+INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('pvminh@gmail.com', '0796164361', N'Phí Văn Minh', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000,'USERS','CUSTOMER');
+INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('sunshine87lethanhnghi@gmail.com', '0999999999', N'Nhà hàng Sunshine', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 8000,'ADMIN','VIP');
+INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('haind1@vimo.vn', '0978675678', N'Nguyễn Đình Hải', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000,'USERS','CUSTOMER');
 -- INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('tranphuduan@gmail.com', '0978675678', N'Nguyễn Đình Hải', '$2a$10$QldpC9h4Sw4jiR9Nmq5Mt.zKMLZOQxYt8tfZ16n.E935l64tOK4ma', 5000,'USERS','CUSTOMER');
 -- update tbl_customer set Password='$2a$10$JtAQTcqWDiKf84h2oF/ytOF3yqouJuUAOdsgjGsBs5ALEQsDNcyLy' where Email='sunshine87lethanhnghi@gmail.com'
 

@@ -52,7 +52,7 @@ public class tbl_Booking {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date created;
 
-    public tbl_Booking(String bookingId, String email, Date bookingTime, int totalSeats, Long depositId, int bookingStatus, String tableName, Long saleId) {
+    public tbl_Booking(String bookingId, String email, Date bookingTime, int totalSeats, Long depositId, int bookingStatus, String tableName) {
         this.bookingId = bookingId;
         this.email = email;
         this.bookingTime = bookingTime;
@@ -60,6 +60,7 @@ public class tbl_Booking {
         this.depositId = depositId;
         this.bookingStatus = bookingStatus;
         this.tableName = tableName;
-        this.saleId = saleId;
     }
+
+
 }

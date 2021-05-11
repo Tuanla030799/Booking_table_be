@@ -5,11 +5,16 @@ import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.schedule.AutoCancelBooking;
 import com.nuce.duantp.sunshine.config.schedule.RemoveLiveToken;
 import com.nuce.duantp.sunshine.dto.request.findTableEntityReq;
-import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.*;
+import com.nuce.duantp.sunshine.enums.ImageType;
+import com.nuce.duantp.sunshine.model.Image;
+import com.nuce.duantp.sunshine.model.tbl_Bill;
+import com.nuce.duantp.sunshine.model.tbl_Booking;
+import com.nuce.duantp.sunshine.model.tbl_Table;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.scoped.User;
+import com.nuce.duantp.sunshine.service.DropBoxService;
+import com.nuce.duantp.sunshine.service.ImageService;
 import com.nuce.duantp.sunshine.service.SunShineService;
 import com.phamtan.base.email.data_structure.EmailContentData;
 import com.phamtan.base.email.request.EmailRequest;
@@ -25,16 +30,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -205,14 +212,16 @@ public class testCon {
     private Logger LOGGER = LoggerFactory.getLogger(testCon.class);
 
     @GetMapping("/aa")
-    public String dd(){
-       return index();
+    public String dd() {
+        return index();
     }
+
     @Autowired
     RemoveLiveToken removeLiveToken;
+
     @GetMapping("/test-loving-token")
-    public void dqd(){
-       removeLiveToken.run();
+    public void dqd() {
+        removeLiveToken.run();
     }
 
     public String index() {
@@ -226,33 +235,35 @@ public class testCon {
 
     @Autowired
     AutoCancelBooking autoCancelBooking;
+
     @GetMapping("/test-auto-cancel")
-    public void testCancel(){
+    public void testCancel() {
         autoCancelBooking.run();
     }
 
     @Autowired
     SunShineService sunShineService;
+
     @GetMapping("/test-auto-update")
-    public void testup(@RequestBody String str){
-       sunShineService.updateBeneficiary();
+    public void testup(@RequestBody String str) {
+        sunShineService.updateBeneficiary();
     }
 
     @GetMapping("/api")
-    public void testwerew(@RequestParam(name = "email") String email,@RequestParam(name = "id") int id){
+    public void testwerew(@RequestParam(name = "email") String email, @RequestParam(name = "id") int id) {
 
 
-
-
-        System.out.println("emial "+email+"\nid "+id);
+        System.out.println("emial " + email + "\nid " + id);
     }
 
     @GetMapping("/api/{name}")
-    public void test1(@PathVariable String name){
+    public void test1(@PathVariable String name) {
 
     }
+
     @Autowired
     BillRepo billRepo;
+
     @PostMapping("/test-transaction")
     public void registerConsumer(@RequestBody tbl_Bill bill) {
         testService.testTransaction(bill);
@@ -262,8 +273,48 @@ public class testCon {
 //        tbl_Bill bill2=new tbl_Bill(bill,12L);
 //        billRepo.save(bill2);
     }
-//        @ExceptionHandler(ArithmeticException.class)
+
+    //        @ExceptionHandler(ArithmeticException.class)
 //    public String testException(){
 //        return "exception mej roi";
 //    }
+    @PostMapping("/test-a")
+    public void adsfsdf(@RequestBody String d) throws ParseException {
+        Date date1=new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(d);
+        System.out.println(date1);
+
+        List<String> stringList =new ArrayList<>();
+        for(String data :stringList){
+
+        }
+
+
+        List<tbl_Bill> billList =new ArrayList<>();
+        for (tbl_Bill tenLangNhang: billList ){
+
+        }
+    }
+    @Autowired
+    ImageService imageService;
+    @Autowired
+    DropBoxService dropBoxService;
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public Image uploadImage(@RequestParam(value = "file") MultipartFile file
+            , @RequestParam(value = "name") String  name
+            , @RequestParam("imagePath") String  imagePath
+            , @RequestParam(value = "description",required = false) String  description
+            , @RequestParam("idParent") String  idParent
+            , @RequestParam("type") ImageType type
+            , @RequestParam(value = "specifyType",required = false) String  specifyType
+    ){
+        Image image = new Image();
+        image.setName(name);
+        image.setDescription(description);
+        image.setImagePath(imagePath);
+        image.setType(type);
+        image.setSpecifyType(specifyType);
+        image.setIdParent(idParent);
+        return  imageService.createImage(image,file);
+    }
+
 }

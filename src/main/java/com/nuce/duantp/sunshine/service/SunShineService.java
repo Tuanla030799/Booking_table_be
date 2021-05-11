@@ -49,19 +49,24 @@ public class SunShineService {
     }
 
     public float moneyPay(String bookingId) {
+      try{
         tbl_Booking booking = bookingRepo.findByBookingId(bookingId);
         tbl_Bill bill = billRepo.findByBookingId(bookingId);
         List<tbl_BillInfo> billInfoList = billInfoRepo.findAllByBillId(bill.getBillId());
         float money = 0L;
         for (tbl_BillInfo billInfo : billInfoList) {
-            tbl_Food food = foodRepo.findByFoodId(billInfo.getFoodId());
-            Long moneyFood = food.getFoodPrice() * billInfo.getQuantity();
-            money += moneyFood;
+          tbl_Food food = foodRepo.findByFoodId(billInfo.getFoodId());
+          Long moneyFood = food.getFoodPrice() * billInfo.getQuantity();
+          money += moneyFood;
         }
         tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
         tbl_Sale sale = saleRepo.findBySaleId(booking.getSaleId());
         money = money * sale.getPercentDiscount();
         return money;
+      }catch (Exception e){
+        return 0L;
+      }
+
     }
 
     public List<MoneyPayRes> allMoneyPayCustomer(List<String> customerList) {

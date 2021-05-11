@@ -11,7 +11,6 @@ import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -48,6 +47,7 @@ public class BookingService {
     //    @Autowired
     private final BillInfoRepo billInfoRepo;
     private final CustomerRepo customerRepo;
+    private final FoodRepo foodRepo;
     private Logger LOGGER = LoggerFactory.getLogger(BookingService.class);
 
     public ResponseEntity<?> bookingTable(BookingReq bookingReq, HttpServletRequest req) {
@@ -70,7 +70,7 @@ public class BookingService {
         if (tableName == null) {
             responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(String.valueOf(EnumResponseStatusCode.TABLE_OFF));
             messageResponse.setMessage(responseStatusCode.getResponseStatusMessage());
-            messageResponse.setStatus(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()));
+            messageResponse.setStatusCode(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()));
             return new ResponseEntity<>(messageResponse, HttpStatus.OK);
         }
         String str = null;
@@ -90,12 +90,16 @@ public class BookingService {
             e.printStackTrace();
         }
         if (date.getHours() >= 8 && date.getHours() < 23) {
-            tbl_Booking booking = new tbl_Booking(bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(), 0, tableName, 0L);
+            tbl_Booking booking = new tbl_Booking(bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(), 0, tableName);
+            bookingRepository.save(booking);
             tbl_BankAccount acc1 = accountRepo.findByAccountNo(accNo.getAccountNo());
             acc1.setBalance(accNo.getBalance() - deposit.getDeposit());
-            tbl_BankAccount acc2 = accountRepo.findByAccountNo("sunshine87lethanhnghi@gmail.com");
+            tbl_BankAccount acc2 = accountRepo.findByAccountNo("8686868686868");
             acc2.setBalance(acc2.getBalance() + deposit.getDeposit());
-            tbl_Bill bill = new tbl_Bill(bookingId, pointsRepo.findByPointId(0L).getPointId(), bookingId, 0L, 0);
+            bookingRepository.save(booking);
+            tbl_Bill bill = new tbl_Bill(bookingId,1L, bookingId, 0L, 0);
+            billRepo.save(bill);
+
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.OK);
 
@@ -133,7 +137,14 @@ public class BookingService {
         tbl_Points points = pointsRepo.findTopByPriceGreaterThanEqualOrderByPriceAscCreatedDesc(totalPoint);
         tbl_BankAccount bankAcc = accountRepo.findByAccountNo(payReq.getAccountNo());
         tbl_Bill bill = billRepo.findByBookingId(payReq.getBookingId());
-        float totalMoneyBill = bookingRepository.sumTotalMoneyBill();
+        float totalMoneyBill = 0L;
+        List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
+        for(tbl_BillInfo data: billInfoList){
+            tbl_Food food=foodRepo.findByFoodId(data.getFoodId());
+            totalMoneyBill+=food.getFoodPrice()*data.getQuantity();
+        }
+
+
         tbl_Booking booking = bookingRepository.findByBookingId(payReq.getBookingId());
         tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
         if (bill == null || booking == null || deposit == null || points == null) {
@@ -150,7 +161,7 @@ public class BookingService {
                 billRepo.save(bill);
             }
             bankAcc.setBalance((long) (bankAcc.getBalance() - moneyPay));
-            tbl_BankAccount acc = accountRepo.getBankAcc("sunshine87lethanhnghi@gmail.com");
+            tbl_BankAccount acc = accountRepo.findByAccountNo("8686868686868");
             acc.setBalance((long) (acc.getBalance() + moneyPay));
             accountRepo.save(bankAcc);
             accountRepo.save(acc);
@@ -162,7 +173,7 @@ public class BookingService {
                 customerRepo.save(customer.get());
                 billRepo.save(bill);
             }
-            tbl_BankAccount acc = accountRepo.getBankAcc("sunshine87lethanhnghi@gmail.com");
+            tbl_BankAccount acc = accountRepo.findByAccountNo("8686868686868");
             acc.setBalance((long) (acc.getBalance() + pay_));
             accountRepo.save(acc);
         }
@@ -171,7 +182,10 @@ public class BookingService {
         bill.setPointId(points.getPointId());
         billRepo.save(bill);
         booking.setBookingStatus(1);
-        booking.setSaleId(sale.getSaleId());
+        if(sale!=null){
+            booking.setSaleId(sale.getSaleId());
+        }
+
         bookingRepository.save(booking);
         customer.get().setTotalMoney((long) (customer.get().getTotalMoney() + points.getPointPercent() * totalMoneyBill));
         customerRepo.save(customer.get());
@@ -196,7 +210,7 @@ public class BookingService {
             bill.setBillStatus(2);
             booking.setBookingStatus(2);
             customer.get().setTotalMoney((long) (customer.get().getTotalMoney()+deposit.getDeposit()*0.3));
-            tbl_BankAccount acc = accountRepo.getBankAcc("sunshine87lethanhnghi@gmail.com");
+            tbl_BankAccount acc = accountRepo.findByAccountNo("8686868686868");
             acc.setBalance((long) (acc.getBalance() -deposit.getDeposit()*0.3));
             accountRepo.save(acc);
             customerRepo.save(customer.get());
@@ -231,7 +245,7 @@ public class BookingService {
             bill.setBillStatus(2);
             booking.setBookingStatus(2);
             customer.setTotalMoney((long) (customer.getTotalMoney()+deposit.getDeposit()*0.3));
-            tbl_BankAccount acc = accountRepo.getBankAcc("sunshine87lethanhnghi@gmail.com");
+            tbl_BankAccount acc = accountRepo.findByAccountNo("8686868686868");
             acc.setBalance((long) (acc.getBalance() -deposit.getDeposit()*0.3));
             accountRepo.save(acc);
             customerRepo.save(customer);

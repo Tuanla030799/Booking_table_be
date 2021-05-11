@@ -12,7 +12,7 @@ import java.util.List;
 public interface AccountRepo extends CrudRepository<tbl_BankAccount, Long> {
         List<tbl_BankAccount> findByEmail(String email);
         tbl_BankAccount findByAccountNo(String acc);
-        @Query(value = "select b from tbl_bankaccount where e.email:=email", nativeQuery = true)
-        tbl_BankAccount getBankAcc(@Param("email") String email);
+//        @Query(value = "select b from tbl_bankaccount where e.email:=email", nativeQuery = true)
+//        tbl_BankAccount getBankAcc(@Param("email") String email);
 }
 

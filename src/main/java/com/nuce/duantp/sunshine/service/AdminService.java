@@ -1,11 +1,14 @@
 package com.nuce.duantp.sunshine.service;
 
 import com.nuce.duantp.sunshine.dto.request.*;
+import com.nuce.duantp.sunshine.dto.response.BillReport;
+import com.nuce.duantp.sunshine.dto.response.JasperReportBill;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.model.*;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
+import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.modelmapper.ModelMapper;
@@ -19,38 +22,28 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Service
 public class AdminService {
-    @Autowired
-    private CustomerRepo repository;
-    @Autowired
-    private DepositRepo depositRepo;
-    @Autowired
-    private PointsRepo pointsRepo;
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-    @Autowired
-    private BookingRepository bookingRepository;
-    @Autowired
-    private ResponseStatusCodeRepo responseStatusCodeRepo;
-    @Autowired
-    BillRepo billRepo;
-    @Autowired
-    BillInfoRepo billInfoRepo;
-    private Logger LOGGER = LoggerFactory.getLogger(AdminService.class);
-    @Autowired
-    private FoodRepo foodRepo;
-    @Autowired
-    private NewsRepo newsRepo;
-    @Autowired
-    private SaleRepo saleRepo;
-    @Autowired
-    private BookingService bookingService;
-
+    private final CustomerRepo repository;
+    private final DepositRepo depositRepo;
+    private final PointsRepo pointsRepo;
+    private final AuthTokenFilter authTokenFilter;
+    private final BookingRepository bookingRepository;
+    private final ResponseStatusCodeRepo responseStatusCodeRepo;
+    private final BillRepo billRepo;
+    private final BillInfoRepo billInfoRepo;
+    private final Logger LOGGER = LoggerFactory.getLogger(AdminService.class);
+    private final FoodRepo foodRepo;
+    private final NewsRepo newsRepo;
+    private final SaleRepo saleRepo;
+    private final BookingService bookingService;
+    private final CustomerRepo customerRepo;
     public void exportReport(String fileName) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
         List<tbl_Customer> employees = (List<tbl_Customer>) repository.findAll();
@@ -64,6 +57,50 @@ public class AdminService {
         JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + fileName + ".pdf");
 
     }
+
+    public void exportBill(String bookingId) throws FileNotFoundException, JRException {
+        String path = "./src/main/resources/static";
+
+        List<BillReport> listBillRp = new ArrayList<>();
+        tbl_Booking booking = bookingRepository.findByBookingId(bookingId);
+        tbl_Customer customer=customerRepo.findCustomerByEmail(booking.getEmail());
+        tbl_Bill bill = billRepo.findByBookingId(bookingId);
+        tbl_Deposit deposit=depositRepo.findByDepositId(booking.getDepositId());
+        tbl_Sale sale=saleRepo.findBySaleId(booking.getSaleId());
+        List<tbl_BillInfo> list = billInfoRepo.findAllByBillId(bill.getBillId());
+        int stt=1;
+        float totalMoney=0L;
+        for(tbl_BillInfo data:list){
+            tbl_Food food=foodRepo.findByFoodId(data.getFoodId());
+            BillReport billReport=new BillReport(stt, food.getFoodName(),food.getFoodPrice(),
+                    food.getFoodPrice()* data.getQuantity(),data.getQuantity());
+            listBillRp.add(billReport);
+            stt++;
+            totalMoney+=billReport.getMoney();
+        }
+        float sumMoney=0L;
+        float salePr=0L;
+        if(sale!=null){
+             sumMoney=totalMoney*sale.getPercentDiscount()-deposit.getDeposit();
+             salePr=sale.getPercentDiscount();
+        }
+        else{
+             sumMoney=totalMoney-deposit.getDeposit();
+        }
+
+        JasperReportBill reportBill = new JasperReportBill(bookingId,customer.getFullName(),
+                booking.getBookingTime(),listBillRp,deposit.getDeposit(),salePr,sumMoney,totalMoney);
+
+        File file = ResourceUtils.getFile("classpath:bill.jrxml");
+        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportBill.getBillReports());
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("createdBy", "Java Techie");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+        JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + "filename" + ".pdf");
+
+    }
+
 
     public ResponseEntity<?> changeDeposit(DepositReq depositReq, String email) {
         List<tbl_Deposit> tbl_deposit = depositRepo.findAllByTotalPersons(depositReq.getTotalPersons());
