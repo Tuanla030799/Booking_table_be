@@ -1,7 +1,7 @@
 package com.nuce.duantp.sunshine.controller;
 
-import com.nuce.duantp.format.CheckPass;
-import com.nuce.duantp.format.MyStringRandomGen;
+import com.nuce.duantp.sunshine.config.format.CheckPass;
+import com.nuce.duantp.sunshine.config.format.MyStringRandomGen;
 import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;

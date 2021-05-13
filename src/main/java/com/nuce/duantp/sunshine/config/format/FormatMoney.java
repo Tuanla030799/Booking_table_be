@@ -1,4 +1,4 @@
-package com.nuce.duantp.format;
+package com.nuce.duantp.sunshine.config.format;
 
 import java.text.DecimalFormat;
 
