@@ -48,6 +48,7 @@ public class SunShineService {
         return list;
     }
 
+    //tổng tiền =(tổng món ăn - tiền cọc - điểm)*sale
     public float moneyPay(String bookingId) {
       try{
         tbl_Booking booking = bookingRepo.findByBookingId(bookingId);
@@ -60,8 +61,11 @@ public class SunShineService {
           money += moneyFood;
         }
         tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
+          money=money-deposit.getDeposit();
         tbl_Sale sale = saleRepo.findBySaleId(booking.getSaleId());
-        money = money * sale.getPercentDiscount();
+          if (sale != null) {
+              money = money * sale.getPercentDiscount();
+          }
         return money;
       }catch (Exception e){
         return 0L;

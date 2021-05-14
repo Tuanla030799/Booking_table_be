@@ -52,7 +52,6 @@ public class BookingService {
 
     public ResponseEntity<?> bookingTable(BookingReq bookingReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-
         String tableName = null;
         List<tbl_Table> tableList = tableRepo.findBySeatGreaterThanEqualOrderBySeatAsc(bookingReq.getTotalSeats());
         for (tbl_Table table : tableList) {
@@ -64,7 +63,6 @@ public class BookingService {
                 break;
             }
         }
-
         MessageResponse messageResponse = new MessageResponse();
         tbl_ResponseStatusCode responseStatusCode = new tbl_ResponseStatusCode();
         if (tableName == null) {
@@ -73,7 +71,6 @@ public class BookingService {
             messageResponse.setStatusCode(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()));
             return new ResponseEntity<>(messageResponse, HttpStatus.OK);
         }
-        String str = null;
         tbl_BankAccount accNo = accountRepo.findByAccountNo(bookingReq.getAccountNo());
 
         tbl_Deposit deposit = depositRepo.findTopByTotalPersonsLessThanEqualOrderByTotalPersonsAscCreatedDesc(bookingReq.getTotalSeats());
@@ -81,7 +78,6 @@ public class BookingService {
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.BAD_REQUEST);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
         Date date = new Date();
         String bookingId = String.valueOf(date.getTime());
         try {
@@ -90,16 +86,20 @@ public class BookingService {
             e.printStackTrace();
         }
         if (date.getHours() >= 8 && date.getHours() < 23) {
-            tbl_Booking booking = new tbl_Booking(bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(), 0, tableName);
+            tbl_Booking booking = new tbl_Booking
+                    (bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(), 0, tableName);
             bookingRepository.save(booking);
             tbl_BankAccount acc1 = accountRepo.findByAccountNo(accNo.getAccountNo());
+            /*
+            * TODO: thêm bước kiểm tra số dư
+            * */
             acc1.setBalance(accNo.getBalance() - deposit.getDeposit());
             tbl_BankAccount acc2 = accountRepo.findByAccountNo("8686868686868");
             acc2.setBalance(acc2.getBalance() + deposit.getDeposit());
-            bookingRepository.save(booking);
+//            bookingRepository.save(booking);
             tbl_Bill bill = new tbl_Bill(bookingId,1L, bookingId, 0L, 0);
             billRepo.save(bill);
-
+            List<tbl_Booking> data2 = bookingRepository.findAll();
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.OK);
 

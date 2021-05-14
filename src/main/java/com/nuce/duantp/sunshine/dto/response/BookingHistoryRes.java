@@ -15,9 +15,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingHistoryRes {
-    @Autowired
-    DepositRepo depositRepo;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss aa")
     private Date bookingTime;
 
     private Long deposit;
@@ -26,11 +25,15 @@ public class BookingHistoryRes {
 
     private float moneyPay;
 
-    public BookingHistoryRes(tbl_Booking booking, float moneyPay) {
-        this.bookingTime = booking.getBookingTime();
-        tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
-        this.deposit = deposit.getDeposit();
-        this.bookingStatus = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
-        this.moneyPay = moneyPay;
-    }
+    private int stt;
+
+    private String bookingId;
+//    public BookingHistoryRes(tbl_Booking booking, float moneyPay,int stt) {
+//        this.bookingTime = booking.getBookingTime();
+//        tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
+//        this.deposit = deposit.getDeposit();
+//        this.bookingStatus = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
+//        this.moneyPay = moneyPay;
+//        this.stt=stt;
+//    }
 }

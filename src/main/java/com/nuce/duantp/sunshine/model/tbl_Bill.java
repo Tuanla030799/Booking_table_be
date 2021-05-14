@@ -39,7 +39,6 @@ public class tbl_Bill {
     private int billStatus;
 
     @Column(name = "payDate")
-    @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date payDate;
 

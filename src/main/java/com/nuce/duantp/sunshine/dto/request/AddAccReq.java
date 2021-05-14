@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddAccReq {
-    private String email;
     private String accountNo;
 }
