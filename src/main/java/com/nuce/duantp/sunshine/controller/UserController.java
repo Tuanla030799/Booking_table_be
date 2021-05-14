@@ -41,17 +41,17 @@ public class UserController {
 
     }
 
-    @GetMapping("/forgot-password/{email}")
-    public ResponseEntity<MessageResponse> forgotPassword(@PathVariable String email) {
-        MyStringRandomGen msr = new MyStringRandomGen();
-        String password = msr.generateRandomString();
-        System.out.println(password);
-        while ((!CheckPass.checkPassword(password))) {
-            password = msr.generateRandomString();
-            System.out.println(password);
-        }
-        return authService.ForgotPassword(email, password);
-    }
+//    @GetMapping("/forgot-password/{email}")
+//    public ResponseEntity<MessageResponse> forgotPassword(@PathVariable String email) {
+//        MyStringRandomGen msr = new MyStringRandomGen();
+//        String password = msr.generateRandomString();
+//        System.out.println(password);
+//        while ((!CheckPass.checkPassword(password))) {
+//            password = msr.generateRandomString();
+//            System.out.println(password);
+//        }
+//        return authService.ForgotPassword(email, password);
+//    }
 
     @PutMapping("/update-user")
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserReq updateUserReq, HttpServletRequest req) {
