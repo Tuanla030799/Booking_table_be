@@ -1,6 +1,7 @@
 package com.nuce.duantp.sunshine.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nuce.duantp.sunshine.config.format.FormatChar;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,12 @@ public class JasperReportBill implements Serializable {
     private float sale;
     private float sumMoney;
     private float totalMoney;
+
+    public JasperReportBill convertChar() {
+        this.customerName=FormatChar.covertToString(this.getCustomerName());
+        for(BillReport data:this.billReports){
+            data.setFoodName(FormatChar.covertToString(data.getFoodName()));
+        }
+        return  this;
+    }
 }

@@ -90,8 +90,8 @@ public class AdminService {
 
         JasperReportBill reportBill = new JasperReportBill(bookingId,customer.getFullName(),
                 booking.getBookingTime(),listBillRp,deposit.getDeposit(),salePr,sumMoney,totalMoney);
-
-        File file = ResourceUtils.getFile("classpath:bill.jrxml");
+        reportBill.convertChar();
+        File file = ResourceUtils.getFile("classpath:exportBill.jrxml");
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportBill.getBillReports());
 
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
@@ -99,10 +99,14 @@ public class AdminService {
         parameters.put("bookingId",reportBill.getBookingId());
         parameters.put("customerName",reportBill.getCustomerName());
         parameters.put("bookingTime",reportBill.getBookingTime());
+        parameters.put("deposit",reportBill.getDeposit());
+        parameters.put("sale",reportBill.getSale());
+        parameters.put("sumMoney",reportBill.getSumMoney());
+        parameters.put("totalMoney",reportBill.getTotalMoney());
 //        jasperReport.setProperty();
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-        JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + "filename" + ".pdf");
+        JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + "bill"+ reportBill.getBookingId()+ ".pdf");
 
     }
 

@@ -159,7 +159,7 @@
                                 <textElement textAlignment="Center">
                                     <font size="14" isBold="true"/>
                                 </textElement>
-                                <text><![CDATA[email]]></text>
+                                <text><![CDATA[hoá đơn thanh toán ]]></text>
                             </staticText>
                         </jr:tableHeader>
                         <jr:tableFooter style="Table_TH" height="30"/>
