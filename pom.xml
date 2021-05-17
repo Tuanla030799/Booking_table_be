@@ -25,16 +25,16 @@
         </repository>
     </repositories>
     <dependencies>
-        <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>base</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.phamtan</groupId>
-            <artifactId>base</artifactId>
-            <version>0.0.7-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.example</groupId>-->
+<!--            <artifactId>base</artifactId>-->
+<!--            <version>0.0.4-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.phamtan</groupId>-->
+<!--            <artifactId>base</artifactId>-->
+<!--            <version>0.0.7-SNAPSHOT</version>-->
+<!--        </dependency>-->
         <!--                test db-->
                 <dependency>
                     <groupId>mysql</groupId>

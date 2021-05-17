@@ -19,10 +19,10 @@ import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 //import com.phamtan.base.email.request.EmailRequest;
 //import com.phamtan.base.email.service.EmailService;
 //import com.phamtan.base.enumeration.EmailEnum;
-import com.phamtan.base.email.data_structure.EmailContentData;
-import com.phamtan.base.email.request.EmailRequest;
-import com.phamtan.base.email.service.EmailService;
-import com.phamtan.base.enumeration.EmailEnum;
+//import com.phamtan.base.email.data_structure.EmailContentData;
+//import com.phamtan.base.email.request.EmailRequest;
+//import com.phamtan.base.email.service.EmailService;
+//import com.phamtan.base.enumeration.EmailEnum;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,8 +71,8 @@ public class AuthService {
     @Autowired
     private TokenLivingRepo tokenLivingRepo;
 
-    @Autowired
-    private EmailService emailService;
+//    @Autowired
+//    private EmailService emailService;
 
     public ResponseEntity<MessageResponse> registerConsumer(@RequestBody SignupRequest signupRequest) {
         if (!CheckEmail.checkEmail(signupRequest.getEmail())) {
@@ -112,22 +112,22 @@ public class AuthService {
             tbl_Customer customer = userRepository.findCustomerByEmail(email);
             customer.setPassword(passwordEncoder.encode(password));
             userRepository.save(customer);
-            Template template = configuration.getTemplate("email.ftl");
-            EmailRequest emailRequest = new EmailRequest();
-            List<EmailContentData> contents = new ArrayList<>();
-
-            EmailContentData nameContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("name").data("Mat Khau").build();
-            EmailContentData valueContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("value").data(password).build();
-
-            contents.add(nameContentData);
-            contents.add(valueContentData);
-
-
-            emailRequest.setTo(email);
-            emailRequest.setFrom(email);
-            emailRequest.setSubject("Hello ");
-            emailRequest.setContent(contents);
-            emailService.sendMailWithAttachments(emailRequest, template);
+//            Template template = configuration.getTemplate("email.ftl");
+//            EmailRequest emailRequest = new EmailRequest();
+//            List<EmailContentData> contents = new ArrayList<>();
+//
+//            EmailContentData nameContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("name").data("Mat Khau").build();
+//            EmailContentData valueContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("value").data(password).build();
+//
+//            contents.add(nameContentData);
+//            contents.add(valueContentData);
+//
+//
+//            emailRequest.setTo(email);
+//            emailRequest.setFrom(email);
+//            emailRequest.setSubject("Hello ");
+//            emailRequest.setContent(contents);
+//            emailService.sendMailWithAttachments(emailRequest, template);
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
         } catch (Exception e) {
             e.printStackTrace();
