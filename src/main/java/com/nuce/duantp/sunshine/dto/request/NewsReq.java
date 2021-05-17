@@ -11,5 +11,4 @@ public class NewsReq {
 
     private String newsDetail;
 
-    private String newsImage;
 }

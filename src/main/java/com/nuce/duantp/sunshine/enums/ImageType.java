@@ -4,5 +4,7 @@ public enum ImageType {
     AVATAR,
     GOODS,
     DISASTER,
+    FOOD,
+    SALE,
     NEWS;
 }

@@ -2,6 +2,7 @@ package com.nuce.duantp.sunshine.controller;
 
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
+import com.nuce.duantp.sunshine.enums.BeneficiaryEnum;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.model.tbl_Booking;
 import com.nuce.duantp.sunshine.model.tbl_Customer;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -142,10 +144,14 @@ public class AdminController {
     }
 
     @PostMapping("/add-food-in-menu")
-    public ResponseEntity<?> addFoodInMenu(@RequestBody AddFoodReq addFoodReq, HttpServletRequest req) {
+    public ResponseEntity<?> addFoodInMenu(@RequestParam(value = "file") MultipartFile file
+            , @RequestParam(value = "foodName") String  foodName
+            , @RequestParam("describe") String  describe
+            , @RequestParam(value = "foodPrice") Long  foodPrice
+            ,HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addFoodInMenu(addFoodReq,customer.get().getEmail());
+            return adminService.addFoodInMenu(foodName,foodPrice,describe,customer.get().getEmail(),file);
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -164,10 +170,13 @@ public class AdminController {
     }
 
     @PostMapping("/add-news")
-    public ResponseEntity<?> addNews(@RequestBody NewsReq newsReq, HttpServletRequest req) {
+    public ResponseEntity<?> addNews(@RequestParam(value = "file") MultipartFile file
+            , @RequestParam(value = "newsTitle") String  newsTitle
+            , @RequestParam("newsDetail") String  newsDetail
+            ,HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addNews(newsReq,customer.get().getEmail());
+            return adminService.addNews(newsTitle,newsDetail,file,customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -186,10 +195,16 @@ public class AdminController {
     }
 
     @PostMapping("/add-sale")
-    public ResponseEntity<?> addSale(@RequestBody SaleReq saleReq, HttpServletRequest req) {
+    public ResponseEntity<?> addSale(@RequestParam(value = "file") MultipartFile file
+            , @RequestParam(value = "saleTitle") String  saleTitle
+            , @RequestParam("saleDetail") String  saleDetail
+            , @RequestParam("beneficiary") String beneficiary
+            , @RequestParam("percentDiscount") float  percentDiscount
+            ,HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addSale(saleReq,customer.get().getEmail());
+            return adminService.addSale(saleTitle,saleDetail,beneficiary,percentDiscount,file,
+                    customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);

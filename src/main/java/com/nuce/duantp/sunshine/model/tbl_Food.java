@@ -29,7 +29,7 @@ public class tbl_Food {
     @Column(name = "describes")
     private String describes;
 
-    @Column(name = "foodImage")
+    @Column(name = "foodImage") //gen tự động để lấy làm id bên bảng Image
     private String foodImage;
 
     @Column(name = "foodPrice")
@@ -43,10 +43,11 @@ public class tbl_Food {
     @Column(name = "foodStatus")
     private int foodStatus =1;
 
-    public tbl_Food(AddFoodReq addFoodReq) {
-        this.describes =addFoodReq.getDescribe();
-        this.foodName=addFoodReq.getFoodName();
-        this.foodPrice=addFoodReq.getFoodPrice();
+    public tbl_Food(String foodName, Long foodPrice,String describe) {
+        this.describes =describe;
+        this.foodName=foodName;
+        this.foodPrice=foodPrice;
+        this.foodImage=String.valueOf(new Date().getTime());
         this.foodStatus=1;
     }
 }

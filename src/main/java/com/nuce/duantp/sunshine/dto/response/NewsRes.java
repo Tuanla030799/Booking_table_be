@@ -10,22 +10,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 
-public class PromotionsRes {
-    private String promotionsTitle;
+public class NewsRes {
+    private String newsTitle;
 
-    private String promotionsDetail;
+    private String newsDetail;
 
-    private String promotionsImage;
+    private String newsImage;
 
 
-    public PromotionsRes(tbl_News news) {
-        this.promotionsTitle=news.getNewsTitle();
+    public NewsRes(tbl_News news,String image) {
+        this.newsTitle =news.getNewsTitle();
         String[] splits = news.getNewsDetail().split(" ");
         String str = "";
         for (int i = 0; i < 30; i++) {
             str = str + splits[i] + " ";
         }
-        this.promotionsDetail=str;
-        this.promotionsImage=news.getNewsImage();
+        this.newsDetail =str;
+        this.newsImage =image;
     }
 }

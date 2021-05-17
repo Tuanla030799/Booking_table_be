@@ -244,10 +244,10 @@ public class testCon {
     @Autowired
     SunShineService sunShineService;
 
-    @GetMapping("/test-auto-update")
-    public void testup(@RequestBody String str) {
-        sunShineService.updateBeneficiary();
-    }
+//    @GetMapping("/test-auto-update")
+//    public void testup(@RequestBody String str) {
+//        sunShineService.updateBeneficiary();
+//    }
 
     @GetMapping("/api")
     public void testwerew(@RequestParam(name = "email") String email, @RequestParam(name = "id") int id) {
@@ -304,7 +304,7 @@ public class testCon {
             , @RequestParam("imagePath") String  imagePath
             , @RequestParam(value = "description",required = false) String  description
             , @RequestParam("idParent") String  idParent
-            , @RequestParam("type") ImageType type
+            , @RequestParam("type") String type
             , @RequestParam(value = "specifyType",required = false) String  specifyType
     ){
         Image image = new Image();

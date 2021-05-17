@@ -41,10 +41,10 @@ public class tbl_News {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date created;
 
-    public tbl_News(NewsReq newsReq) {
-        this.newsDetail =newsReq.getNewsDetail();
-        this.newsTitle =newsReq.getNewsTitle();
-        this.newsImage =newsReq.getNewsImage();
+    public tbl_News(String newsTitle,String newsDetail) {
+        this.newsDetail =newsDetail;
+        this.newsTitle =newsTitle;
+        this.newsImage= String.valueOf(new Date().getTime());
         this.newsStatus =1;
     }
 }

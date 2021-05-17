@@ -2,6 +2,7 @@ package com.nuce.duantp.sunshine.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nuce.duantp.sunshine.dto.request.SaleReq;
+import com.nuce.duantp.sunshine.enums.BeneficiaryEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class tbl_Sale {
     @Column(name = "saleId")
     private Long saleId;
 
-    @Column(name = "saleTitel")
+    @Column(name = "saleTitle")
     private String saleTitle;
 
     @Column(name = "saleDetail")
@@ -48,12 +49,12 @@ public class tbl_Sale {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date created;
 
-    public tbl_Sale(SaleReq saleReq) {
-        this.saleTitle=saleReq.getSaleTitle();
-        this.saleDetail=saleReq.getSaleDetail();
-        this.saleImage=saleReq.getSaleImage();
+    public tbl_Sale(String saleTitle,String saleDetail,String beneficiary,float percentDiscount) {
+        this.saleTitle=saleTitle;
+        this.saleDetail=saleDetail;
         this.saleStatus=1;
-        this.beneficiary=saleReq.getBeneficiary();
-        this.percentDiscount= saleReq.getPercentDiscount();
+        this.beneficiary=beneficiary;
+        this.percentDiscount= percentDiscount;
+        this.saleImage= String.valueOf(new Date().getTime());
     }
 }

@@ -4,6 +4,7 @@ import com.nuce.duantp.sunshine.enums.ImageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 
@@ -21,6 +22,6 @@ public class Image {
     private String imagePath;
     private String description;
     private String idParent;
-    private ImageType type;
+    private String type;
     private String specifyType;
 }

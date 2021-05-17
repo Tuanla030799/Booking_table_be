@@ -1,8 +1,6 @@
 package com.nuce.duantp.sunshine.service;
 
-import com.nuce.duantp.sunshine.dto.response.MoneyPayRes;
-import com.nuce.duantp.sunshine.dto.response.PromotionsRes;
-import com.nuce.duantp.sunshine.dto.response.SaleRes;
+import com.nuce.duantp.sunshine.dto.response.*;
 import com.nuce.duantp.sunshine.model.*;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
@@ -38,6 +36,40 @@ public class SunShineService {
     @Autowired
     NewsRepo newsRepo;
     private Logger LOGGER = LoggerFactory.getLogger(SunShineService.class);
+    @Autowired
+    private ImageRepo imageRepo;
+
+    public PageHomeRes pageHome() {
+        PageHomeRes pageHomeRes = new PageHomeRes();
+        List<tbl_Food> foodList = foodRepo.findAllByFoodStatus(1);
+        List<FoodHomeRes> foodHomeList = new ArrayList<>();
+        for (tbl_Food data : foodList) {
+            Image image = imageRepo.findByName(data.getFoodImage());
+            FoodHomeRes foodHomeRes = new FoodHomeRes(data, image.getUrl());
+            foodHomeList.add(foodHomeRes);
+        }
+
+        List<tbl_Sale> saleList = saleRepo.findBySaleStatus(1);
+        List<SaleHomeRes> saleHomeRes = new ArrayList<>();
+        for (tbl_Sale data : saleList) {
+            Image image = imageRepo.findByName(data.getSaleImage());
+            SaleHomeRes req = new SaleHomeRes(data, image.getUrl());
+            saleHomeRes.add(req);
+        }
+
+        List<tbl_News> newsList = newsRepo.findByNewsStatus(1);
+        List<NewsHomeRes> newsHomeRes = new ArrayList<>();
+        for (tbl_News data : newsList) {
+            Image image = imageRepo.findByName(data.getNewsImage());
+            NewsHomeRes req = new NewsHomeRes(data, image.getUrl());
+            newsHomeRes.add(req);
+        }
+        pageHomeRes.setFoodHomeRes(foodHomeList);
+        pageHomeRes.setNewsHomeRes(newsHomeRes);
+        pageHomeRes.setSaleHomeRes(saleHomeRes);
+        return pageHomeRes;
+    }
+
 
     public List<String> getListCustomer() {
         List<String> list = new ArrayList<>();
@@ -50,26 +82,26 @@ public class SunShineService {
 
     //tổng tiền =(tổng món ăn - tiền cọc - điểm)*sale
     public float moneyPay(String bookingId) {
-      try{
-        tbl_Booking booking = bookingRepo.findByBookingId(bookingId);
-        tbl_Bill bill = billRepo.findByBookingId(bookingId);
-        List<tbl_BillInfo> billInfoList = billInfoRepo.findAllByBillId(bill.getBillId());
-        float money = 0L;
-        for (tbl_BillInfo billInfo : billInfoList) {
-          tbl_Food food = foodRepo.findByFoodId(billInfo.getFoodId());
-          Long moneyFood = food.getFoodPrice() * billInfo.getQuantity();
-          money += moneyFood;
+        try {
+            tbl_Booking booking = bookingRepo.findByBookingId(bookingId);
+            tbl_Bill bill = billRepo.findByBookingId(bookingId);
+            List<tbl_BillInfo> billInfoList = billInfoRepo.findAllByBillId(bill.getBillId());
+            float money = 0L;
+            for (tbl_BillInfo billInfo : billInfoList) {
+                tbl_Food food = foodRepo.findByFoodId(billInfo.getFoodId());
+                Long moneyFood = food.getFoodPrice() * billInfo.getQuantity();
+                money += moneyFood;
+            }
+            tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
+            money = money - deposit.getDeposit();
+            tbl_Sale sale = saleRepo.findBySaleId(booking.getSaleId());
+            if (sale != null) {
+                money = money * sale.getPercentDiscount();
+            }
+            return money;
+        } catch (Exception e) {
+            return 0L;
         }
-        tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
-          money=money-deposit.getDeposit();
-        tbl_Sale sale = saleRepo.findBySaleId(booking.getSaleId());
-          if (sale != null) {
-              money = money * sale.getPercentDiscount();
-          }
-        return money;
-      }catch (Exception e){
-        return 0L;
-      }
 
     }
 
@@ -112,13 +144,14 @@ public class SunShineService {
         return saleResList;
     }
 
-    public List<PromotionsRes> getAllPromotions() {
-        List<tbl_News> promotionsList = newsRepo.findByNewsStatus(1);
-        List<PromotionsRes> promotionsResList = new ArrayList<>();
-        for (tbl_News data : promotionsList) {
-            PromotionsRes promotionsRes = new PromotionsRes(data);
-            promotionsResList.add(promotionsRes);
+    public List<NewsRes> getAllNews() {
+        List<tbl_News> newsList = newsRepo.findByNewsStatus(1);
+        List<NewsRes> newsResList = new ArrayList<>();
+        for (tbl_News data : newsList) {
+            Image image = imageRepo.findByName(data.getNewsImage());
+            NewsRes newsRes = new NewsRes(data, image.getUrl());
+            newsResList.add(newsRes);
         }
-        return promotionsResList;
+        return newsResList;
     }
 }
