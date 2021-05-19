@@ -55,8 +55,8 @@ public class BookingService {
         String tableName = null;
         List<tbl_Table> tableList = tableRepo.findBySeatGreaterThanEqualOrderBySeatAsc(bookingReq.getTotalSeats());
         for (tbl_Table table : tableList) {
-            Date date1 = TimeUtils.minusDate(Timestamp.valueOf(bookingReq.getBookingTime()), -3, "HOUR");
-            Date date2 = TimeUtils.minusDate(Timestamp.valueOf(bookingReq.getBookingTime()), 3, "HOUR");
+            Date date1 = TimeUtils.minusDate(Timestamp.valueOf(bookingReq.getBookingTime()), -7, "HOUR");
+            Date date2 = TimeUtils.minusDate(Timestamp.valueOf(bookingReq.getBookingTime()), 7, "HOUR");
             List<tbl_Booking> bookingList = bookingRepository.findByBookingStatusAndTableNameAndBookingTimeBetween(0, table.getTablename(), date1, date2);
             if (bookingList.size() < table.getStillEmpty()) {
                 tableName = table.getTablename();
@@ -88,6 +88,8 @@ public class BookingService {
         if (date.getHours() >= 8 && date.getHours() < 23) {
             tbl_Booking booking = new tbl_Booking
                     (bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(), 0, tableName);
+            List<tbl_Booking> data92 = bookingRepository.findAll();
+
             bookingRepository.save(booking);
             tbl_BankAccount acc1 = accountRepo.findByAccountNo(accNo.getAccountNo());
             /*

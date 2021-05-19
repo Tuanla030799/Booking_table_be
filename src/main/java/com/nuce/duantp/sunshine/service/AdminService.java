@@ -1,8 +1,10 @@
 package com.nuce.duantp.sunshine.service;
 
+import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.database.LogCodeSql;
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.BillReport;
+import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.response.JasperReportBill;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.BeneficiaryEnum;
@@ -24,8 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Timestamp;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -47,6 +51,7 @@ public class AdminService {
     private final CustomerRepo customerRepo;
     private final ImageService imageService;
     private final BeneficiaryRepo beneficiaryRepo;
+    private final SunShineService sunShineService;
     public void exportReport(String fileName) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
         List<tbl_Customer> employees = (List<tbl_Customer>) repository.findAll();
@@ -262,4 +267,24 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+    public List<BookingHistoryRes> viewBookingHistory(HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        List<tbl_Booking> bookingList = bookingRepository.findAllByOrderByBookingStatusDesc();
+        List<BookingHistoryRes> data = new ArrayList<>();
+        int stt = 1;
+        for (tbl_Booking booking : bookingList) {
+            float money = 0L;
+            if (booking.getBookingStatus() == 1) {
+                money = sunShineService.moneyPay(booking.getBookingId());
+            }
+            tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
+            Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
+            String status = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
+            BookingHistoryRes data1 = new BookingHistoryRes(date, deposit.getDeposit(), status, money, stt, booking.getBookingId());
+            data.add(data1);
+            stt++;
+        }
+        return data;
+    }
 }

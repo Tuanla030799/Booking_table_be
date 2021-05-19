@@ -45,6 +45,7 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, Long> {
 
     List<tbl_Booking> findByBookingStatusAndBookingTimeLessThan(int status,Date bookingTime);
 
+    List<tbl_Booking> findAllByOrderByBookingStatusDesc();
 //    @Query(value = "select SUM(food.foodprice*billif.Quantity) from tbl_billinfo as billif inner join tbl_food as " +
 //            "food on billif.FoodID=food.FoodIDwhere billif.BillID=@BillId)", nativeQuery = true)
 //    Long sumTotalMoneyBill();
