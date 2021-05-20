@@ -36,7 +36,7 @@ public class BookingHistoryDetailRes {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date payDate;
 
-    private float disCount;
+//    private float disCount;
 
     private String bookingId;
 //    public BookingHistoryDetailRes(tbl_Booking booking, tbl_Bill bill,float money) {
