@@ -18,7 +18,7 @@ public class SunShineController {
     @Autowired
     private SunShineService sunShineService;
 
-//    @GetMapping("/get-all-news")
+//    @GetMapping("/get-all-News")
 //    public List<NewsRes> getAllNews(){
 //        return  sunShineService.getAllNews();
 //    }

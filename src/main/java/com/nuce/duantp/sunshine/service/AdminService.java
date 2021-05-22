@@ -2,6 +2,7 @@ package com.nuce.duantp.sunshine.service;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.database.LogCodeSql;
+import com.nuce.duantp.sunshine.dto.News;
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.BillReport;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
@@ -201,20 +202,20 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> addNews(String newsTitle, String newsDetail, MultipartFile file, String email) {
-        tbl_News news = new tbl_News(newsTitle, newsDetail);
+    public ResponseEntity<?> addNews(News news,String email) {
+        tbl_News tbl_news = new tbl_News(news.getNewsTitle(), news.getNewsDetail());
         Image image = new Image();
-        image.setName(news.getNewsImage());
-        image.setDescription(news.getNewsTitle());
-        image.setImagePath("/News/" + news.getNewsImage() + ".jpg");
+        image.setName(tbl_news.getNewsImage());
+        image.setDescription(tbl_news.getNewsTitle());
+        image.setImagePath("/News/" + tbl_news.getNewsImage() + ".jpg");
         image.setType("NEWS");
         image.setSpecifyType("specifyType");
         image.setIdParent("idParent");
-        imageService.createImage(image, file);
-        newsRepo.save(news);
-        LOGGER.warn("add news by " + email + "\n" + newsTitle, AdminService.class);
+        imageService.createImage(image, news.getFile());
+        newsRepo.save(tbl_news);
+        LOGGER.warn("add News by " + email + "\n" + news.getNewsTitle(), AdminService.class);
         String query="insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)" +
-                "\n\tvalues (\'"+news.getNewsTitle()+"\',\'"+news.getNewsDetail()+"\',\'"+news.getNewsImage()+"\',"+1+");\n";
+                "\n\tvalues (\'"+tbl_news.getNewsTitle()+"\',\'"+tbl_news.getNewsDetail()+"\',\'"+tbl_news.getNewsImage()+"\',"+1+");\n";
         String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
                 "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
         LogCodeSql.writeCodeSql(query);
@@ -229,7 +230,7 @@ public class AdminService {
             news.setNewsStatus(0);
             newsRepo.save(news);
         }
-        LOGGER.warn("enable news by " + email + "\n" + newsIdList, AdminService.class);
+        LOGGER.warn("enable News by " + email + "\n" + newsIdList, AdminService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_NEWS_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

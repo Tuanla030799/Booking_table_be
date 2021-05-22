@@ -1,5 +1,6 @@
 package com.nuce.duantp.sunshine.controller;
 
+import com.nuce.duantp.sunshine.dto.News;
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
@@ -163,10 +164,10 @@ public class AdminController {
     }
 
     @PostMapping("/add-news")
-    public ResponseEntity<?> addNews(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "newsTitle") String newsTitle, @RequestParam("newsDetail") String newsDetail, HttpServletRequest req) {
+    public ResponseEntity<?> addNews(@ModelAttribute News news, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addNews(newsTitle, newsDetail, file, customer.get().getEmail());
+            return adminService.addNews(news, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
