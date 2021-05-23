@@ -1,0 +1,58 @@
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Thịt ba chỉ','Thịt ba chỉ','1621307640127','50000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621307640127','https://www.dropbox.com/s/qlm1zwff9u19xt3/1621307640127.jpg?raw=1','/Food/1621307640127.jpg','Thịt ba chỉ','idParent','FOOD','specifyType');
+insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
+	values ('Tuyệt chiêu săn sale hiệu quả 12.12','Sale, Hàng Sale ','1621235973455',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621235973455','https://www.dropbox.com/s/0fttce75n6wfrcl/1621235973455.jpg?raw=1','/News/1621235973455.jpg','Tuyệt chiêu săn sale hiệu quả 12.12','idParent','NEWS','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Thịt ba chỉ','food','1621304736090','50000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621304736090','https://www.dropbox.com/s/f3om052s0q86jhv/1621304736090.jpg?raw=1','/Food/1621304736090.jpg','Thịt ba chỉ','idParent','FOOD','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Thịt ba chỉ','food','1621304765509','50000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621304765509','https://www.dropbox.com/s/kzzi7hh3y02ofw6/1621304765509.jpg?raw=1','/Food/1621304765509.jpg','Thịt ba chỉ','idParent','FOOD','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Thịt ba chỉ','food','1621304773969','50000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621304773969','https://www.dropbox.com/s/g1wdzihe90gvs9f/1621304773969.jpg?raw=1','/Food/1621304773969.jpg','Thịt ba chỉ','idParent','FOOD','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Thịt ba chỉ','food','1621304791487','50000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621304791487','https://www.dropbox.com/s/1vey7ozzwcid1vg/1621304791487.jpg?raw=1','/Food/1621304791487.jpg','Thịt ba chỉ','idParent','FOOD','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Thịt ba chỉ','food','1621304800931','50000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621304800931','https://www.dropbox.com/s/xl5eba6cfkige00/1621304800931.jpg?raw=1','/Food/1621304800931.jpg','Thịt ba chỉ','idParent','FOOD','specifyType');
+
+
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Steak','Tín đồ Steak không thể bỏ qua','1621306902207','500000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621306902207','https://www.dropbox.com/s/ok1je46158f9t30/1621306902207.jpg?raw=1','/Food/1621306902207.jpg','Steak','idParent','FOOD','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Chickken','Gà ngon chuẩn vị Hàn','1621306949525','600000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621306949525','https://www.dropbox.com/s/csffeb5we2rxecd/1621306949525.jpg?raw=1','/Food/1621306949525.jpg','Chickken','idParent','FOOD','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Pizza','Câu chuyện về những chiếc pizza','1621306990278','200000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621306990278','https://www.dropbox.com/s/hi01b3jqte95vsp/1621306990278.jpg?raw=1','/Food/1621306990278.jpg','Pizza','idParent','FOOD','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Rice','Ngon như cơm nhà làm','1621307038551','300000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621307038551','https://www.dropbox.com/s/ezxto7gzs70896d/1621307038551.jpg?raw=1','/Food/1621307038551.jpg','Rice','idParent','FOOD','specifyType');
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+	values ('Shushi','Muốn ăn Shushi thì đi đâu','1621307073916','550000',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621307073916','https://www.dropbox.com/s/963ikdtbfgvwzws/1621307073916.jpg?raw=1','/Food/1621307073916.jpg','Shushi','idParent','FOOD','specifyType');
+insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
+	values ('Tuyệt chiêu săn sale hiệu quả 12.12','Sale, Hàng Sale ','1621389855699',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621389855699','https://www.dropbox.com/s/2gm7p18a0znhl21/1621389855699.jpg?raw=1','/News/1621389855699.jpg','Tuyệt chiêu săn sale hiệu quả 12.12','idParent','NEWS','specifyType');
+insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
+	values ('Tuyệt chiêu săn sale hiệu quả 12.12','asd','1621649846484',1);
+insert into image(name,url,imagePath,description,idParent,type,specifyType)
+	values('1621649846484','https://www.dropbox.com/s/uytsd9o8436p4cb/1621649846484.jpg?raw=1','/News/1621649846484.jpg','Tuyệt chiêu săn sale hiệu quả 12.12','idParent','NEWS','specifyType');
