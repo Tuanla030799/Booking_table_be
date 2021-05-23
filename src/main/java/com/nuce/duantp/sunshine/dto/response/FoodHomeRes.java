@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class FoodHomeRes {
+    private int stt;
+
     private String foodName;
 
     private String describes;
@@ -18,7 +20,7 @@ public class FoodHomeRes {
 
     private Long foodPrice;
 
-    public FoodHomeRes(tbl_Food food) {
+    public FoodHomeRes(tbl_Food food,int stt) {
         this.foodName = food.getFoodName();
         String[] splits = food.getDescribes().split(" ");
         String str = "";
@@ -33,5 +35,6 @@ public class FoodHomeRes {
         this.describes = str;
         this.foodImage = food.getFoodImage();
         this.foodPrice = food.getFoodPrice();
+        this.stt=stt;
     }
 }

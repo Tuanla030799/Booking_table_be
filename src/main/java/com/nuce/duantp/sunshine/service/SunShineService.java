@@ -43,26 +43,32 @@ public class SunShineService {
         PageHomeRes pageHomeRes = new PageHomeRes();
         List<tbl_Food> foodList = foodRepo.findAllByFoodStatus(1);
         List<FoodHomeRes> foodHomeList = new ArrayList<>();
+        int stt=1;
         for (tbl_Food data : foodList) {
 //            Image image = imageRepo.findByName(data.getFoodImage());
-            FoodHomeRes foodHomeRes = new FoodHomeRes(data);
+            FoodHomeRes foodHomeRes = new FoodHomeRes(data,stt);
             foodHomeList.add(foodHomeRes);
+            stt++;
         }
 
         List<tbl_Sale> saleList = saleRepo.findBySaleStatus(1);
         List<SaleHomeRes> saleHomeRes = new ArrayList<>();
+        stt=1;
         for (tbl_Sale data : saleList) {
 //            Image image = imageRepo.findByName(data.getSaleImage());
-            SaleHomeRes req = new SaleHomeRes(data);
+            SaleHomeRes req = new SaleHomeRes(data,stt);
             saleHomeRes.add(req);
+            stt++;
         }
 
         List<tbl_News> newsList = newsRepo.findByNewsStatus(1);
         List<NewsHomeRes> newsHomeRes = new ArrayList<>();
+        stt=1;
         for (tbl_News data : newsList) {
 //            Image image = imageRepo.findByName(data.getNewsImage());
-            NewsHomeRes req = new NewsHomeRes(data);
+            NewsHomeRes req = new NewsHomeRes(data,stt);
             newsHomeRes.add(req);
+            stt++;
         }
         pageHomeRes.setFoodHomeRes(foodHomeList);
         pageHomeRes.setNewsHomeRes(newsHomeRes);
@@ -158,10 +164,12 @@ public class SunShineService {
     public List<FoodHomeRes> getListFood() {
         List<FoodHomeRes> list = new ArrayList<>();
         List<tbl_Food> foodList = foodRepo.findAllByFoodStatus(1);
+        int stt=1;
         for (tbl_Food data : foodList) {
 //            Image image = imageRepo.findByName(data.getFoodImage());
-            FoodHomeRes foodHomeRes = new FoodHomeRes(data);
+            FoodHomeRes foodHomeRes = new FoodHomeRes(data,stt);
             list.add(foodHomeRes);
+            stt++;
         }
         return list;
     }
