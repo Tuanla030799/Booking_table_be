@@ -179,14 +179,16 @@ public class AdminService {
         image.setSpecifyType("specifyType");
         image.setIdParent("idParent");
         imageService.createImage(image, file);
+        food.setFoodImage(image.getUrl());
         foodRepo.save(food);
         LOGGER.warn("add food by " + email + "\n" + foodName, AdminService.class);
         String query="insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)" +
                 "\n\tvalues (\'"+food.getFoodName()+"\',\'"+food.getDescribes()+"\',\'"+food.getFoodImage()+"\',\'"+food.getFoodPrice()+"\',"+1+");\n";
-        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
-                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
+//        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
+//                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
+//
         LogCodeSql.writeCodeSql(query);
-        LogCodeSql.writeCodeSql(query2);
+//        LogCodeSql.writeCodeSql(query2);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -212,14 +214,16 @@ public class AdminService {
         image.setSpecifyType("specifyType");
         image.setIdParent("idParent");
         imageService.createImage(image, news.getFile());
+        tbl_news.setNewsImage(image.getUrl());
         newsRepo.save(tbl_news);
         LOGGER.warn("add News by " + email + "\n" + news.getNewsTitle(), AdminService.class);
         String query="insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)" +
                 "\n\tvalues (\'"+tbl_news.getNewsTitle()+"\',\'"+tbl_news.getNewsDetail()+"\',\'"+tbl_news.getNewsImage()+"\',"+1+");\n";
-        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
-                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
+//        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
+//                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
+//
         LogCodeSql.writeCodeSql(query);
-        LogCodeSql.writeCodeSql(query2);
+//        LogCodeSql.writeCodeSql(query2);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_NEWS_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -246,14 +250,15 @@ public class AdminService {
         image.setSpecifyType("specifyType");
         image.setIdParent("idParent");
         imageService.createImage(image, file);
+        sale.setSaleImage(image.getUrl());
         saleRepo.save(sale);
         LOGGER.warn("add sale by " + email + "\n" + saleTitle, AdminService.class);
         String query="insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)" +
                 "\n\tvalues (\'"+sale.getSaleTitle()+"\',\'"+sale.getSaleDetail()+"\',\'"+sale.getSaleImage()+"\',\'"+sale.getBeneficiary()+"\',"+sale.getPercentDiscount()+","+1+");\n";
-        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
-                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
+//        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
+//                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
         LogCodeSql.writeCodeSql(query);
-        LogCodeSql.writeCodeSql(query2);
+//        LogCodeSql.writeCodeSql(query2);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_SALE_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

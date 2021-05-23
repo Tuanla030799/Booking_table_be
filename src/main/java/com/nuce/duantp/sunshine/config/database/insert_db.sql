@@ -10,17 +10,6 @@ CREATE TABLE `tbl_deposit`
     `created` DATETIME DEFAULT NOW()
 );
 
-CREATE TABLE `image`
-(
-    `id` int primary key AUTO_INCREMENT,
-    `url` NVARCHAR(200),
-    `imagePath` NVARCHAR(200),
-    `description` NVARCHAR(200),
-    `name` NVARCHAR(200),
-    `idParent` NVARCHAR(200),
-    `type` NVARCHAR(200),
-    `specifyType` NVARCHAR(200)
-);
 
 create table tbl_role
 (
@@ -62,10 +51,10 @@ CREATE TABLE `tbl_Sale`
     `beneficiary` VARCHAR(20),
     `Created` DATETIME DEFAULT NOW(),
     `percentDiscount` float DEFAULT 0,
-    `saleDetail` NVARCHAR(1000)  ,
-    `saleImage` NVARCHAR(50)  ,
+    `saleDetail` NVARCHAR(10000)  ,
+    `saleImage` NVARCHAR(255)  ,
     `saleStatus` int DEFAULT 1,
-    `saleTitle` NVARCHAR(100),
+    `saleTitle` NVARCHAR(255),
     constraint tbl_SaleBeneficiary foreign key (beneficiary) references tbl_Beneficiary(beneficiaryName)
 );
 
@@ -73,10 +62,10 @@ CREATE TABLE `tbl_News`
 (
     `newsId` bigint primary key AUTO_INCREMENT,
     `created` DATETIME DEFAULT NOW(),
-    `newsDetail` NVARCHAR(1000)  ,
-    `newsImage` NVARCHAR(50)  ,
+    `newsDetail` NVARCHAR(10000)  ,
+    `newsImage` NVARCHAR(255)  ,
     `newsStatus` int DEFAULT 1,
-    `newsTitle` NVARCHAR(100)
+    `newsTitle` NVARCHAR(255)
 
 );
 
@@ -104,15 +93,6 @@ CREATE TABLE `tbl_customer`
 
 );
 
-CREATE TABLE `tbl_bankaccount`
-(
-    `Id` bigint primary key AUTO_INCREMENT,
-    `AccountNo` NVARCHAR(20)   unique,
-    `Balance` bigint DEFAULT 0,
-    `Status` int DEFAULT 0,
-    `Email` NVARCHAR(40),
-    constraint fk_BankaccountCustomer foreign key (Email) references tbl_customer(Email)
-);
 
 CREATE TABLE `tbl_booking`
 (
@@ -150,9 +130,9 @@ create table `tbl_food`
 (
     `FoodId` bigint primary key AUTO_INCREMENT  ,
     `Created` DATETIME DEFAULT NOW(),
-    `describes` NVARCHAR(255)  ,
-    `FoodName` NVARCHAR(30)  ,
-    `FoodImage` NVARCHAR(30),
+    `describes` NVARCHAR(10000)  ,
+    `FoodName` NVARCHAR(255)  ,
+    `FoodImage` NVARCHAR(255),
     `FoodPrice` bigint DEFAULT 0,
     `FoodStatus` int default 1
 );
@@ -184,9 +164,6 @@ alter table tbl_food
 
 alter table tbl_deposit
     add constraint check_deposit check (`Deposit` >= 0);
-
-alter table tbl_bankaccount
-    add constraint check_balance check (`Balance` >= 0);
 
 alter table tbl_customer
     add constraint check_total_money check (TotalMoney >= 0);
@@ -235,13 +212,6 @@ Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values(
 Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values('REGULAR',1,50000);
 Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values('CUSTOMER',1,10000);
 
--- insert into tbl_sale(saleTitle,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.1);
--- insert into tbl_sale(saleTitle,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.2);
--- insert into tbl_sale(saleTitle,saleDetail ,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.3);
--- insert into tbl_sale(saleTitle,saleDetail ,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.4);
--- insert into tbl_sale(saleTitle,saleDetail ,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.5);
-
-
 
 insert into tbl_role(role,roleName) values('USERS',N'Khách Hàng');
 insert into tbl_role(role,roleName) values('ADMIN',N'Nhân Viên');
@@ -250,44 +220,3 @@ insert into tbl_role(role,roleName) values('ADMIN',N'Nhân Viên');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('pvminh@gmail.com', '0796164361', N'Phí Văn Minh', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000,'USERS','CUSTOMER');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('sunshine87lethanhnghi@gmail.com', '0999999999', N'Nhà hàng Sunshine', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 8000,'ADMIN','VIP');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('haind1@vimo.vn', '0978675678', N'Nguyễn Đình Hải', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000,'USERS','CUSTOMER');
--- INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('tranphuduan@gmail.com', '0978675678', N'Nguyễn Đình Hải', '$2a$10$QldpC9h4Sw4jiR9Nmq5Mt.zKMLZOQxYt8tfZ16n.E935l64tOK4ma', 5000,'USERS','CUSTOMER');
--- update tbl_customer set Password='$2a$10$JtAQTcqWDiKf84h2oF/ytOF3yqouJuUAOdsgjGsBs5ALEQsDNcyLy' where Email='sunshine87lethanhnghi@gmail.com'
-
-
--- delete tbl_Customer where email='tranphuduan@gmail.com'
-
-INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('5469879547877', 200000000, 'pvminh@gmail.com', 1);
-INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('5469879547869', 10000, 'haind1@vimo.vn', 0);
-INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('8686868686868', 0, 'sunshine87lethanhnghi@gmail.com', 1);
-
-
--- INSERT INTO tbl_food(FoodName, FoodPrice,describes,FoodImage) VALUES ( N'Cá mập', 50000,N'Cá mập','D:/');
--- INSERT INTO tbl_food(FoodName, FoodPrice,describes,FoodImage) VALUES ( N'Cá voi', 50000,N'Cá voi','D:/');
--- INSERT INTO tbl_food(FoodName, FoodPrice,describes,FoodImage) VALUES (N'Cá heo', 100000,N'Cá heo','D:/');
-
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(1,'changeResetPasswordStatus','1','15 0/1 * * * *','test schedule in database','job chay vao giay thu 15 cua tung phut');
-
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(1,'removeLiveToken','1','15 0/1 * * * *','test schedule in database','job xoa TokenLiving');
-
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(1,'autoCancelBooking','1','15 0/1 * * * *','test schedule in database','job auto cancelbooking');
-
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(1,'autoUpdateBeneficiary','1','15 0/1 * * * *','test schedule in database','job auto UpdateBeneficiary');
-
-
-
-insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
-values ('Thịt ba chỉ','Thịt ba chỉ','1621223891827','50000','1');
-insert into image(name,url,imagePath,description,idParent,type,specifyType)
-values('1621223891827','https://www.dropbox.com/s/wdlrkchlaeg61zt/1621223891827.jpg?raw=1','/Food/1621223891827.jpg','Thịt ba chỉ','idParent','FOOD','specifyType');
-insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
-values ('Tuyệt chiêu săn sale hiệu quả 12.12','Sale, Hàng Sale ','1621224018800',1);
-insert into image(name,url,imagePath,description,idParent,type,specifyType)
-values('1621224018800','https://www.dropbox.com/s/6ifhnx1wlb3di6p/1621224018800.jpg?raw=1','/News/1621224018800.jpg','Tuyệt chiêu săn sale hiệu quả 12.12','idParent','NEWS','specifyType');
-insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)
-values ('BufferedWriter','BufferedWriter là class thuộc luồng ký tự (character stream) được xây dựng để xử lý dữ liệu ký tự (Writer là class cha, cũng thuộc luồng ký tự). Không giống như luồng byte (luồng mà class OutputStream đảm nhận, luồng byte xử lý dữ liệu dưới dạng byte, không xử lý được dữ liệu Unicode), luồng ký tự có thể xử lý trực tiếp được chuỗi, mảng hoặc dữ liệu ký tự dưới dạng Unicode','1621225088243','REGULAR',0.3,1);
-insert into image(name,url,imagePath,description,idParent,type,specifyType)
-values('1621225088243','https://www.dropbox.com/s/la3h3vrcy2hfdkv/1621225088243.jpg?raw=1','/Sale/1621225088243.jpg','BufferedWriter','idParent','SALE','specifyType');

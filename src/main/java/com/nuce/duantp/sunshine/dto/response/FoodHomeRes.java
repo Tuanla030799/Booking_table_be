@@ -18,7 +18,7 @@ public class FoodHomeRes {
 
     private Long foodPrice;
 
-    public FoodHomeRes(tbl_Food food, String url) {
+    public FoodHomeRes(tbl_Food food) {
         this.foodName = food.getFoodName();
         String[] splits = food.getDescribes().split(" ");
         String str = "";
@@ -31,7 +31,7 @@ public class FoodHomeRes {
            str=food.getDescribes();
         }
         this.describes = str;
-        this.foodImage = url;
+        this.foodImage = food.getFoodImage();
         this.foodPrice = food.getFoodPrice();
     }
 }

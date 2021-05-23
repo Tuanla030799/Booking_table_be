@@ -17,7 +17,7 @@ public class SaleHomeRes {
 
     private float percentDiscount;//phần trăm khuyến mãi
 
-    public SaleHomeRes(tbl_Sale sale, String url) {
+    public SaleHomeRes(tbl_Sale sale) {
         this.saleTitle = sale.getSaleTitle();
         String[] splits = sale.getSaleDetail().split(" ");
         String str = "";
@@ -27,7 +27,7 @@ public class SaleHomeRes {
             }
         } else str = sale.getSaleDetail();
         this.saleDetail = str;
-        this.saleImage = url;
+        this.saleImage = sale.getSaleImage();
         this.percentDiscount = sale.getPercentDiscount();
     }
 }

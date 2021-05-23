@@ -16,7 +16,7 @@ public class NewsHomeRes {
     private String newsImage;
 
 
-    public NewsHomeRes(tbl_News news, String url) {
+    public NewsHomeRes(tbl_News news) {
         this.newsTitle = news.getNewsTitle();
         String[] splits = news.getNewsDetail().split(" ");
         String str = "";
@@ -26,6 +26,6 @@ public class NewsHomeRes {
             }
         } else str = news.getNewsDetail();
         this.newsDetail = str;
-        this.newsImage = url;
+        this.newsImage = news.getNewsImage();
     }
 }
