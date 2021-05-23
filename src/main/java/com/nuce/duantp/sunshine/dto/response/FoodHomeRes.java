@@ -20,6 +20,7 @@ public class FoodHomeRes {
 
     private Long foodPrice;
 
+    private int quantity;
     public FoodHomeRes(tbl_Food food,int stt) {
         this.foodName = food.getFoodName();
         String[] splits = food.getDescribes().split(" ");
@@ -36,5 +37,6 @@ public class FoodHomeRes {
         this.foodImage = food.getFoodImage();
         this.foodPrice = food.getFoodPrice();
         this.stt=stt;
+        this.quantity=0;
     }
 }
