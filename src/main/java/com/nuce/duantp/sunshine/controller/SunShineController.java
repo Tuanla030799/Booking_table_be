@@ -1,5 +1,6 @@
 package com.nuce.duantp.sunshine.controller;
 
+import com.nuce.duantp.sunshine.dto.response.FoodHomeRes;
 import com.nuce.duantp.sunshine.dto.response.NewsRes;
 import com.nuce.duantp.sunshine.dto.response.PageHomeRes;
 import com.nuce.duantp.sunshine.service.SunShineService;
@@ -26,4 +27,11 @@ public class SunShineController {
     public PageHomeRes pageHome(){
         return sunShineService.pageHome();
     }
+
+    @GetMapping("/get-list-food")
+    public List<FoodHomeRes> getListFood(){
+        return sunShineService.getListFood();
+    }
+
+
 }

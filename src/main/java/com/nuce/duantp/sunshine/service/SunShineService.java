@@ -154,4 +154,15 @@ public class SunShineService {
         }
         return newsResList;
     }
+
+    public List<FoodHomeRes> getListFood() {
+        List<FoodHomeRes> list = new ArrayList<>();
+        List<tbl_Food> foodList = foodRepo.findAllByFoodStatus(1);
+        for (tbl_Food data : foodList) {
+            Image image = imageRepo.findByName(data.getFoodImage());
+            FoodHomeRes foodHomeRes = new FoodHomeRes(data, image.getUrl());
+            list.add(foodHomeRes);
+        }
+        return list;
+    }
 }
