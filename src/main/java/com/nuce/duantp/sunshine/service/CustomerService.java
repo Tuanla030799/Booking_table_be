@@ -1,6 +1,7 @@
 package com.nuce.duantp.sunshine.service;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
+import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import com.nuce.duantp.sunshine.dto.request.AddAccReq;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetailRes;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
@@ -72,7 +73,8 @@ public class CustomerService {
             tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
             Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
             String status = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
-            BookingHistoryRes data1 = new BookingHistoryRes(date, deposit.getDeposit(), status, money, stt, booking.getBookingId());
+            BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
+                    status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId());
             data.add(data1);
             stt++;
         }
@@ -98,8 +100,10 @@ public class CustomerService {
         if (bill.getPayDate() != null) {
             date1 = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(bill.getPayDate())), 7, "HOUR");
         }
-        BookingHistoryDetailRes data = new BookingHistoryDetailRes(date, deposit.getDeposit(), status,
-                booking.getTotalSeats(), booking.getTableName(), point, money, date1, bill.getDiscount(),bookingId);
+        BookingHistoryDetailRes data = new BookingHistoryDetailRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())), status,
+                booking.getTotalSeats(), booking.getTableName(), FormatMoney.formatMoney(String.valueOf(point)),
+                FormatMoney.formatMoney(String.valueOf(money)), date1,
+                bookingId);
         return data;
     }
 

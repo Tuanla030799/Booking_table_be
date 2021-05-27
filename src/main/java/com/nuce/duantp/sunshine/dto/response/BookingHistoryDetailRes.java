@@ -21,7 +21,7 @@ public class BookingHistoryDetailRes {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss aa")
     private Date bookingTime;
 
-    private Long deposit; //tien coc
+    private String deposit; //tien coc
 
     private String bookingStatus;
 
@@ -29,14 +29,14 @@ public class BookingHistoryDetailRes {
 
     private String tableName;
 
-    private Long point; //tien thuong ung voi tong hoa don
+    private String point; //tien thuong ung voi tong hoa don
 
-    private float moneyPay;
+    private String moneyPay;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date payDate;
 
-    private float disCount;
+//    private float disCount;
 
     private String bookingId;
 //    public BookingHistoryDetailRes(tbl_Booking booking, tbl_Bill bill,float money) {

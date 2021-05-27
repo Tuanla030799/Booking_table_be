@@ -1,16 +1,15 @@
 package com.nuce.duantp.sunshine.service;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
-import com.nuce.duantp.sunshine.config.database.LogCodeSql;
+import com.nuce.duantp.sunshine.config.format.LogCodeSql;
+import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import com.nuce.duantp.sunshine.dto.News;
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.BillReport;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.response.JasperReportBill;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
-import com.nuce.duantp.sunshine.enums.BeneficiaryEnum;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.enums.ImageType;
 import com.nuce.duantp.sunshine.model.*;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
@@ -20,7 +19,6 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -81,10 +79,11 @@ public class AdminService {
         float totalMoney = 0L;
         for (tbl_BillInfo data : list) {
             tbl_Food food = foodRepo.findByFoodId(data.getFoodId());
-            BillReport billReport = new BillReport(stt, food.getFoodName(), food.getFoodPrice(), food.getFoodPrice() * data.getQuantity(), data.getQuantity());
+            BillReport billReport = new BillReport(stt, food.getFoodName(), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
+                    FormatMoney.formatMoney(String.valueOf(food.getFoodPrice() * data.getQuantity())), data.getQuantity());
             listBillRp.add(billReport);
             stt++;
-            totalMoney += billReport.getMoney();
+            totalMoney += Float.parseFloat(billReport.getMoney());
         }
         float sumMoney = 0L;
         float salePr = 0L;
@@ -287,7 +286,8 @@ public class AdminService {
             tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
             Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
             String status = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
-            BookingHistoryRes data1 = new BookingHistoryRes(date, deposit.getDeposit(), status, money, stt, booking.getBookingId());
+            BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
+                    status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId());
             data.add(data1);
             stt++;
         }

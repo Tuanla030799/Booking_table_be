@@ -19,11 +19,11 @@ public class BookingHistoryRes {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss aa")
     private Date bookingTime;
 
-    private Long deposit;
+    private String deposit;
 
     private String bookingStatus;
 
-    private float moneyPay;
+    private String moneyPay;
 
     private int stt;
 
