@@ -27,11 +27,11 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
-    private final AuthTokenFilter authTokenFilter;
-    private final PasswordEncoder encoder;
-    private final  JwtUtils jwtUtils;
-    private final  PasswordEncoder passwordEncoder;
-    private final CustomerRepo customerRepo;
+//    private final AuthTokenFilter authTokenFilter;
+//    private final PasswordEncoder encoder;
+//    private final  JwtUtils jwtUtils;
+//    private final  PasswordEncoder passwordEncoder;
+//    private final CustomerRepo customerRepo;
     @Resource(name = "userBean")
     User user;
     private final TokenLivingRepo tokenLivingRepo;

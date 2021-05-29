@@ -50,11 +50,10 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final  AuthenticationManager authenticationManager;
     private final CustomerRepo customerRepo;
-    private final  AuthTokenFilter authTokenFilter;
-    private final Configuration configuration;
+//    private final  AuthTokenFilter authTokenFilter;
+//    private final Configuration configuration;
     private final TokenLivingRepo tokenLivingRepo;
     private final ImageService imageService;
-//    private final EmailService emailService;
 
     public ResponseEntity<MessageResponse> registerConsumer(@RequestBody SignupRequest signupRequest) {
         if (!CheckEmail.checkEmail(signupRequest.getEmail())) {

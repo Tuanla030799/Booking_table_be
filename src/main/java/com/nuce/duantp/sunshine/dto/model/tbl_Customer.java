@@ -85,8 +85,10 @@ public class tbl_Customer {
         this.beneficiary="CUSTOMER";
     }
 
-    public tbl_Customer(UpdateUserReq req) {
+    public tbl_Customer updateCustomer(UpdateUserReq req) {
         this.setPhoneNumber(req.getPhoneNumber());
         this.setFullName(req.getFullName());
+        this.image= String.valueOf(new Date().getTime());
+        return this;
     }
 }

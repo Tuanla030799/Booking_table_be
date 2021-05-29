@@ -3,6 +3,7 @@ package com.nuce.duantp.sunshine.service;
 import com.nuce.duantp.sunshine.config.format.CheckNameCustomer;
 import com.nuce.duantp.sunshine.config.format.CheckPass;
 import com.nuce.duantp.sunshine.config.format.CheckPhoneNumber;
+import com.nuce.duantp.sunshine.dto.model.Image;
 import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
@@ -11,6 +12,7 @@ import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,14 +23,14 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @Service
-
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-    @Autowired
-    CustomerRepo customerRepo;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final AuthTokenFilter authTokenFilter;
+    private final  CustomerRepo customerRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
+
     private Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     public ResponseEntity<?> changePassword(ChangePasswordReq changePasswordReq, HttpServletRequest req) {
@@ -62,16 +64,26 @@ public class UserService {
     }
 
     public ResponseEntity<?> updateUser(UpdateUserReq updateUserReq, HttpServletRequest req) {
-        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        Optional<tbl_Customer> customerOptional = authTokenFilter.whoami(req);
         if (!CheckPhoneNumber.checkPhone(updateUserReq.getPhoneNumber())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_PHONE_FORMAT));
         }
         if (!CheckNameCustomer.checkName(updateUserReq.getFullName())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_NAME_FORMAT));
         } else {
-            tbl_Customer customer1 = new tbl_Customer(updateUserReq);
-            customerRepo.save(customer1);
-            LOGGER.warn("update info success by " + customer.get().getEmail()+"\n"+updateUserReq, UserService.class);
+            tbl_Customer customer=customerOptional.get();
+            customer.updateCustomer(updateUserReq);
+            Image image = new Image();
+            image.setName(customer.getImage());
+            image.setDescription(customer.getFullName());
+            image.setImagePath("/Avatar/" + customer.getImage() + ".jpg");
+            image.setType("AVATAR");
+            image.setSpecifyType("specifyType");
+            image.setIdParent("idParent");
+            imageService.createImage(image, updateUserReq.getFile());
+            customer.setImage(image.getUrl());
+            customerRepo.save(customer);
+            LOGGER.warn("update info success by " + customer.getEmail()+"\n"+updateUserReq, UserService.class);
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
         }
     }

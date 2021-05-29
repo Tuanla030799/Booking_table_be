@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("/update-user")
-    public ResponseEntity<?> updateUser(@RequestBody UpdateUserReq updateUserReq, HttpServletRequest req) {
+    public ResponseEntity<?> updateUser(@ModelAttribute UpdateUserReq updateUserReq, HttpServletRequest req) {
         if (tokenLivingService.checkTokenLiving(req)) {
             return userService.updateUser(updateUserReq, req);
         }

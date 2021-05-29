@@ -3,6 +3,7 @@ package com.nuce.duantp.sunshine.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 
@@ -10,11 +11,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserReq {
-
-    @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @Column(name = "fullName")
     private String fullName;
 
+    private MultipartFile file;
 }
