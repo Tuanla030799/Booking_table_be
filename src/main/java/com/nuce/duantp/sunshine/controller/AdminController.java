@@ -1,20 +1,20 @@
 package com.nuce.duantp.sunshine.controller;
 
-import com.nuce.duantp.sunshine.dto.News;
-import com.nuce.duantp.sunshine.dto.request.*;
+import com.nuce.duantp.sunshine.dto.request.News;
+import com.nuce.duantp.sunshine.dto.request.CancelBookingReq;
+import com.nuce.duantp.sunshine.dto.request.DepositReq;
+import com.nuce.duantp.sunshine.dto.request.OrderFoodReq;
+import com.nuce.duantp.sunshine.dto.request.PointReq;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.response.UserDetail;
-import com.nuce.duantp.sunshine.enums.BeneficiaryEnum;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.tbl_Booking;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
-import com.nuce.duantp.sunshine.repository.BookingRepository;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.service.AdminService;
 import com.nuce.duantp.sunshine.service.BookingService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,24 +22,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 @RequestMapping("/api/admin")
 public class AdminController {
-    @Autowired
-    AdminService adminService;
-    @Autowired
-    BookingService bookingService;
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-    @Autowired
-    TokenLivingService tokenLivingService;
-    @Autowired
-    BookingRepository bookingRepository;
+
+    private final AdminService adminService;
+    private final  BookingService bookingService;
+    private final  AuthTokenFilter authTokenFilter;
+    private final TokenLivingService tokenLivingService;
 
     @GetMapping("/export-file")
     public ResponseEntity<?> exportFile(@RequestBody String fileName, HttpServletRequest req) {

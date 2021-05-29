@@ -1,7 +1,7 @@
 package com.nuce.duantp.sunshine.dto.response;
 
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
-import com.nuce.duantp.sunshine.model.tbl_Food;
+import com.nuce.duantp.sunshine.dto.model.tbl_Food;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

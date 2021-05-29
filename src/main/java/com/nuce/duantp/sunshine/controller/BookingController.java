@@ -5,34 +5,32 @@ import com.nuce.duantp.sunshine.dto.request.CancelBookingReq;
 import com.nuce.duantp.sunshine.dto.request.OrderFoodReq;
 import com.nuce.duantp.sunshine.dto.request.PayReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.tbl_Booking;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.model.tbl_Booking;
+import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.BookingRepository;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.service.BookingService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 @RequestMapping("/api/customer")
+@RequiredArgsConstructor
 public class BookingController {
-    @Autowired
-    BookingService bookingService;
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-    @Autowired
-    TokenLivingService tokenLivingService;
-    @Autowired
-    BookingRepository bookingRepository;
+
+    private final BookingService bookingService;
+    private final AuthTokenFilter authTokenFilter;
+    private final TokenLivingService tokenLivingService;
+    private final BookingRepository bookingRepository;
+
     @PostMapping("/booking")
     public ResponseEntity<?> booking(@RequestBody BookingReq bookingReq, HttpServletRequest req) {
         if(tokenLivingService.checkTokenLiving(req)){
@@ -73,9 +71,6 @@ public class BookingController {
         MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
-
-
-
 
 }
 

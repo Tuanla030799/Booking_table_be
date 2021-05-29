@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.enums;
+package com.nuce.duantp.sunshine.dto.enums;
 
 public enum EnumResponseStatusCode {
     ADD_ACCOUNT_SUCCESS("Thêm tai khoản ngân hàng thành công!"),

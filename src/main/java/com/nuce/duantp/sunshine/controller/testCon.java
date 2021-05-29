@@ -1,21 +1,8 @@
 package com.nuce.duantp.sunshine.controller;
 
-import com.nuce.duantp.sunshine.JasperReports.ReportService;
-import com.nuce.duantp.sunshine.config.TimeUtils;
-import com.nuce.duantp.sunshine.config.schedule.AutoCancelBooking;
-import com.nuce.duantp.sunshine.config.schedule.RemoveLiveToken;
-import com.nuce.duantp.sunshine.dto.request.findTableEntityReq;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.enums.ImageType;
-import com.nuce.duantp.sunshine.model.Image;
-import com.nuce.duantp.sunshine.model.tbl_Bill;
-import com.nuce.duantp.sunshine.model.tbl_Booking;
-import com.nuce.duantp.sunshine.model.tbl_Table;
-import com.nuce.duantp.sunshine.repository.*;
-import com.nuce.duantp.sunshine.scoped.User;
+import com.nuce.duantp.sunshine.dto.model.Image;
 import com.nuce.duantp.sunshine.service.DropBoxService;
 import com.nuce.duantp.sunshine.service.ImageService;
-import com.nuce.duantp.sunshine.service.SunShineService;
 //import com.phamtan.base.email.data_structure.EmailContentData;
 //import com.phamtan.base.email.request.EmailRequest;
 //import com.phamtan.base.email.service.EmailService;
@@ -23,26 +10,10 @@ import com.nuce.duantp.sunshine.service.SunShineService;
 //import com.phamtan.base.onesingnal.inout.request.DataDetail;
 //import com.phamtan.base.onesingnal.inout.request.NotificationRequest;
 //import com.phamtan.base.onesingnal.service.OneSignalService;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @RestController
 @RequestMapping("/test")

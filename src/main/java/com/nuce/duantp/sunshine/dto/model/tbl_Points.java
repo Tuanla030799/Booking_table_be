@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.model;
+package com.nuce.duantp.sunshine.dto.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -14,29 +14,26 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tbl_Beneficiary")
+@Table(name = "tbl_point")
 @EntityListeners(AuditingEntityListener.class)
-public class tbl_Beneficiary extends BaseEntity{
+
+public class tbl_Points {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "pointId")
+    private Long pointId;
 
-    @Column(name = "beneficiaryName")
-    private String beneficiaryName;
+    @Column(name = "price") //tổng số tiền trong bill
+    private Long price;
 
-    @Column(name = "totalBill")
-    private Long totalBill;
+    @Column(name = "pointPercent")
+    private float pointPercent;
+
+    @Column(name = "pointStatus")
+    private int pointStatus =1;
 
     @Column(name = "created")
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date created;
-
-    @Column(name = "beneficiaryStatus")
-    private int beneficiaryStatus;
-
-
-
-
 }

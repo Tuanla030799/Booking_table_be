@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.dto.response;
 
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

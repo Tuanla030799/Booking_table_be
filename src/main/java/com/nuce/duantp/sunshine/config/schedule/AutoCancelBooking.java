@@ -2,7 +2,7 @@ package com.nuce.duantp.sunshine.config.schedule;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.dto.request.CancelBookingReq;
-import com.nuce.duantp.sunshine.model.tbl_Booking;
+import com.nuce.duantp.sunshine.dto.model.tbl_Booking;
 import com.nuce.duantp.sunshine.repository.BookingRepository;
 import com.nuce.duantp.sunshine.service.BookingService;
 import org.slf4j.Logger;

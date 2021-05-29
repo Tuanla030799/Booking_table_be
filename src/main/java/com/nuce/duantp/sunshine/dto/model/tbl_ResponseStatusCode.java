@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.model;
+package com.nuce.duantp.sunshine.dto.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

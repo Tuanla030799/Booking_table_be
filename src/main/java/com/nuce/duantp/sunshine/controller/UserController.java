@@ -6,12 +6,11 @@ import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.response.UserDetail;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.security.services.AuthService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
 import com.nuce.duantp.sunshine.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,15 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    UserService userService;
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-    @Autowired
-    AuthService authService;
-    @Autowired
-    TokenLivingService tokenLivingService;
+
+    private final UserService userService;
+    private final AuthService authService;
+    private final TokenLivingService tokenLivingService;
 
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordReq changePasswordReq, HttpServletRequest req) {

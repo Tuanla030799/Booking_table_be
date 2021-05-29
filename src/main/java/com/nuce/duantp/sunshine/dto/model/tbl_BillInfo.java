@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.model;
+package com.nuce.duantp.sunshine.dto.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,13 +26,9 @@ public class tbl_BillInfo {
     @Column(name = "foodid")
     private Long foodId;
 
-//    @Column(name = "billInfoStatus")
-//    private int billInfoStatus;
-
     public tbl_BillInfo(String billId, int quantity, Long foodId) {
         this.billId = billId;
         this.quantity = quantity;
         this.foodId = foodId;
-//        this.billInfoStatus = billInfoStatus;
     }
 }

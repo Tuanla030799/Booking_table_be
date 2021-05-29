@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.model;
+package com.nuce.duantp.sunshine.dto.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;

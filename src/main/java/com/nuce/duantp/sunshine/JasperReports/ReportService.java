@@ -1,11 +1,10 @@
 package com.nuce.duantp.sunshine.JasperReports;
 
-import com.nuce.duantp.sunshine.model.tbl_Customer;
+import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 

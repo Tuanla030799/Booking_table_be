@@ -1,12 +1,12 @@
 package com.nuce.duantp.sunshine.service;
 
 import com.nuce.duantp.sunshine.dto.response.*;
-import com.nuce.duantp.sunshine.model.*;
+import com.nuce.duantp.sunshine.dto.model.*;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,30 +14,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SunShineService {
-    @Autowired
-    private BookingRepository bookingRepo;
-    @Autowired
-    private BillInfoRepo billInfoRepo;
-    @Autowired
-    private BeneficiaryRepo beneficiaryRepo;
-    @Autowired
-    private AuthTokenFilter authTokenFilter;
-    @Autowired
-    private CustomerRepo customerRepo;
-    @Autowired
-    BillRepo billRepo;
-    @Autowired
-    FoodRepo foodRepo;
-    @Autowired
-    DepositRepo depositRepo;
-    @Autowired
-    SaleRepo saleRepo;
-    @Autowired
-    NewsRepo newsRepo;
+
+    private final BookingRepository bookingRepo;
+    private final BillInfoRepo billInfoRepo;
+    private final BeneficiaryRepo beneficiaryRepo;
+    private final AuthTokenFilter authTokenFilter;
+    private final CustomerRepo customerRepo;
+    private final BillRepo billRepo;
+    private final  FoodRepo foodRepo;
+    private final DepositRepo depositRepo;
+    private final SaleRepo saleRepo;
+    private final NewsRepo newsRepo;
     private Logger LOGGER = LoggerFactory.getLogger(SunShineService.class);
-//    @Autowired
-//    private ImageRepo imageRepo;
 
     public PageHomeRes pageHome() {
         PageHomeRes pageHomeRes = new PageHomeRes();
@@ -45,27 +35,15 @@ public class SunShineService {
         List<FoodHomeRes> foodHomeList = new ArrayList<>();
         int stt=1;
         for (tbl_Food data : foodList) {
-//            Image image = imageRepo.findByName(data.getFoodImage());
             FoodHomeRes foodHomeRes = new FoodHomeRes(data,stt);
             foodHomeList.add(foodHomeRes);
             stt++;
         }
-
-        List<tbl_Sale> saleList = saleRepo.findBySaleStatus(1);
-        List<SaleHomeRes> saleHomeRes = new ArrayList<>();
-        stt=1;
-        for (tbl_Sale data : saleList) {
-//            Image image = imageRepo.findByName(data.getSaleImage());
-            SaleHomeRes req = new SaleHomeRes(data,stt);
-            saleHomeRes.add(req);
-            stt++;
-        }
-
+        List<SaleHomeRes> saleHomeRes = getListSale();
         List<tbl_News> newsList = newsRepo.findByNewsStatus(1);
         List<NewsHomeRes> newsHomeRes = new ArrayList<>();
         stt=1;
         for (tbl_News data : newsList) {
-//            Image image = imageRepo.findByName(data.getNewsImage());
             NewsHomeRes req = new NewsHomeRes(data,stt);
             newsHomeRes.add(req);
             stt++;
@@ -150,27 +128,27 @@ public class SunShineService {
         return saleResList;
     }
 
-//    public List<NewsRes> getAllNews() {
-//        List<tbl_News> newsList = newsRepo.findByNewsStatus(1);
-//        List<NewsRes> newsResList = new ArrayList<>();
-//        for (tbl_News data : newsList) {
-//            Image image = imageRepo.findByName(data.getNewsImage());
-//            NewsRes newsRes = new NewsRes(data, image.getUrl());
-//            newsResList.add(newsRes);
-//        }
-//        return newsResList;
-//    }
-
     public List<FoodHomeRes> getListFood() {
         List<FoodHomeRes> list = new ArrayList<>();
         List<tbl_Food> foodList = foodRepo.findAllByFoodStatus(1);
         int stt=1;
         for (tbl_Food data : foodList) {
-//            Image image = imageRepo.findByName(data.getFoodImage());
             FoodHomeRes foodHomeRes = new FoodHomeRes(data,stt);
             list.add(foodHomeRes);
             stt++;
         }
         return list;
+    }
+
+    public List<SaleHomeRes> getListSale(){
+        List<tbl_Sale> saleList = saleRepo.findBySaleStatus(1);
+        List<SaleHomeRes> saleHomeRes = new ArrayList<>();
+        int stt=1;
+        for (tbl_Sale data : saleList) {
+            SaleHomeRes req = new SaleHomeRes(data,stt);
+            saleHomeRes.add(req);
+            stt++;
+        }
+        return saleHomeRes;
     }
 }

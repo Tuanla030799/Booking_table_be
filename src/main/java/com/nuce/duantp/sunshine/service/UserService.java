@@ -7,8 +7,8 @@ import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.response.UserDetail;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +21,14 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @Service
+
 public class UserService {
     @Autowired
     AuthTokenFilter authTokenFilter;
-
     @Autowired
     CustomerRepo customerRepo;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     private Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     public ResponseEntity<?> changePassword(ChangePasswordReq changePasswordReq, HttpServletRequest req) {

@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.service;
 
-import com.nuce.duantp.sunshine.model.TokenLiving;
+import com.nuce.duantp.sunshine.dto.model.TokenLiving;
 import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

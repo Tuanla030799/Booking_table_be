@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.enums;
+package com.nuce.duantp.sunshine.dto.enums;
 
 public enum BeneficiaryEnum {
     VIP,

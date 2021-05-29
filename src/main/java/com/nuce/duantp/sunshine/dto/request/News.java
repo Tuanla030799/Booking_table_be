@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.dto;
+package com.nuce.duantp.sunshine.dto.request;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.model;
+package com.nuce.duantp.sunshine.dto.model;
 
 import com.nuce.duantp.sunshine.dto.request.SignupRequest;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;

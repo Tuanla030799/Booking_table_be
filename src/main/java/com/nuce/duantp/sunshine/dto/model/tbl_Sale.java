@@ -1,8 +1,6 @@
-package com.nuce.duantp.sunshine.model;
+package com.nuce.duantp.sunshine.dto.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nuce.duantp.sunshine.dto.request.SaleReq;
-import com.nuce.duantp.sunshine.enums.BeneficiaryEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

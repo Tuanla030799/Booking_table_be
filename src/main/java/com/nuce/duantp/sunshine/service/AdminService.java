@@ -3,11 +3,11 @@ package com.nuce.duantp.sunshine.service;
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.LogCodeSql;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
-import com.nuce.duantp.sunshine.dto.News;
+import com.nuce.duantp.sunshine.dto.request.News;
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.*;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.*;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.model.*;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class AdminService {
-//    private final CustomerRepo repository;
     private final DepositRepo depositRepo;
     private final PointsRepo pointsRepo;
     private final AuthTokenFilter authTokenFilter;
@@ -180,11 +179,7 @@ public class AdminService {
         LOGGER.warn("add food by " + email + "\n" + foodName, AdminService.class);
         String query="insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)" +
                 "\n\tvalues (\'"+food.getFoodName()+"\',\'"+food.getDescribes()+"\',\'"+food.getFoodImage()+"\',\'"+food.getFoodPrice()+"\',"+1+");\n";
-//        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
-//                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
-//
         LogCodeSql.writeCodeSql(query);
-//        LogCodeSql.writeCodeSql(query2);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -215,11 +210,8 @@ public class AdminService {
         LOGGER.warn("add News by " + email + "\n" + news.getNewsTitle(), AdminService.class);
         String query="insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)" +
                 "\n\tvalues (\'"+tbl_news.getNewsTitle()+"\',\'"+tbl_news.getNewsDetail()+"\',\'"+tbl_news.getNewsImage()+"\',"+1+");\n";
-//        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
-//                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
-//
+
         LogCodeSql.writeCodeSql(query);
-//        LogCodeSql.writeCodeSql(query2);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_NEWS_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -251,10 +243,7 @@ public class AdminService {
         LOGGER.warn("add sale by " + email + "\n" + saleTitle, AdminService.class);
         String query="insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)" +
                 "\n\tvalues (\'"+sale.getSaleTitle()+"\',\'"+sale.getSaleDetail()+"\',\'"+sale.getSaleImage()+"\',\'"+sale.getBeneficiary()+"\',"+sale.getPercentDiscount()+","+1+");\n";
-//        String query2="insert into image(name,url,imagePath,description,idParent,type,specifyType)" +
-//                "\n\tvalues(\'"+image.getName()+"\',\'"+image.getUrl()+"\',\'"+image.getImagePath()+"\',\'"+image.getDescription()+"\',\'"+image.getIdParent()+"\',\'"+image.getType()+"\',\'"+image.getSpecifyType()+"\');\n";
         LogCodeSql.writeCodeSql(query);
-//        LogCodeSql.writeCodeSql(query2);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_SALE_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -6,12 +6,12 @@ import com.nuce.duantp.sunshine.dto.request.LoginRequest;
 import com.nuce.duantp.sunshine.dto.request.SignupRequest;
 import com.nuce.duantp.sunshine.dto.response.JwtResponse;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 
-import com.nuce.duantp.sunshine.model.Image;
-import com.nuce.duantp.sunshine.model.TokenLiving;
-import com.nuce.duantp.sunshine.model.UserDetailsImpl;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
+import com.nuce.duantp.sunshine.dto.model.Image;
+import com.nuce.duantp.sunshine.dto.model.TokenLiving;
+import com.nuce.duantp.sunshine.dto.model.UserDetailsImpl;
+import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
@@ -26,9 +26,7 @@ import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 //import com.phamtan.base.enumeration.EmailEnum;
 import com.nuce.duantp.sunshine.service.ImageService;
 import freemarker.template.Configuration;
-import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,8 +40,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service

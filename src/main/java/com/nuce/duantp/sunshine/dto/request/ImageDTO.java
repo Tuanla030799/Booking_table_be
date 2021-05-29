@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.dto.request;
 
-import com.nuce.duantp.sunshine.enums.ImageType;
+import com.nuce.duantp.sunshine.dto.enums.ImageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

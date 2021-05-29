@@ -1,14 +1,12 @@
-package com.nuce.duantp.sunshine.model;
+package com.nuce.duantp.sunshine.dto.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import java.util.Date;
 
 @Data
@@ -32,9 +30,6 @@ public class tbl_Bill {
     @Column(name = "bookingId")
     private String bookingId;
 
-//    @Column(name = "discount")
-//    private Long discount;
-
     @Column(name = "billStatus")
     private int billStatus;
 
@@ -46,14 +41,12 @@ public class tbl_Bill {
         this.billId=bill.getBillId();
         this.pointId=pointId;
         this.bookingId=bill.getBookingId();
-//        this.discount=bill.getDiscount();
     }
 
     public tbl_Bill(String billId, Long pointId, String bookingId,  int billStatus) {
         this.billId = billId;
         this.pointId = pointId;
         this.bookingId = bookingId;
-//        this.discount = discount;
         this.billStatus = billStatus;
     }
 }

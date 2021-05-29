@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.dto.response;
 
-import com.nuce.duantp.sunshine.model.tbl_News;
+import com.nuce.duantp.sunshine.dto.model.tbl_News;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
