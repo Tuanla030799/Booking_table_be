@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BillRepo extends CrudRepository<tbl_Bill, Long> {
-       tbl_Bill findAllByBookingIdAndDiscountGreaterThan(String bookingId,Long discount);
+//       tbl_Bill findAllByBookingIdAndDiscountGreaterThan(String bookingId,Long discount);
        tbl_Bill findByBookingId(String bookingId);
 //       tbl_Bill findByBillId(String billId);
 }

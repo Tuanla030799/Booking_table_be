@@ -30,12 +30,12 @@ public class CustomerController {
     @Autowired
     AuthTokenFilter authTokenFilter;
 
-    @GetMapping("/point-used-history")
-    public List<PointHistoryRes> viewHistoryPointUse(HttpServletRequest req) {
-        if (tokenLivingService.checkTokenLiving(req)) {
-            return customerService.viewHistoryPointUse(req);
-        } else return null;
-    }
+//    @GetMapping("/point-used-history")
+//    public List<PointHistoryRes> viewHistoryPointUse(HttpServletRequest req) {
+//        if (tokenLivingService.checkTokenLiving(req)) {
+//            return customerService.viewHistoryPointUse(req);
+//        } else return null;
+//    }
 
     @GetMapping("/booking-history")
     public List<BookingHistoryRes> viewBookingHistory(HttpServletRequest req) {
