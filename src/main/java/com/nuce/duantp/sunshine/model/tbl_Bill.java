@@ -32,8 +32,8 @@ public class tbl_Bill {
     @Column(name = "bookingId")
     private String bookingId;
 
-    @Column(name = "discount")
-    private Long discount;
+//    @Column(name = "discount")
+//    private Long discount;
 
     @Column(name = "billStatus")
     private int billStatus;
@@ -46,14 +46,14 @@ public class tbl_Bill {
         this.billId=bill.getBillId();
         this.pointId=pointId;
         this.bookingId=bill.getBookingId();
-        this.discount=bill.getDiscount();
+//        this.discount=bill.getDiscount();
     }
 
-    public tbl_Bill(String billId, Long pointId, String bookingId, Long discount, int billStatus) {
+    public tbl_Bill(String billId, Long pointId, String bookingId,  int billStatus) {
         this.billId = billId;
         this.pointId = pointId;
         this.bookingId = bookingId;
-        this.discount = discount;
+//        this.discount = discount;
         this.billStatus = billStatus;
     }
 }

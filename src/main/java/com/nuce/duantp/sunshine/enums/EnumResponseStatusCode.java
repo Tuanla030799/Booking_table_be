@@ -31,6 +31,7 @@ public enum EnumResponseStatusCode {
     ADD_NEWS_SUCCESS("Thêm tin tức thành công !"),
     ENABLE_SALE_SUCCESS("Xoá sale thành công !"),
     ADD_SALE_SUCCESS("Thêm sale thành công !"),
+    NULL_POINTER("Giá trị không khớp"),
     TEST("Test");
 
     public final String label;

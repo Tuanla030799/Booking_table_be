@@ -12,7 +12,7 @@ import java.util.Date;
 public class BookingReq {
     private String bookingTime;
 
-    private String accountNo;
+//    private String accountNo;
 
     private int totalSeats;
 }

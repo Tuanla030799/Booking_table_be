@@ -13,7 +13,6 @@ import java.util.Date;
 public class PointHistoryRes {
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd/MM/yyyy hh:mm:ss aa")
     private Date timeUse;
-    private Long pointUse;
     private String bookingId;
     private int stt;
 }
