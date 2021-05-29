@@ -5,10 +5,7 @@ import com.nuce.duantp.sunshine.config.format.LogCodeSql;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import com.nuce.duantp.sunshine.dto.News;
 import com.nuce.duantp.sunshine.dto.request.*;
-import com.nuce.duantp.sunshine.dto.response.BillReport;
-import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
-import com.nuce.duantp.sunshine.dto.response.JasperReportBill;
-import com.nuce.duantp.sunshine.dto.response.MessageResponse;
+import com.nuce.duantp.sunshine.dto.response.*;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.model.*;
 import com.nuce.duantp.sunshine.repository.*;
@@ -34,7 +31,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class AdminService {
-    private final CustomerRepo repository;
+//    private final CustomerRepo repository;
     private final DepositRepo depositRepo;
     private final PointsRepo pointsRepo;
     private final AuthTokenFilter authTokenFilter;
@@ -53,7 +50,7 @@ public class AdminService {
     private final SunShineService sunShineService;
     public void exportReport(String fileName) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
-        List<tbl_Customer> employees = (List<tbl_Customer>) repository.findAll();
+        List<tbl_Customer> employees = (List<tbl_Customer>) customerRepo.findAll();
 
         File file = ResourceUtils.getFile("classpath:employees.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
@@ -293,4 +290,15 @@ public class AdminService {
         }
         return data;
     }
+
+    public List<UserDetail> getListUser(){
+        List<tbl_Customer> customerList= (List<tbl_Customer>) customerRepo.findAll();
+        List<UserDetail> list =new ArrayList<>();
+        for(tbl_Customer data: customerList){
+            UserDetail userDetail=new UserDetail(data);
+            list.add(userDetail);
+        }
+        return list;
+    }
+
 }

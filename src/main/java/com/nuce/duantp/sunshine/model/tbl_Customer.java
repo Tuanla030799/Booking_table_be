@@ -1,11 +1,13 @@
 package com.nuce.duantp.sunshine.model;
 
+import com.nuce.duantp.sunshine.dto.request.SignupRequest;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -39,6 +41,20 @@ public class tbl_Customer {
 
     @Column(name = "beneficiary")
     private String beneficiary;
+
+    @Column(name="image")
+    private String image;
+
+    public tbl_Customer(SignupRequest signupRequest,String password) {
+        this.email=signupRequest.getEmail();
+        this.phoneNumber=signupRequest.getPhoneNumber();
+        this.fullName=signupRequest.getFullName();
+        this.password=password;
+        this.totalMoney=0L;
+        this.role="USERS";
+        this.beneficiary="CUSTOMER";
+        this.image= String.valueOf(new Date().getTime());
+    }
 
     public tbl_Customer(String email, String phoneNumber, String fullName, String password, Long totalMoney) {
         this.email = email;
