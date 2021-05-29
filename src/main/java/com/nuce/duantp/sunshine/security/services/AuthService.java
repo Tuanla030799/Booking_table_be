@@ -8,6 +8,7 @@ import com.nuce.duantp.sunshine.dto.response.JwtResponse;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
 
+import com.nuce.duantp.sunshine.model.Image;
 import com.nuce.duantp.sunshine.model.TokenLiving;
 import com.nuce.duantp.sunshine.model.UserDetailsImpl;
 import com.nuce.duantp.sunshine.model.tbl_Customer;
@@ -23,8 +24,10 @@ import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 //import com.phamtan.base.email.request.EmailRequest;
 //import com.phamtan.base.email.service.EmailService;
 //import com.phamtan.base.enumeration.EmailEnum;
+import com.nuce.duantp.sunshine.service.ImageService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,35 +47,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
+@RequiredArgsConstructor
 public class AuthService {
-
-    @Autowired
-    private CustomerRepo userRepository;
-
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    private CustomerRepo customerRepo;
-
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-
-    @Autowired
-    private Configuration configuration;
-
-    @Autowired
-    private TokenLivingRepo tokenLivingRepo;
-
-//    @Autowired
-//    private EmailService emailService;
+    private final CustomerRepo userRepository;
+    private final JwtUtils jwtUtils;
+    private final PasswordEncoder passwordEncoder;
+    private final  AuthenticationManager authenticationManager;
+    private final CustomerRepo customerRepo;
+    private final  AuthTokenFilter authTokenFilter;
+    private final Configuration configuration;
+    private final TokenLivingRepo tokenLivingRepo;
+    private final ImageService imageService;
+//    private final EmailService emailService;
 
     public ResponseEntity<MessageResponse> registerConsumer(@RequestBody SignupRequest signupRequest) {
         if (!CheckEmail.checkEmail(signupRequest.getEmail())) {
@@ -95,8 +81,16 @@ public class AuthService {
             if (userRepository.existsByEmail(signupRequest.getEmail())) {
                 return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.EMAIL_EXISTED));
             }
-
-            tbl_Customer customer = new tbl_Customer(signupRequest.getEmail(), signupRequest.getPhoneNumber(), signupRequest.getFullName(), passwordEncoder.encode(signupRequest.getPassword()));
+            tbl_Customer customer=new tbl_Customer(signupRequest,passwordEncoder.encode(signupRequest.getPassword()));
+            Image image = new Image();
+            image.setName(customer.getImage());
+            image.setDescription(customer.getFullName());
+            image.setImagePath("/Avatar/" + customer.getImage() + ".jpg");
+            image.setType("AVATAR");
+            image.setSpecifyType("specifyType");
+            image.setIdParent("idParent");
+            imageService.createImage(image, signupRequest.getFile());
+            customer.setImage(image.getUrl());
             userRepository.save(customer);
 
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));

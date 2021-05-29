@@ -314,7 +314,9 @@ public class testCon {
         image.setType(type);
         image.setSpecifyType(specifyType);
         image.setIdParent(idParent);
-        return  imageService.createImage(image,file);
+        Image data = imageService.createImage(image, file);
+        System.out.println(data.getUrl());
+        return  data;
     }
 
 }

@@ -9,14 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class NewsHomeRes {
+    private int stt;
+
     private String newsTitle;
 
     private String newsDetail;
 
     private String newsImage;
 
-
-    public NewsHomeRes(tbl_News news, String url) {
+    public NewsHomeRes(tbl_News news,int stt) {
         this.newsTitle = news.getNewsTitle();
         String[] splits = news.getNewsDetail().split(" ");
         String str = "";
@@ -26,6 +27,7 @@ public class NewsHomeRes {
             }
         } else str = news.getNewsDetail();
         this.newsDetail = str;
-        this.newsImage = url;
+        this.newsImage = news.getNewsImage();
+        this.stt=stt;
     }
 }

@@ -80,7 +80,7 @@ public class UserService {
 
     public UserDetail userDetail(HttpServletRequest req){
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        return new UserDetail(customer);
+        return new UserDetail(customer.get());
     }
 
 

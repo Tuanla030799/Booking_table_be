@@ -10,17 +10,6 @@ CREATE TABLE `tbl_deposit`
     `created` DATETIME DEFAULT NOW()
 );
 
-CREATE TABLE `image`
-(
-    `id` int primary key AUTO_INCREMENT,
-    `url` NVARCHAR(200),
-    `imagePath` NVARCHAR(200),
-    `description` NVARCHAR(200),
-    `name` NVARCHAR(200),
-    `idParent` NVARCHAR(200),
-    `type` NVARCHAR(200),
-    `specifyType` NVARCHAR(200)
-);
 
 create table tbl_role
 (
@@ -62,10 +51,10 @@ CREATE TABLE `tbl_Sale`
     `beneficiary` VARCHAR(20),
     `Created` DATETIME DEFAULT NOW(),
     `percentDiscount` float DEFAULT 0,
-    `saleDetail` NVARCHAR(1000)  ,
-    `saleImage` NVARCHAR(50)  ,
+    `saleDetail` NVARCHAR(10000)  ,
+    `saleImage` NVARCHAR(255)  ,
     `saleStatus` int DEFAULT 1,
-    `saleTitle` NVARCHAR(100),
+    `saleTitle` NVARCHAR(255),
     constraint tbl_SaleBeneficiary foreign key (beneficiary) references tbl_Beneficiary(beneficiaryName)
 );
 
@@ -73,10 +62,10 @@ CREATE TABLE `tbl_News`
 (
     `newsId` bigint primary key AUTO_INCREMENT,
     `created` DATETIME DEFAULT NOW(),
-    `newsDetail` NVARCHAR(1000)  ,
-    `newsImage` NVARCHAR(50)  ,
+    `newsDetail` NVARCHAR(10000)  ,
+    `newsImage` NVARCHAR(255)  ,
     `newsStatus` int DEFAULT 1,
-    `newsTitle` NVARCHAR(100)
+    `newsTitle` NVARCHAR(255)
 
 );
 
@@ -104,15 +93,6 @@ CREATE TABLE `tbl_customer`
 
 );
 
-CREATE TABLE `tbl_bankaccount`
-(
-    `Id` bigint primary key AUTO_INCREMENT,
-    `AccountNo` NVARCHAR(20)   unique,
-    `Balance` bigint DEFAULT 0,
-    `Status` int DEFAULT 0,
-    `Email` NVARCHAR(40),
-    constraint fk_BankaccountCustomer foreign key (Email) references tbl_customer(Email)
-);
 
 CREATE TABLE `tbl_booking`
 (
@@ -150,9 +130,9 @@ create table `tbl_food`
 (
     `FoodId` bigint primary key AUTO_INCREMENT  ,
     `Created` DATETIME DEFAULT NOW(),
-    `describes` NVARCHAR(255)  ,
-    `FoodName` NVARCHAR(30)  ,
-    `FoodImage` NVARCHAR(30),
+    `describes` NVARCHAR(10000)  ,
+    `FoodName` NVARCHAR(255)  ,
+    `FoodImage` NVARCHAR(255),
     `FoodPrice` bigint DEFAULT 0,
     `FoodStatus` int default 1
 );
@@ -184,9 +164,6 @@ alter table tbl_food
 
 alter table tbl_deposit
     add constraint check_deposit check (`Deposit` >= 0);
-
-alter table tbl_bankaccount
-    add constraint check_balance check (`Balance` >= 0);
 
 alter table tbl_customer
     add constraint check_total_money check (TotalMoney >= 0);
@@ -235,13 +212,6 @@ Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values(
 Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values('REGULAR',1,50000);
 Insert into tbl_Beneficiary(beneficiaryName,beneficiaryStatus,totalBill) values('CUSTOMER',1,10000);
 
--- insert into tbl_sale(saleTitle,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.1);
--- insert into tbl_sale(saleTitle,saleDetail,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.2);
--- insert into tbl_sale(saleTitle,saleDetail ,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.3);
--- insert into tbl_sale(saleTitle,saleDetail ,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.4);
--- insert into tbl_sale(saleTitle,saleDetail ,saleImage,saleStatus,beneficiary,percentDiscount) values ('saleTitile',' ','image',1,'VIP',0.5);
-
-
 
 insert into tbl_role(role,roleName) values('USERS',N'Khách Hàng');
 insert into tbl_role(role,roleName) values('ADMIN',N'Nhân Viên');
@@ -250,44 +220,42 @@ insert into tbl_role(role,roleName) values('ADMIN',N'Nhân Viên');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('pvminh@gmail.com', '0796164361', N'Phí Văn Minh', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000,'USERS','CUSTOMER');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('sunshine87lethanhnghi@gmail.com', '0999999999', N'Nhà hàng Sunshine', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 8000,'ADMIN','VIP');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('haind1@vimo.vn', '0978675678', N'Nguyễn Đình Hải', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000,'USERS','CUSTOMER');
--- INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney,role,beneficiary) VALUES ('tranphuduan@gmail.com', '0978675678', N'Nguyễn Đình Hải', '$2a$10$QldpC9h4Sw4jiR9Nmq5Mt.zKMLZOQxYt8tfZ16n.E935l64tOK4ma', 5000,'USERS','CUSTOMER');
--- update tbl_customer set Password='$2a$10$JtAQTcqWDiKf84h2oF/ytOF3yqouJuUAOdsgjGsBs5ALEQsDNcyLy' where Email='sunshine87lethanhnghi@gmail.com'
-
-
--- delete tbl_Customer where email='tranphuduan@gmail.com'
-
-INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('5469879547877', 200000000, 'pvminh@gmail.com', 1);
-INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('5469879547869', 10000, 'haind1@vimo.vn', 0);
-INSERT INTO tbl_BankAccount(AccountNo, Balance, Email, Status) VALUES ('8686868686868', 0, 'sunshine87lethanhnghi@gmail.com', 1);
-
-
--- INSERT INTO tbl_food(FoodName, FoodPrice,describes,FoodImage) VALUES ( N'Cá mập', 50000,N'Cá mập','D:/');
--- INSERT INTO tbl_food(FoodName, FoodPrice,describes,FoodImage) VALUES ( N'Cá voi', 50000,N'Cá voi','D:/');
--- INSERT INTO tbl_food(FoodName, FoodPrice,describes,FoodImage) VALUES (N'Cá heo', 100000,N'Cá heo','D:/');
-
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(1,'changeResetPasswordStatus','1','15 0/1 * * * *','test schedule in database','job chay vao giay thu 15 cua tung phut');
-
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(1,'removeLiveToken','1','15 0/1 * * * *','test schedule in database','job xoa TokenLiving');
-
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(1,'autoCancelBooking','1','15 0/1 * * * *','test schedule in database','job auto cancelbooking');
-
-insert into conf_schedules(active, bean, code, cron, description, name)
-values(1,'autoUpdateBeneficiary','1','15 0/1 * * * *','test schedule in database','job auto UpdateBeneficiary');
-
-
 
 insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
-values ('Thịt ba chỉ','Thịt ba chỉ','1621223891827','50000','1');
-insert into image(name,url,imagePath,description,idParent,type,specifyType)
-values('1621223891827','https://www.dropbox.com/s/wdlrkchlaeg61zt/1621223891827.jpg?raw=1','/Food/1621223891827.jpg','Thịt ba chỉ','idParent','FOOD','specifyType');
-insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
-values ('Tuyệt chiêu săn sale hiệu quả 12.12','Sale, Hàng Sale ','1621224018800',1);
-insert into image(name,url,imagePath,description,idParent,type,specifyType)
-values('1621224018800','https://www.dropbox.com/s/6ifhnx1wlb3di6p/1621224018800.jpg?raw=1','/News/1621224018800.jpg','Tuyệt chiêu săn sale hiệu quả 12.12','idParent','NEWS','specifyType');
+values ('Tôm Hùm Úc','Set Tôm Hùm Úc ( Tôm hùm úc bỏ lò phomai/ cháy tỏi, Salad rong biển trứng tôm, Nem hải sản...)','https://www.dropbox.com/s/0tsh0ajysptlae4/1621756968541.jpg?raw=1','100000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values ('Thịt trâu gác bếp','Thịt trâu gác bếp không chỉ là đặc sản Lào Cai mà còn là đặc sản Tây Bắc','https://www.dropbox.com/s/q3a48o3ivxn56ls/1621757187545.jpg?raw=1','100000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values ('Thắng cố ngựa Bắc Hà','Thắng cố đặc sản Tây Bắc được làm từ người Mông. Thắng cố ngựa Bắc Hà đặc biệt vì được làm từ xương ngựa được nuôi ở vùng núi ninh cùng lục phủ ngũ tạng của chúng cúng hạt dổi, thảo quả, quế hồi','https://www.dropbox.com/s/x9pb942lu1ait1f/1621757333846.jpg?raw=1','200000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values ('Pa pỉnh tộp','Pa pỉnh tộp hay còn gọi là cá suối gập nướng. Đây là một món ăn cổ truyền nổi tiếng và là đặc sản Tây Bắc rất được trân trọng của người Thái, được làm từ cá suối tươi được ướp cùng gừng, sả','https://www.dropbox.com/s/zjfh4tb3ee2zn79/1621757392195.jpg?raw=1','150000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values ('Lợn cắp nách','Lợn cắp nách hay được gọi là lợn bản, lợn mán, được bà con nuôi thả rông trên đồi núi, chỉ ăn cây cỏ, không ăn thức ăn cây cỏ nên thịt lợn cắp nách rất chắc, nhiều nạc','https://www.dropbox.com/s/0zhh3w0szncgjll/1621757422535.jpg?raw=1','150000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values ('Khâu nhục','Đây là món ăn truyền thống của người dân xứ Lạng và được coi là món ăn “sang trọng” của người Nùng. Thực chất, đây là món ăn được làm từ thịt ba chỉ','https://www.dropbox.com/s/ildpzupdezxf30i/1621757457619.jpg?raw=1','150000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values ('Nhộng ong rừng','Nhộng ong rừng khá hiếm, chỉ có vào khoảng từ tháng 4 đến tháng 8 hàng năm thì mới có. Nên để thưởng thức món nhộng ong rừng xào đặc sản ','https://www.dropbox.com/s/bh96tjmltmlkyn6/1621757495803.jpg?raw=1','100000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values ('Bê chao Mộc Châu','Đây là món ngon Tây Bắc đầu tiên chúng mình muốn kể cho bạn khi đến Sơn La. Vì món này có nguồn gốc từ Mộc Châu - Sơn La và cũng chỉ có Sơn La là ngon nhất thô','https://www.dropbox.com/s/xphic4yfeths3rg/1621757529055.jpg?raw=1','100000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values (' Hải sâm','hải sâm rất tốt cho đàn ông và người cao tuổi','https://www.dropbox.com/s/94wb3drx67v0bd9/1621757571182.jpg?raw=1','250000',1);
+insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
+values ('Ghẹ xanh Hàm Ninh Phú Quốc','Ghẹ thì ở đâu cũng có rồi nhưng để có ghẹ chất lượng, ngon và an toàn cho sức khỏe thì đến Phú Quốc,','https://www.dropbox.com/s/lripmz2axpkm2ee/1621757602328.jpg?raw=1','250000',1);
 insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)
-values ('BufferedWriter','BufferedWriter là class thuộc luồng ký tự (character stream) được xây dựng để xử lý dữ liệu ký tự (Writer là class cha, cũng thuộc luồng ký tự). Không giống như luồng byte (luồng mà class OutputStream đảm nhận, luồng byte xử lý dữ liệu dưới dạng byte, không xử lý được dữ liệu Unicode), luồng ký tự có thể xử lý trực tiếp được chuỗi, mảng hoặc dữ liệu ký tự dưới dạng Unicode','1621225088243','REGULAR',0.3,1);
-insert into image(name,url,imagePath,description,idParent,type,specifyType)
-values('1621225088243','https://www.dropbox.com/s/la3h3vrcy2hfdkv/1621225088243.jpg?raw=1','/Sale/1621225088243.jpg','BufferedWriter','idParent','SALE','specifyType');
+values ('GOFOOD SALE OFF 10%','Cứ mỗi dịp 8/3 ghé qua, phái mạnh lại tất bật chuẩn bị COMBO HOA + QUÀ cho chị em. Combo ấy cứ lặp đi lặp lại khiến việc tặng quà ngày 8/3 dần trở thành “nghĩa vụ hằng năm”, việc nhận cũng trở thành cái tặc lưỡi “quyền lợi hằng năm”. Và thế là, 8/3 chẳng còn những hồi hộp những bất ngờ nữa','https://www.dropbox.com/s/h18mmyscbf1cvty/1621758070713.jpg?raw=1','CUSTOMER',0.1,1);
+insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)
+values ('Đi 4 Tính Tiền 3, 15% OFF','Gửi tặng voucher GIẢM GIÁ 15% BUFFET LẨU TRÊN ĐĨA BAY KHỔNG LỒ – BUFFET LẨU UFO hoặc LẨU 9 TẦNG MÂY hoặc SƯỜN NƯỚNG TẢNG SỐT LAVA cho các khách hàng có sinh nhật trong tháng 1 này!','https://www.dropbox.com/s/wvy9jooyt6qwuo9/1621758127448.jpg?raw=1','CUSTOMER',0.15,1);
+insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)
+values ('Chương trình KM sẽ bắt đầu từ ngày 3/4 đến hết 30/4 (trừ ngày lễ và CN)','Tháng Tư này HONGDAE chơi lớn KHUYẾN MẠI KHỦNG nghe bà con. Buffet 299k: Giảm 30,4% cho người thứ 3, giảm tiếp 30,4%x2 cho người thứ 4','https://www.dropbox.com/s/ux3v177aj5tgu4a/1621758235141.jpg?raw=1','CUSTOMER',0.15,1);
+insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)
+values ('Ưu đãi giảm giá 10% với hóa đơn mua hàng từ 400.000đ','Kỳ nghỉ lễ 30/4 - 1/5 luôn là dịp lý tưởng để tổ chức các bữa liên hoan tại nhà cũng như các bữa tiệc picnic, dã ngoại. Để những bữa tiệc liên hoan được hoàn hảo nhất, đừng quên ghé HOMEFARM lựa chọn thực phẩm thơm ngon lại tiện lợi nhé!','https://www.dropbox.com/s/20k4oc4hvyko3es/1621758280647.jpg?raw=1','VIP',0.15,1);
+insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)
+values ('Ưu đãi 1/6','Kỳ nghỉ lễ 30/4 - 1/5 luôn là dịp lý tưởng để tổ chức các bữa liên hoan tại nhà cũng như các bữa tiệc picnic, dã ngoại. Để những bữa tiệc liên hoan được hoàn hảo nhất, đừng quên ghé HOMEFARM lựa chọn thực phẩm thơm ngon lại tiện lợi nhé!','https://www.dropbox.com/s/1yz7ceat9d6jipd/1621758366843.jpg?raw=1','VIP',0.15,1);
+insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
+values ('New1','New1','https://www.dropbox.com/s/e0hpa6kc2j9giqh/1621758467808.jpg?raw=1',1);
+insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
+values ('New12','New12','https://www.dropbox.com/s/5sppfri3idtbjy0/1621758477159.jpg?raw=1',1);
+insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
+values ('New123','New123','https://www.dropbox.com/s/vd6g49pesbveohw/1621758486786.jpg?raw=1',1);
+insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)
+values ('New1234','New1234','https://www.dropbox.com/s/9x3xd39zfzuwd3j/1621758495452.jpg?raw=1',1);

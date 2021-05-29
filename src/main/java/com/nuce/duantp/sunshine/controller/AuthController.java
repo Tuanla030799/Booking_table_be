@@ -59,7 +59,7 @@ public class AuthController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<MessageResponse> registerConsumer(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<MessageResponse> registerConsumer(@ModelAttribute SignupRequest signupRequest) {
         return authService.registerConsumer(signupRequest);
     }
 

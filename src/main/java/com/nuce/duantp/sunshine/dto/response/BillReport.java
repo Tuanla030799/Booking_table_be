@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class BillReport {
     private int stt;
     private String foodName;
-    private Long price;
-    private Long money;
+    private String price;
+    private String money;
     private int set;
 
 }

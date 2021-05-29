@@ -1,5 +1,6 @@
 package com.nuce.duantp.sunshine.dto.response;
 
+import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import com.nuce.duantp.sunshine.model.tbl_Food;
 
 import lombok.AllArgsConstructor;
@@ -10,15 +11,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class FoodHomeRes {
+    private int stt;
+
     private String foodName;
 
     private String describes;
 
     private String foodImage;
 
-    private Long foodPrice;
+    private String foodPrice;
 
-    public FoodHomeRes(tbl_Food food, String url) {
+    private int quantity;
+    public FoodHomeRes(tbl_Food food,int stt) {
         this.foodName = food.getFoodName();
         String[] splits = food.getDescribes().split(" ");
         String str = "";
@@ -31,7 +35,9 @@ public class FoodHomeRes {
            str=food.getDescribes();
         }
         this.describes = str;
-        this.foodImage = url;
-        this.foodPrice = food.getFoodPrice();
+        this.foodImage = food.getFoodImage();
+        this.foodPrice = FormatMoney.formatMoney(String.valueOf(food.getFoodPrice()));
+        this.stt=stt;
+        this.quantity=0;
     }
 }

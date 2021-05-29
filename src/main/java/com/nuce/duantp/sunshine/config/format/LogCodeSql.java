@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.config.database;
+package com.nuce.duantp.sunshine.config.format;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,3 +15,4 @@ public class LogCodeSql {
         }
     }
 }
+
