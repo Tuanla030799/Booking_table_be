@@ -301,4 +301,10 @@ public class AdminService {
         return list;
     }
 
+    public UserDetail userDetail(String email){
+        tbl_Customer customer=customerRepo.findCustomerByEmail(email);
+        UserDetail user=new UserDetail(customer);
+        return user;
+    }
+
 }

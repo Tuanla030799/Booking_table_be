@@ -24,7 +24,7 @@ public class UserDetail {
 
     private String role;
 
-    private MultipartFile file;
+    private String image;
 
     public UserDetail(tbl_Customer customer) {
         this.email=customer.getEmail();
@@ -32,5 +32,6 @@ public class UserDetail {
         this.fullName=customer.getFullName();
         this.totalMoney= FormatMoney.formatMoney(String.valueOf(customer.getTotalMoney()));
         this.role=customer.getRole();
+        this.image=customer.getImage();
     }
 }
