@@ -35,7 +35,6 @@ public class AdminService {
     private final PointsRepo pointsRepo;
     private final AuthTokenFilter authTokenFilter;
     private final BookingRepository bookingRepository;
-    private final ResponseStatusCodeRepo responseStatusCodeRepo;
     private final BillRepo billRepo;
     private final BillInfoRepo billInfoRepo;
     private final Logger LOGGER = LoggerFactory.getLogger(AdminService.class);
@@ -114,7 +113,6 @@ public class AdminService {
     public ResponseEntity<?> addFoodInBooking(OrderFoodReq orderFoodReq, String email) {
         tbl_Bill bill = billRepo.findByBookingId(orderFoodReq.getBookingId());
         tbl_Booking booking = bookingRepository.findByBookingId(orderFoodReq.getBookingId());
-        String str = "ADD_FOOD_SUCCESS";
         for (FoodReq data : orderFoodReq.getFoodList()) {
             tbl_BillInfo billInfo = billInfoRepo.findByBillIdAndFoodId(bill.getBillId(), data.getFoodId());
             if (billInfo == null) {
@@ -126,8 +124,7 @@ public class AdminService {
             }
         }
         LOGGER.warn("add food for customer by " + email + "\n" + orderFoodReq, AdminService.class);
-        tbl_ResponseStatusCode responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(str);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()), responseStatusCode.getResponseStatusMessage());
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

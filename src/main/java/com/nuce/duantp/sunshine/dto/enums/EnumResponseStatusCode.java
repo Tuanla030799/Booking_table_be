@@ -22,7 +22,7 @@ public enum EnumResponseStatusCode {
     EMAIL_EXISTED("Email đã tồn tại!"),
     BILL_NOT_EXIST("Đơn hàng không tồn tại!"),
     SUCCESS("Thành công!"),
-    TABLE_OFF("Hết bàn!"),
+    TABLE_OFF("Hết bàn! Vui lòng chọn thời gian hoặc số lượng ngươi khác."),
     TOKEN_DIE("Đăng nhập lại để tiếp tục!"),
     EMAIL_PASS_NOT_CORRECT("Email hoặc Password không đúng!"),
     OLD_PASS_NOT_CORRECT("Password cũ không đúng!"),
@@ -31,7 +31,7 @@ public enum EnumResponseStatusCode {
     ADD_NEWS_SUCCESS("Thêm tin tức thành công !"),
     ENABLE_SALE_SUCCESS("Xoá sale thành công !"),
     ADD_SALE_SUCCESS("Thêm sale thành công !"),
-    NULL_POINTER("Giá trị không khớp"),
+    NULL_POINTER("Có giá trị trống"),
     TEST("Test");
 
     public final String label;

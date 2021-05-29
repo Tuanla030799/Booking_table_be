@@ -26,10 +26,8 @@ public class CustomerService {
     private final AuthTokenFilter authTokenFilter;
     private final BookingRepository bookingRepository;
     private final BillRepo billRepo;
-    private ResponseStatusCodeRepo responseStatusCodeRepo;
     private final SunShineService sunShineService;
     private final SaleRepo saleRepo;
-    //    private final AccountRepo accountRepo;
     private final DepositRepo depositRepo;
     private final PointsRepo pointsRepo;
     private Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);

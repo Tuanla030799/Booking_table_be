@@ -27,7 +27,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookingService {
     private final BookingRepository bookingRepository;
-    private final ResponseStatusCodeRepo responseStatusCodeRepo;
     private final AuthTokenFilter authTokenFilter;
     private final TableRepo tableRepo;
     private final BillRepo billRepo;
@@ -52,18 +51,14 @@ public class BookingService {
                 break;
             }
         }
-        MessageResponse messageResponse = new MessageResponse();
-        tbl_ResponseStatusCode responseStatusCode = new tbl_ResponseStatusCode();
         if (tableName == null) {
-            responseStatusCode = responseStatusCodeRepo.findByResponseStatusCode(String.valueOf(EnumResponseStatusCode.TABLE_OFF));
-            messageResponse.setMessage(responseStatusCode.getResponseStatusMessage());
-            messageResponse.setStatusCode(EnumResponseStatusCode.valueOf(responseStatusCode.getResponseStatusCode()));
-            return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TABLE_OFF);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
         tbl_Deposit deposit = depositRepo.findTopByTotalPersonsLessThanEqualOrderByTotalPersonsAscCreatedDesc(bookingReq.getTotalSeats());
         if (deposit == null) {
-            MessageResponse response = new MessageResponse(EnumResponseStatusCode.BAD_REQUEST);
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.NULL_POINTER);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         if (customer.get().getTotalMoney()<deposit.getDeposit()) {
@@ -87,9 +82,11 @@ public class BookingService {
             Long money=customer.get().getTotalMoney();
             customer.get().setTotalMoney(money-deposit.getDeposit());
             tbl_Customer admin=customerRepo.findCustomerByEmail("sunshine87lethanhnghi@gmail.com");
-            money=admin.getTotalMoney()+deposit.getDeposit();
+            admin.setTotalMoney(admin.getTotalMoney()+deposit.getDeposit());
             tbl_Bill bill = new tbl_Bill(bookingId,1L, bookingId,  0);
             billRepo.save(bill);
+            customerRepo.save(customer.get());
+            customerRepo.save(admin);
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.OK);
 
