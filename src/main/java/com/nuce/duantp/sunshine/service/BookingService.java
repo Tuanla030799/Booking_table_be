@@ -117,7 +117,8 @@ public class BookingService {
         }
         if (date.getHours() >= 8 && date.getHours() < 23) {
             tbl_Booking booking = new tbl_Booking
-                    (bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(), 0, tableName);
+                    (bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(),
+                            0, tableName,bookingReq.getNote());
             List<tbl_Booking> data92 = bookingRepository.findAll();
 
             bookingRepository.save(booking);

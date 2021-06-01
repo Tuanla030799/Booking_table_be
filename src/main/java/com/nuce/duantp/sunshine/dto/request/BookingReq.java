@@ -13,4 +13,6 @@ public class BookingReq {
     private String bookingTime;
 
     private int totalSeats;
+
+    private String note;
 }

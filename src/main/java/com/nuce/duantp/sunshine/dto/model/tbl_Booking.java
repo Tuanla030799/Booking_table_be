@@ -44,6 +44,9 @@ public class tbl_Booking {
     @Column(name = "tableName")
     private String tableName;
 
+    @Column(name = "note")
+    private String note = "...";
+
     @Column(name = "saleId")//phần trăm khuyến mãi
     private Long saleId;
 
@@ -52,7 +55,8 @@ public class tbl_Booking {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date created;
 
-    public tbl_Booking(String bookingId, String email, Date bookingTime, int totalSeats, Long depositId, int bookingStatus, String tableName) {
+    public tbl_Booking(String bookingId, String email, Date bookingTime, int totalSeats, Long depositId,
+                       int bookingStatus, String tableName,String note) {
         this.bookingId = bookingId;
         this.email = email;
         this.bookingTime = bookingTime;
@@ -60,6 +64,7 @@ public class tbl_Booking {
         this.depositId = depositId;
         this.bookingStatus = bookingStatus;
         this.tableName = tableName;
+        this.note=note;
     }
 
 

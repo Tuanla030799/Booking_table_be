@@ -105,6 +105,7 @@ CREATE TABLE `tbl_booking`
     `Email` NVARCHAR(40) ,
     `TotalSeats` int DEFAULT 0 ,
     `saleId` bigint,
+    `note` NVARCHAR(1000),
     `TableName` NVARCHAR(20),
     constraint fk_BookingDeposit foreign key (DepositId) references tbl_deposit(DepositId),
     constraint fk_BookingSale foreign key (saleId) references tbl_Sale(saleId),
