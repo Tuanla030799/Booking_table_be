@@ -41,6 +41,15 @@ public class BookingController {
 
     }
 
+    @PostMapping("/get-deposit")
+    public ResponseEntity<?> getDeposit(@RequestBody BookingReq bookingReq, HttpServletRequest req) {
+        if(tokenLivingService.checkTokenLiving(req)){
+            return bookingService.getDeposit(bookingReq,req);
+        }
+        MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @PostMapping("/order-food")
     public ResponseEntity<?> orderFood(@RequestBody OrderFoodReq orderFoodReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);

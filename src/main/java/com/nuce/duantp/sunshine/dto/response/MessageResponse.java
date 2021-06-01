@@ -16,7 +16,6 @@ public class MessageResponse {
     public MessageResponse(EnumResponseStatusCode response) {
         this.statusCode =response;
         this.message=response.label;
-
     }
 
 }

@@ -2,6 +2,7 @@ package com.nuce.duantp.sunshine.service;
 
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
+import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -37,6 +37,48 @@ public class BookingService {
     private final CustomerRepo customerRepo;
     private final FoodRepo foodRepo;
     private Logger LOGGER = LoggerFactory.getLogger(BookingService.class);
+
+    public ResponseEntity<?> getDeposit(BookingReq bookingReq, HttpServletRequest req) {
+        Date date = new Date();
+        String bookingId = String.valueOf(date.getTime());
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(bookingReq.getBookingTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (date.getHours() <8 || date.getHours() >=23){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_INVALID);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        String tableName = null;
+        List<tbl_Table> tableList = tableRepo.findBySeatGreaterThanEqualOrderBySeatAsc(bookingReq.getTotalSeats());
+        for (tbl_Table table : tableList) {
+            Date date1 = TimeUtils.minusDate(Timestamp.valueOf(bookingReq.getBookingTime()), -7, "HOUR");
+            Date date2 = TimeUtils.minusDate(Timestamp.valueOf(bookingReq.getBookingTime()), 7, "HOUR");
+            List<tbl_Booking> bookingList = bookingRepository.findByBookingStatusAndTableNameAndBookingTimeBetween(0, table.getTablename(), date1, date2);
+            if (bookingList.size() < table.getStillEmpty()) {
+                tableName = table.getTablename();
+                break;
+            }
+        }
+        if (tableName == null) {
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TABLE_OFF);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        tbl_Deposit deposit = depositRepo.findTopByTotalPersonsLessThanEqualOrderByTotalPersonsAscCreatedDesc(bookingReq.getTotalSeats());
+        if (deposit == null) {
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.NULL_POINTER);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        if (customer.get().getTotalMoney()<deposit.getDeposit()) {
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.PAY_FAILED);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.SUCCESS,
+                FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     public ResponseEntity<?> bookingTable(BookingReq bookingReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
@@ -87,15 +129,13 @@ public class BookingService {
             billRepo.save(bill);
             customerRepo.save(customer.get());
             customerRepo.save(admin);
-            MessageResponse response = new MessageResponse(EnumResponseStatusCode.SUCCESS);
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.SUCCESS,bookingId);
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } else {
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_INVALID);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-
         }
-
     }
 
 
