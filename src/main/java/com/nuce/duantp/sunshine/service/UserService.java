@@ -4,14 +4,19 @@ import com.nuce.duantp.sunshine.config.format.CheckNameCustomer;
 import com.nuce.duantp.sunshine.config.format.CheckPass;
 import com.nuce.duantp.sunshine.config.format.CheckPhoneNumber;
 import com.nuce.duantp.sunshine.dto.model.Image;
+import com.nuce.duantp.sunshine.dto.model.TokenLiving;
 import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
+import com.nuce.duantp.sunshine.dto.request.LoginRequest;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
+import com.nuce.duantp.sunshine.dto.response.JwtResponse;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.response.UserDetail;
 import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
+import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
+import com.nuce.duantp.sunshine.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +35,8 @@ public class UserService {
     private final  CustomerRepo customerRepo;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
-
+    private final AuthService authService;
+    private final TokenLivingRepo tokenLivingRepo;
     private Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     public ResponseEntity<?> changePassword(ChangePasswordReq changePasswordReq, HttpServletRequest req) {
@@ -42,13 +48,22 @@ public class UserService {
                 .ok()
                 .body(new MessageResponse(EnumResponseStatusCode.INVALID_PASSWORD_FORMAT));
             } else {
+                /*
+                * TODO:
+                *  -sau khi đổi mật khấu sẽ gọi hàm login để lưu token mới vào bảo tokenLive
+                * - trả cho FE success và token mới
+                * */
               customer.get().setPassword(passwordEncoder.encode(changePasswordReq.getNewPass()));
+                LoginRequest loginRequest=new LoginRequest(customer.get().getEmail(), changePasswordReq.getNewPass());
+                ResponseEntity<JwtResponse> data = (ResponseEntity<JwtResponse>) authService.login(loginRequest);
               customerRepo.save(customer.get());
+                TokenLiving tokenLiving = tokenLivingRepo.findByEmail(loginRequest.getEmail());
+                tokenLiving.setToken(data.getBody().getToken());
+                tokenLivingRepo.save(tokenLiving);
               LOGGER.warn("Change password success by " + customer.get().getEmail(), UserService.class);
-
               return ResponseEntity
                 .ok()
-                .body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
+                .body(new MessageResponse(EnumResponseStatusCode.SUCCESS,data.getBody().getToken()));
             }
           } else {
             return ResponseEntity
