@@ -29,8 +29,8 @@ public class FoodHomeRes {
         this.foodName = food.getFoodName();
         String[] splits = food.getDescribes().split(" ");
         String str = "";
-        if(splits.length>30){
-            for (int i = 0; i < 30; i++) {
+        if(splits.length>20){
+            for (int i = 0; i < 20; i++) {
                 str = str + splits[i] + " ";
             }
         }

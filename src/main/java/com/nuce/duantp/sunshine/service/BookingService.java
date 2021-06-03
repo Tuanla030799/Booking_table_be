@@ -46,6 +46,10 @@ public class BookingService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        if(date.compareTo(new Date())<0){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_NOT_FORMAT);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         if (date.getHours() <8 || date.getHours() >=23){
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_INVALID);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

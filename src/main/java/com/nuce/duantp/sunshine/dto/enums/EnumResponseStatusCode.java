@@ -32,6 +32,7 @@ public enum EnumResponseStatusCode {
     ENABLE_SALE_SUCCESS("Xoá sale thành công !"),
     ADD_SALE_SUCCESS("Thêm sale thành công !"),
     NULL_POINTER("Có giá trị trống"),
+    TIME_NOT_FORMAT("Bạn đã chọn thơi gian trong quá khứ, vui lòng thử lại"),
     TEST("Test");
 
     public final String label;
