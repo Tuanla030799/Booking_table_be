@@ -128,6 +128,10 @@ public class BookingService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        if(date.compareTo(new Date())<0){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         if (date.getHours() >= 8 && date.getHours() < 23) {
             tbl_Booking booking = new tbl_Booking
                     (bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(),
@@ -284,14 +288,14 @@ public class BookingService {
         admin.setTotalMoney((long) (money+moneyPay));
         booking.setBookingStatus(1);
         booking.setSaleId(billPay.getSaleId());
-//        bookingRepository.save(booking);
+
         bill.setBillStatus(1);
         bill.setPayDate(new Date());
         bill.setPointId(point.getPointId());
 
+        billRepo.save(bill);
+        bookingRepository.save(booking);
 
-
-//        billRepo.save(bill);
         LOGGER.warn("Pay bill success by " + customer.getEmail() + "\n" + payReq, BookingService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.PAY_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);

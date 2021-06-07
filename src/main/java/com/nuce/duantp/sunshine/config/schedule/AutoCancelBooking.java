@@ -22,6 +22,10 @@ public class AutoCancelBooking implements Runnable {
     private Logger LOGGER = LoggerFactory.getLogger(AutoCancelBooking.class);
     @Override
     public void run() {
+        /*
+        * TODO: kiểm tra xem bàn đã đã đến hay chưa
+        *
+        * */
         List<tbl_Booking> list=bookingRepository.findByBookingStatusAndBookingTimeLessThan(0,new Date());
         for(tbl_Booking data:list){
             Date date = new Date();

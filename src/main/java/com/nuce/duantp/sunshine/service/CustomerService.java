@@ -46,6 +46,9 @@ public class CustomerService {
             tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
             float refund=deposit.getDeposit()-money;
             if(refund<0) refund=0L;
+            if(booking.getBookingStatus()==0){
+                refund =0L;
+            }
             Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
             String status = Validate.convertStatusBooking(booking.getBookingStatus());
             BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
