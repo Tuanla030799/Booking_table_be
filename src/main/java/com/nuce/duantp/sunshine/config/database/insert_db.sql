@@ -56,6 +56,7 @@ CREATE TABLE `tbl_Sale`
     `saleImage`       NVARCHAR(255),
     `saleStatus`      int      DEFAULT 1,
     `saleTitle`       NVARCHAR(255),
+    `totalBill` float    DEFAULT 0,
     constraint tbl_SaleBeneficiary foreign key (beneficiary) references tbl_Beneficiary (beneficiaryName)
 );
 
