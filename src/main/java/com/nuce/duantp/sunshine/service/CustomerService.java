@@ -2,6 +2,7 @@ package com.nuce.duantp.sunshine.service;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
+import com.nuce.duantp.sunshine.config.format.Validate;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetailRes;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.model.*;
@@ -46,7 +47,7 @@ public class CustomerService {
             float refund=deposit.getDeposit()-money;
             if(refund<0) refund=0L;
             Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
-            String status = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
+            String status = Validate.convertStatusBooking(booking.getBookingStatus());
             BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
                     status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(),FormatMoney.formatMoney(String.valueOf(refund)));
             data.add(data1);
@@ -69,7 +70,7 @@ public class CustomerService {
         if (points != null) {
             point = points.getPrice();
         }
-        String status = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
+        String status = Validate.convertStatusBooking(booking.getBookingStatus());
         Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
         Date date1 = null;
         if (bill.getPayDate() != null) {

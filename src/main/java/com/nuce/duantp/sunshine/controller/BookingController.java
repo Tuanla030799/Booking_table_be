@@ -71,6 +71,14 @@ public class BookingController {
         MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
+    @PostMapping("/get-total-money-pay-bill")
+    public ResponseEntity<?> getTotalMoneyPay(@RequestBody PayReq payReq, HttpServletRequest req) {
+        if(tokenLivingService.checkTokenLiving(req)){
+            return bookingService.getTotalMoneyPay(payReq,req);
+        }
+        MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+    }
 
     @PostMapping("/cancel-booking")
     public ResponseEntity<?> cancelBooking(@RequestBody CancelBookingReq cancelBookingReq, HttpServletRequest req) {
@@ -80,6 +88,7 @@ public class BookingController {
         MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
+
 
 }
 

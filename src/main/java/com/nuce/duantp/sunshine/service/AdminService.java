@@ -3,6 +3,7 @@ package com.nuce.duantp.sunshine.service;
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.LogCodeSql;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
+import com.nuce.duantp.sunshine.config.format.Validate;
 import com.nuce.duantp.sunshine.dto.request.News;
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.*;
@@ -272,7 +273,7 @@ public class AdminService {
             if(refund<0) refund=0L;
 
             Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
-            String status = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
+            String status = Validate.convertStatusBooking(booking.getBookingStatus());
             BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
                     status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(),
                     FormatMoney.formatMoney(String.valueOf(refund)));

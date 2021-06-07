@@ -13,18 +13,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class BillDetailResponse implements Serializable {
+public class BillPay implements Serializable {
     private String bookingId;
     private String customerName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date bookingTime;
     List<BillReport> billReports;
     private Long deposit;
-    private String saleTitle;
-    private String sumMoneyFood;
-    private String totalMoney;
-
-    public BillDetailResponse convertChar() {
+    private Long saleId;
+    private float sumMoneyFood;
+    private float totalMoney;
+    private String status;
+    public BillPay convertChar() {
         this.customerName=FormatChar.covertToString(this.getCustomerName());
         for(BillReport data:this.billReports){
             data.setFoodName(FormatChar.covertToString(data.getFoodName()));

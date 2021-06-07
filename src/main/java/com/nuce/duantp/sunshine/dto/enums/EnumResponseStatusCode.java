@@ -36,6 +36,8 @@ public enum EnumResponseStatusCode {
     MAX_TIME("Bạn đã chọn không được quá 10 ngày."),
     LOCK_ACC("Tài khoản đã bị khóa"),
     TOTAL_SEAT_FALSE("Số lượng người phải lớn hơn 0."),
+    TIME_PAY_FALSE("Bạn đã thanh toán trước, hãy chuyển qua hủy đặt bàn."),
+    PAID("Thanh toán không thành công (bàn đã thanh toán hoặc đã hủy)"),
     TEST("Test");
 
     public final String label;

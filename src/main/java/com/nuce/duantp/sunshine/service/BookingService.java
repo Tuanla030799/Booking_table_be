@@ -3,10 +3,14 @@ package com.nuce.duantp.sunshine.service;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
+import com.nuce.duantp.sunshine.config.format.Validate;
 import com.nuce.duantp.sunshine.dto.request.*;
+import com.nuce.duantp.sunshine.dto.response.BillPay;
+import com.nuce.duantp.sunshine.dto.response.BillReport;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.dto.model.*;
+import com.nuce.duantp.sunshine.dto.response.PayDetailResponse;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -163,49 +168,131 @@ public class BookingService {
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    public ResponseEntity<?> getTotalMoneyPay(PayReq payReq, HttpServletRequest req){
+        BillPay billPay=getBillPay(payReq.getBookingId());
+        String saleTitle="Không được khuyến mãi";
+        tbl_Sale sale=saleRepo.findBySaleId(billPay.getSaleId());
+        if(sale!=null){
+            saleTitle=sale.getSaleTitle();
+        }
+        PayDetailResponse payDetailResponse=new PayDetailResponse(billPay,saleTitle);
+        return new ResponseEntity<>(payDetailResponse, HttpStatus.OK);
+    }
+    public BillPay getBillPay(String bookingId)  {
+            tbl_Bill bill = billRepo.findByBookingId(bookingId);
+            List<BillReport> billReports=new ArrayList<>();
+            float totalMoneyFood = 0L; //lấy ra tổng số tiền cho đặt món
+            int stt=1;
+            List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
+            for(tbl_BillInfo data: billInfoList){
+                tbl_Food food=foodRepo.findByFoodId(data.getFoodId());
+                BillReport billReport=new BillReport(stt, food.getFoodName(),
+                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
+                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice()* data.getQuantity())),
+                        data.getQuantity());
+                billReports.add(billReport);
+                stt++;
+                totalMoneyFood+=food.getFoodPrice()*data.getQuantity();
+            }
+            tbl_Booking booking = bookingRepository.findByBookingId(bookingId);
+            tbl_Deposit tbl_deposit = depositRepo.findByDepositId(booking.getDepositId());
+            tbl_Customer customer=customerRepo.findCustomerByEmail(booking.getEmail());
+            Long deposit = 0L;
+            if (tbl_deposit != null ) {
+                deposit=tbl_deposit.getDeposit();
+            }
+            float percentDiscount=1L;
+            Long saleId=0L;
+            tbl_Sale sales =
+                    saleRepo.findTopByBeneficiaryAndSaleStatusAndTotalBillLessThanEqualOrderByPercentDiscountDesc(customer.getBeneficiary(),1,totalMoneyFood);
+            if(sales!=null){
+                percentDiscount=sales.getPercentDiscount();
+                saleId=sales.getSaleId();
+            }
 
+            float totalMoney=totalMoneyFood*percentDiscount-deposit;
+            String status= Validate.convertStatusBooking(booking.getBookingStatus());
+//        System.out.println("\n1 "+bookingId);
+//        System.out.println("\n2 "+customer.getFullName());
+//        System.out.println("\n3 "+booking.getBookingTime());
+//        System.out.println("\n4 "+billReports);
+//        System.out.println("\n5 "+deposit);
+//        System.out.println("\n6 "+sales.getSaleId());
+//        System.out.println("\n7 "+totalMoneyFood);
+//        System.out.println("\n8 "+totalMoney);
+
+
+            BillPay billPay=new BillPay(bookingId, customer.getFullName(), booking.getBookingTime(),billReports,deposit,
+                    saleId, totalMoneyFood,totalMoney,status);
+        System.out.println(bookingId);
+            return billPay;
+    }
+
+    public boolean checkWho(tbl_Customer customer,String bookingId){
+        tbl_Customer customer1=customerRepo.findCustomerByEmail(customer.getEmail());
+        tbl_Booking booking=bookingRepository.findByBookingId(bookingId);
+        tbl_Customer customer2=customerRepo.findCustomerByEmail(booking.getEmail());
+        if(customer1.getRole().equals("ADMIN")) return true;
+        if(customer1==customer2) return true;
+        return false;
+    }
 
     public ResponseEntity<?> pay(PayReq payReq, HttpServletRequest req) {
-        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        Optional<tbl_Customer> customer1 = authTokenFilter.whoami(req);
+
+        if(!checkWho(customer1.get(), payReq.getBookingId())){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        tbl_Booking booking=bookingRepository.findByBookingId(payReq.getBookingId());
+        if(booking.getBookingTime().after(new Date())){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_PAY_FALSE);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        if(booking.getBookingStatus()==1){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.PAID);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        tbl_Customer customer=customerRepo.findCustomerByEmail(booking.getEmail());
         tbl_Customer admin=customerRepo.findCustomerByEmail("sunshine87lethanhnghi@gmail.com");
         tbl_Bill bill = billRepo.findByBookingId(payReq.getBookingId());
-        float totalMoneyBill = 0L; //lấy ra tổng số tiền cho đặt món
-        List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
-        for(tbl_BillInfo data: billInfoList){
-            tbl_Food food=foodRepo.findByFoodId(data.getFoodId());
-            totalMoneyBill+=food.getFoodPrice()*data.getQuantity();
-        }
-
-        tbl_Booking booking = bookingRepository.findByBookingId(payReq.getBookingId());
-        tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
-        if (bill == null || booking == null || deposit == null ) {
-            MessageResponse response = new MessageResponse(EnumResponseStatusCode.NULL_POINTER);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-
-        float percentDiscount=1L;
-        tbl_Sale sales =
-                saleRepo.findTopByBeneficiaryAndSaleStatusAndTotalBillLessThanEqualOrderByPercentDiscountDesc(customer.get().getBeneficiary(),1,totalMoneyBill);
-        if(sales!=null){
-            percentDiscount=sales.getPercentDiscount();
-        }
-
-        float moneyPay = totalMoneyBill*percentDiscount- deposit.getDeposit();
-        Long money=customer.get().getTotalMoney();
-        customer.get().setTotalMoney((long) (money-moneyPay));
+//        float totalMoneyBill = 0L; //lấy ra tổng số tiền cho đặt món
+//        List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
+//        for(tbl_BillInfo data: billInfoList){
+//            tbl_Food food=foodRepo.findByFoodId(data.getFoodId());
+//            totalMoneyBill+=food.getFoodPrice()*data.getQuantity();
+//        }
+//
+//        tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
+//        if (bill == null || booking == null || deposit == null ) {
+//            MessageResponse response = new MessageResponse(EnumResponseStatusCode.NULL_POINTER);
+//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//        }
+//
+//        float percentDiscount=1L;
+//        tbl_Sale sales =
+//                saleRepo.findTopByBeneficiaryAndSaleStatusAndTotalBillLessThanEqualOrderByPercentDiscountDesc(customer.get().getBeneficiary(),1,totalMoneyBill);
+//        if(sales!=null){
+//            percentDiscount=sales.getPercentDiscount();
+//        }
+        BillPay billPay=getBillPay(payReq.getBookingId());
+        float moneyPay = billPay.getTotalMoney();
+        Long money=customer.getTotalMoney();
+        customer.setTotalMoney((long) (money-moneyPay));
         tbl_Points point= pointsRepo.findTopByPriceGreaterThanEqualOrderByPriceAscCreatedDesc((long) moneyPay);
         money=admin.getTotalMoney();
         admin.setTotalMoney((long) (money+moneyPay));
-
+        booking.setBookingStatus(1);
+        booking.setSaleId(billPay.getSaleId());
+//        bookingRepository.save(booking);
         bill.setBillStatus(1);
         bill.setPayDate(new Date());
         bill.setPointId(point.getPointId());
-        billRepo.save(bill);
 
-        booking.setBookingStatus(1);
-        booking.setSaleId(sales.getSaleId());
-        bookingRepository.save(booking);
-        LOGGER.warn("Pay bill success by " + customer.get().getEmail() + "\n" + payReq, BookingService.class);
+
+
+//        billRepo.save(bill);
+        LOGGER.warn("Pay bill success by " + customer.getEmail() + "\n" + payReq, BookingService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.PAY_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

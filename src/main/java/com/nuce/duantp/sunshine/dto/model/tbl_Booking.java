@@ -17,11 +17,11 @@ import java.util.Date;
 @Table(name = "tbl_booking")
 @EntityListeners(AuditingEntityListener.class)
 public class tbl_Booking {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
 
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private Long id;
+    @Id
     @Column(name = "bookingid")
     private String bookingId;
 
@@ -38,7 +38,7 @@ public class tbl_Booking {
     @Column(name = "depositId") //đặt cọc
     private Long depositId;
 
-    @Column(name = "bookingStatus") //dùng để xe boking đã thnh toán chưa: 0: là chưa thanh toán , 1:đã thanh toán
+    @Column(name = "bookingStatus") //dùng để xe boking đã thnh toán chưa: 0: là chưa thanh toán , 1:đthanh toán
     private int bookingStatus;
 
     @Column(name = "tableName")
@@ -49,6 +49,9 @@ public class tbl_Booking {
 
     @Column(name = "saleId")//phần trăm khuyến mãi
     private Long saleId;
+
+//    @Column(name = "confirmBooking")
+//    private int confirmBooking;
 
     @Column(name = "created")
     @CreatedDate
@@ -65,6 +68,7 @@ public class tbl_Booking {
         this.bookingStatus = bookingStatus;
         this.tableName = tableName;
         this.note=note;
+//        this.confirmBooking=confirmBooking;
     }
 
 

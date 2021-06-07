@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface BookingRepository extends JpaRepository<tbl_Booking, Long> {
+public interface BookingRepository extends JpaRepository<tbl_Booking, String> {
     @Override
     List<tbl_Booking> findAll();
 

@@ -99,8 +99,7 @@ CREATE TABLE `tbl_customer`
 
 CREATE TABLE `tbl_booking`
 (
-    `id`            bigint primary key AUTO_INCREMENT,
-    `BookingID`     NVARCHAR(255) unique,
+    `BookingID`     NVARCHAR(255) unique primary key,
     `bookingStatus` int      DEFAULT 0,
     `BookingTime`   datetime,
     `Created`       DATETIME DEFAULT NOW(),
@@ -253,8 +252,7 @@ values ('ADMIN', N'Nhân Viên');
 
 
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
-VALUES ('pvminh@gmail' ||
-        '.com',
+VALUES ('pvminh@gmail.com',
         '0796164361',
         N'Phí Văn Minh', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000000, 'USERS', 'CUSTOMER');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
