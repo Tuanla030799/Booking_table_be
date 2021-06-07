@@ -19,10 +19,6 @@ public class SunShineController {
     private SunShineService sunShineService;
     @Autowired
     private FoodRepo foodRepo;
-//    @GetMapping("/get-all-News")
-//    public List<NewsRes> getAllNews(){
-//        return  sunShineService.getAllNews();
-//    }
     @GetMapping("/home")
     public PageHomeRes pageHome(){
         return sunShineService.pageHome();
