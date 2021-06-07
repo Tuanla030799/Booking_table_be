@@ -25,6 +25,6 @@ public class SignupRequest {
     @NotBlank
     private String fullName;
 
-    private MultipartFile file;
+//    private MultipartFile file;
 
 }

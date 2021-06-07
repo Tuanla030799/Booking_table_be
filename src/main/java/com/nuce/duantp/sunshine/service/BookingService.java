@@ -47,7 +47,11 @@ public class BookingService {
             e.printStackTrace();
         }
         if(date.compareTo(new Date())<0){
-            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_NOT_FORMAT);
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        if(bookingReq.getTotalSeats()<=0){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TOTAL_SEAT_FALSE);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         if (date.getHours() <8 || date.getHours() >=23){

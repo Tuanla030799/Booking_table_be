@@ -23,6 +23,7 @@ public class UserDetail {
 
     private String image;
 
+    private String status;
     public UserDetail(tbl_Customer customer) {
         this.email=customer.getEmail();
         this.phoneNumber=customer.getPhoneNumber().replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3");
@@ -30,5 +31,6 @@ public class UserDetail {
         this.totalMoney= FormatMoney.formatMoney(String.valueOf(customer.getTotalMoney()));
         this.role=customer.getRole();
         this.image=customer.getImage();
+        this.status=customer.getAccStatus()==1?"Đang hoạt động":"Đã bị khóa";
     }
 }

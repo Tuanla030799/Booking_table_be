@@ -77,15 +77,15 @@ public class AuthService {
                 return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.EMAIL_EXISTED));
             }
             tbl_Customer customer=new tbl_Customer(signupRequest,passwordEncoder.encode(signupRequest.getPassword()));
-            Image image = new Image();
-            image.setName(customer.getImage());
-            image.setDescription(customer.getFullName());
-            image.setImagePath("/Avatar/" + customer.getImage() + ".jpg");
-            image.setType("AVATAR");
-            image.setSpecifyType("specifyType");
-            image.setIdParent("idParent");
-            imageService.createImage(image, signupRequest.getFile());
-            customer.setImage(image.getUrl());
+//            Image image = new Image();
+//            image.setName(customer.getImage());
+//            image.setDescription(customer.getFullName());
+//            image.setImagePath("/Avatar/" + customer.getImage() + ".jpg");
+//            image.setType("AVATAR");
+//            image.setSpecifyType("specifyType");
+//            image.setIdParent("idParent");
+//            imageService.createImage(image, signupRequest.getFile());
+//            customer.setImage(image.getUrl());
             userRepository.save(customer);
 
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
@@ -128,11 +128,12 @@ public class AuthService {
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
+            Optional<tbl_Customer> customer = customerRepo.findByEmail(loginRequest.getEmail());
+            if(customer.get().getAccStatus()==0){
+                return new ResponseEntity<>(new MessageResponse(EnumResponseStatusCode.LOCK_ACC), HttpStatus.BAD_REQUEST);
+            }
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
-
-
             TokenLiving tokenLiving = tokenLivingRepo.findByEmail(loginRequest.getEmail());
             if (tokenLiving == null) {
                 TokenLiving tokenLiving1 = new TokenLiving(loginRequest.getEmail(), jwt);
@@ -142,8 +143,6 @@ public class AuthService {
                 tokenLivingRepo.save(tokenLiving);
             }
 
-
-            Optional<tbl_Customer> customer = customerRepo.findByEmail(loginRequest.getEmail());
             String role = customer.get().getRole().toString();
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             return ResponseEntity.ok(new JwtResponse(jwt, "Bearer", userDetails.getEmail(), role));

@@ -45,6 +45,9 @@ public class tbl_Customer {
     @Column(name="image")
     private String image;
 
+    @Column(name="accStatus")
+    private int accStatus;
+
     public tbl_Customer(SignupRequest signupRequest,String password) {
         this.email=signupRequest.getEmail();
         this.phoneNumber=signupRequest.getPhoneNumber();
@@ -54,6 +57,8 @@ public class tbl_Customer {
         this.role="USERS";
         this.beneficiary="CUSTOMER";
         this.image= String.valueOf(new Date().getTime());
+        this.accStatus=1;
+        this.image="https://www.dropbox.com/s/6gkxzppp1g3we6z/1622285305745.jpg?raw=1";
     }
 
     public tbl_Customer(String email, String phoneNumber, String fullName, String password, Long totalMoney) {
@@ -64,6 +69,8 @@ public class tbl_Customer {
         this.totalMoney = totalMoney;
         this.role="USERS";
         this.beneficiary="CUSTOMER";
+        this.accStatus=1;
+
     }
 
     public tbl_Customer(String email, String phoneNumber, String fullName, String password) {
@@ -73,6 +80,8 @@ public class tbl_Customer {
         this.password = password;
         this.role="USERS";
         this.beneficiary="CUSTOMER";
+        this.accStatus=1;
+
     }
 
     public tbl_Customer(tbl_Customer customer) {
@@ -83,6 +92,8 @@ public class tbl_Customer {
         this.totalMoney = customer.totalMoney;
         this.role="USERS";
         this.beneficiary="CUSTOMER";
+        this.accStatus=1;
+
     }
 
     public tbl_Customer updateCustomer(UpdateUserReq req) {

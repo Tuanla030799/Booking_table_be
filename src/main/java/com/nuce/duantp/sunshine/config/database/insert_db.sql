@@ -88,6 +88,8 @@ CREATE TABLE `tbl_customer`
     `TotalMoney` bigint DEFAULT 0,
     `beneficiary` VARCHAR(20)  ,
     `role` NVARCHAR(20)  ,
+    `accStatus` int default 1,
+    `image` NVARCHAR(255) default 'https://www.dropbox.com/s/6gkxzppp1g3we6z/1622285305745.jpg?raw=1',
     constraint tbl_customerBeneficiary foreign key (beneficiary) references tbl_Beneficiary(beneficiaryName),
     constraint tbl_customerRole foreign key (role) references tbl_role(role)
 
