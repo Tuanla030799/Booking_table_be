@@ -41,7 +41,14 @@ public class PayDetailResponse implements Serializable {
         this.billReports=billPay.getBillReports();
         this.deposit= FormatMoney.formatMoney(String.valueOf(billPay.getDeposit()));
         this.sumMoneyFood= FormatMoney.formatMoney(String.valueOf(billPay.getSumMoneyFood()));
-        this.totalMoney= FormatMoney.formatMoney(String.valueOf(billPay.getTotalMoney()));
+        String totalMoneyPay="";
+        if(billPay.getTotalMoney()<0){
+            totalMoneyPay="Hoàn tiền "+FormatMoney.formatMoney(String.valueOf(Math.abs(billPay.getTotalMoney())));
+        }
+        else {
+            totalMoneyPay=FormatMoney.formatMoney(String.valueOf(billPay.getTotalMoney()));
+        }
+        this.totalMoney= totalMoneyPay;
         this.status=billPay.getStatus();
     }
 }

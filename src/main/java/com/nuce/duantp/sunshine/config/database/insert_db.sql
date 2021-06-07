@@ -107,6 +107,7 @@ CREATE TABLE `tbl_booking`
     `DepositId`     bigint   DEFAULT 0,
     `Email`         NVARCHAR(40),
     `TotalSeats`    int      DEFAULT 0,
+    `confirmBooking`    int      DEFAULT 0,
     `saleId`        bigint,
     `note`          NVARCHAR(1000),
     `TableName`     NVARCHAR(20),

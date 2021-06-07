@@ -50,8 +50,8 @@ public class tbl_Booking {
     @Column(name = "saleId")//phần trăm khuyến mãi
     private Long saleId;
 
-//    @Column(name = "confirmBooking")
-//    private int confirmBooking;
+    @Column(name = "confirmBooking")
+    private int confirmBooking;
 
     @Column(name = "created")
     @CreatedDate
@@ -68,7 +68,7 @@ public class tbl_Booking {
         this.bookingStatus = bookingStatus;
         this.tableName = tableName;
         this.note=note;
-//        this.confirmBooking=confirmBooking;
+        this.confirmBooking=0;
     }
 
 

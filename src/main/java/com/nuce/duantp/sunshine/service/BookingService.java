@@ -249,10 +249,11 @@ public class BookingService {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         tbl_Booking booking=bookingRepository.findByBookingId(payReq.getBookingId());
-        if(booking.getBookingTime().after(new Date())){
-            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_PAY_FALSE);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+//        TODO: kiểm tra thời gian thanh toán có trước thời gina đặt
+//        if(booking.getBookingTime().after(new Date())){
+//            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_PAY_FALSE);
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        }
         if(booking.getBookingStatus()==1){
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.PAID);
             return new ResponseEntity<>(response, HttpStatus.OK);
