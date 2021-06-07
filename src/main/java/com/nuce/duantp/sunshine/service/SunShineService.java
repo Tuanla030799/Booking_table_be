@@ -76,8 +76,8 @@ public class SunShineService {
                 Long moneyFood = food.getFoodPrice() * billInfo.getQuantity();
                 money += moneyFood;
             }
-            tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
-            money = money - deposit.getDeposit();
+//            tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
+//            money = money - deposit.getDeposit();
             tbl_Sale sale = saleRepo.findBySaleId(booking.getSaleId());
             if (sale != null) {
                 money = money * sale.getPercentDiscount();

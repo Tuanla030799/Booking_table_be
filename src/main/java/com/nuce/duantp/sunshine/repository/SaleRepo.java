@@ -11,5 +11,8 @@ public interface SaleRepo extends CrudRepository<tbl_Sale, Long> {
     tbl_Sale findBySaleId(Long saleId);
     List<tbl_Sale> findBySaleStatus(int status);
     List<tbl_Sale>findBySaleStatusAndBeneficiary(int status,String beneficiary);
+    tbl_Sale findTopByBeneficiaryAndSaleStatusAndTotalBillLessThanEqualOrderByPercentDiscountDesc(String beneficiary,
+                                                                                                  int status,
+                                                                                                  float totalBill);
 }
 

@@ -184,10 +184,12 @@ public class BookingService {
         }
 
         float percentDiscount=1L;
-        tbl_Sale sales = saleRepo.findBySaleId(payReq.getSaleId());
+        tbl_Sale sales =
+                saleRepo.findTopByBeneficiaryAndSaleStatusAndTotalBillLessThanEqualOrderByPercentDiscountDesc(customer.get().getBeneficiary(),1,totalMoneyBill);
         if(sales!=null){
             percentDiscount=sales.getPercentDiscount();
         }
+
         float moneyPay = totalMoneyBill*percentDiscount- deposit.getDeposit();
         Long money=customer.get().getTotalMoney();
         customer.get().setTotalMoney((long) (money-moneyPay));
@@ -201,6 +203,7 @@ public class BookingService {
         billRepo.save(bill);
 
         booking.setBookingStatus(1);
+        booking.setSaleId(sales.getSaleId());
         bookingRepository.save(booking);
         LOGGER.warn("Pay bill success by " + customer.get().getEmail() + "\n" + payReq, BookingService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.PAY_SUCCESS);

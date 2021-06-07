@@ -16,7 +16,7 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, Long> {
 
     List<tbl_Booking> findAllByEmailAndBookingStatus(String email, int status);
 
-    List<tbl_Booking> findByEmail(String email);
+    List<tbl_Booking> findAllByEmailOrderByBookingTimeDesc(String email);
 
     tbl_Booking findByBookingId(String bookingId);
 

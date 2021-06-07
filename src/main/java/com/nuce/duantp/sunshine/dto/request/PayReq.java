@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 public class PayReq {
     private String bookingId;
 
-    private Long saleId;
+//    private Long saleId;
 }

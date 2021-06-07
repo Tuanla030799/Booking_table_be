@@ -1,6 +1,7 @@
 package com.nuce.duantp.sunshine.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nuce.duantp.sunshine.dto.model.tbl_Booking;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,4 +26,9 @@ public class BookingHistoryRes {
 
     private String bookingId;
 
+    private String refund;
+//
+//    public BookingHistoryRes(tbl_Booking booking) {
+//
+//    }
 }

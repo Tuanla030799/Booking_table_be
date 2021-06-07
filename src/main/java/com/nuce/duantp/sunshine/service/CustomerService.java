@@ -34,7 +34,7 @@ public class CustomerService {
 
     public List<BookingHistoryRes> viewBookingHistory(HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        List<tbl_Booking> bookingList = bookingRepository.findByEmail(customer.get().getEmail());
+        List<tbl_Booking> bookingList = bookingRepository.findAllByEmailOrderByBookingTimeDesc(customer.get().getEmail());
         List<BookingHistoryRes> data = new ArrayList<>();
         int stt = 1;
         for (tbl_Booking booking : bookingList) {
@@ -43,10 +43,12 @@ public class CustomerService {
                 money = sunShineService.moneyPay(booking.getBookingId());
             }
             tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
+            float refund=deposit.getDeposit()-money;
+            if(refund<0) refund=0L;
             Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
             String status = booking.getBookingStatus() == 1 ? "Đã thanh toán!" : "Chưa thanh toán!";
             BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
-                    status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId());
+                    status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(),FormatMoney.formatMoney(String.valueOf(refund)));
             data.add(data1);
             stt++;
 

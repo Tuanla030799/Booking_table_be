@@ -41,18 +41,21 @@ public class tbl_Sale {
     @Column(name = "percentDiscount")//phần trăm khuyến mãi
     private float percentDiscount;
 
+    @Column(name = "totalBill")
+    private float totalBill;
 
     @Column(name = "created")
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date created;
 
-    public tbl_Sale(String saleTitle,String saleDetail,String beneficiary,float percentDiscount) {
+    public tbl_Sale(String saleTitle,String saleDetail,String beneficiary,float percentDiscount,float totalBill) {
         this.saleTitle=saleTitle;
         this.saleDetail=saleDetail;
         this.saleStatus=1;
         this.beneficiary=beneficiary;
         this.percentDiscount= percentDiscount;
         this.saleImage= String.valueOf(new Date().getTime());
+        this.totalBill=totalBill;
     }
 }

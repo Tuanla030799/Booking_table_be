@@ -182,10 +182,15 @@ public class AdminController {
     }
 
     @PostMapping("/add-sale")
-    public ResponseEntity<?> addSale(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "saleTitle") String saleTitle, @RequestParam("saleDetail") String saleDetail, @RequestParam("beneficiary") String beneficiary, @RequestParam("percentDiscount") float percentDiscount, HttpServletRequest req) {
+    public ResponseEntity<?> addSale(@RequestParam(value = "file") MultipartFile file, @RequestParam(value =
+            "saleTitle") String saleTitle, @RequestParam("saleDetail") String saleDetail,
+                                     @RequestParam("beneficiary") String beneficiary,
+                                     @RequestParam("totalBill") float totalBill,
+                                     @RequestParam("percentDiscount") float percentDiscount, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addSale(saleTitle, saleDetail, beneficiary, percentDiscount, file, customer.get().getEmail());
+            return adminService.addSale(saleTitle, saleDetail, beneficiary, percentDiscount,totalBill, file,
+                    customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
