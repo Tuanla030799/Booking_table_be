@@ -260,7 +260,7 @@ public class AdminService {
 
     public List<BookingHistoryRes> viewBookingHistory(HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        List<tbl_Booking> bookingList = bookingRepository.findAllByOrderByBookingStatusDesc();
+        List<tbl_Booking> bookingList = bookingRepository.getListBookingAdmin();
         List<BookingHistoryRes> data = new ArrayList<>();
         int stt = 1;
         for (tbl_Booking booking : bookingList) {

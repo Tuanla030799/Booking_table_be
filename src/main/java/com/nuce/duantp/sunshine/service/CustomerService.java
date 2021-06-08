@@ -35,7 +35,7 @@ public class CustomerService {
 
     public List<BookingHistoryRes> viewBookingHistory(HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        List<tbl_Booking> bookingList = bookingRepository.findAllByEmailOrderByBookingTimeDesc(customer.get().getEmail());
+        List<tbl_Booking> bookingList = bookingRepository.getListBookingByEmail(customer.get().getEmail());
         List<BookingHistoryRes> data = new ArrayList<>();
         int stt = 1;
         for (tbl_Booking booking : bookingList) {

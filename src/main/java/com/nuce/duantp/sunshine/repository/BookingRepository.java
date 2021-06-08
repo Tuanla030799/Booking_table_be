@@ -2,6 +2,8 @@ package com.nuce.duantp.sunshine.repository;
 
 import com.nuce.duantp.sunshine.dto.model.tbl_Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -16,12 +18,16 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, String> {
 
     List<tbl_Booking> findAllByEmailAndBookingStatus(String email, int status);
 
-    List<tbl_Booking> findAllByEmailOrderByBookingTimeDesc(String email);
+//    List<tbl_Booking> findAllByEmailOrderByBookingTimeDesc(String email);
+
+    @Query("SELECT u FROM tbl_Booking u WHERE u.email =:email order by u.bookingStatus asc ,u.bookingTime desc")
+    List<tbl_Booking> getListBookingByEmail(@Param("email") String email);
 
     tbl_Booking findByBookingId(String bookingId);
 
-    List<tbl_Booking> findByBookingStatusAndBookingTimeLessThan(int status,Date bookingTime);
+    List<tbl_Booking> findByBookingStatusAndBookingTimeLessThan(int status, Date bookingTime);
 
-    List<tbl_Booking> findAllByOrderByBookingStatusDesc();
-
+    //    List<tbl_Booking> findAllByOrderByBookingStatusDesc();
+    @Query("SELECT u FROM tbl_Booking u order by u.bookingStatus asc ,u.bookingTime desc")
+    List<tbl_Booking> getListBookingAdmin();
 }

@@ -13,13 +13,16 @@ public class TokenLivingService {
     TokenLivingRepo tokenLivingRepo;
 
     public boolean checkTokenLiving(HttpServletRequest req){
-        String authTokenHeader = req.getHeader("Authorization");
-        String[] splits = authTokenHeader.split(" ");
-
-        TokenLiving tokenLiving= tokenLivingRepo.findByToken(splits[1]);
-        if(tokenLiving==null){
-            return false;
-        }
+        /*
+         * TODO: enable
+         * */
+//        String authTokenHeader = req.getHeader("Authorization");
+//        String[] splits = authTokenHeader.split(" ");
+//
+//        TokenLiving tokenLiving= tokenLivingRepo.findByToken(splits[1]);
+//        if(tokenLiving==null){
+//            return false;
+//        }
         return true;
     }
 }
