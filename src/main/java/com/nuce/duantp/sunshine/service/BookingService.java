@@ -5,8 +5,8 @@ import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import com.nuce.duantp.sunshine.config.format.Validate;
 import com.nuce.duantp.sunshine.dto.request.*;
-import com.nuce.duantp.sunshine.dto.response.BillPay;
-import com.nuce.duantp.sunshine.dto.response.BillReport;
+import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetail;
+import com.nuce.duantp.sunshine.dto.response.ListFoodInBooking;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.dto.model.*;
@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -175,37 +176,30 @@ public class BookingService {
                 billInfoRepo.save(billInfo);
             }
         }
-//        for (FoodReq data : orderFoodReq.getFoodList()) {
-//            tbl_BillInfo billInfo = new tbl_BillInfo(bill.getBillId(), data.getQuantity(), data.getFoodId());
-//            billInfoRepo.save(billInfo);
-//        }
+
         LOGGER.warn("Booking table success by " + customer.getEmail() + "\n" + orderFoodReq, BookingService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     public ResponseEntity<?> getTotalMoneyPay(PayReq payReq, HttpServletRequest req){
-        BillPay billPay=getBillPay(payReq.getBookingId());
-        String saleTitle="Không được khuyến mãi";
-        tbl_Sale sale=saleRepo.findBySaleId(billPay.getSaleId());
-        if(sale!=null){
-            saleTitle=sale.getSaleTitle();
-        }
-        PayDetailResponse payDetailResponse=new PayDetailResponse(billPay,saleTitle);
+        BookingHistoryDetail bookingHistoryDetail =getBillPay(payReq.getBookingId());
+
+        PayDetailResponse payDetailResponse=new PayDetailResponse(bookingHistoryDetail);
         return new ResponseEntity<>(payDetailResponse, HttpStatus.OK);
     }
-    public BillPay getBillPay(String bookingId)  {
+    public BookingHistoryDetail getBillPay(String bookingId)  {
             tbl_Bill bill = billRepo.findByBookingId(bookingId);
-            List<BillReport> billReports=new ArrayList<>();
+            List<ListFoodInBooking> listFoodInBookings =new ArrayList<>();
             float totalMoneyFood = 0L; //lấy ra tổng số tiền cho đặt món
             int stt=1;
             List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
             for(tbl_BillInfo data: billInfoList){
                 tbl_Food food=foodRepo.findByFoodId(data.getFoodId());
-                BillReport billReport=new BillReport(stt, food.getFoodName(),
+                ListFoodInBooking listFoodInBooking =new ListFoodInBooking(stt, food.getFoodName(),
                         FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
                         FormatMoney.formatMoney(String.valueOf(food.getFoodPrice()* data.getQuantity())),
                         data.getQuantity());
-                billReports.add(billReport);
+                listFoodInBookings.add(listFoodInBooking);
                 stt++;
                 totalMoneyFood+=food.getFoodPrice()*data.getQuantity();
             }
@@ -225,22 +219,22 @@ public class BookingService {
                 saleId=sales.getSaleId();
             }
 
-            float totalMoney=totalMoneyFood*percentDiscount-deposit;
+            float totalMoney=totalMoneyFood*(1-percentDiscount)-deposit;
             String status= Validate.convertStatusBooking(booking.getBookingStatus());
-//        System.out.println("\n1 "+bookingId);
-//        System.out.println("\n2 "+customer.getFullName());
-//        System.out.println("\n3 "+booking.getBookingTime());
-//        System.out.println("\n4 "+billReports);
-//        System.out.println("\n5 "+deposit);
-//        System.out.println("\n6 "+sales.getSaleId());
-//        System.out.println("\n7 "+totalMoneyFood);
-//        System.out.println("\n8 "+totalMoney);
-
-
-            BillPay billPay=new BillPay(bookingId, customer.getFullName(), booking.getBookingTime(),billReports,deposit,
-                    saleId, totalMoneyFood,totalMoney,status);
+            String payDate="Chưa thanh toán.";
+            if(bill.getPayDate()!=null){
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                payDate = dateFormat.format(bill.getPayDate());
+            }
+            int totalSet=booking.getTotalSeats();
+            String tableName=booking.getTableName();
+            if(listFoodInBookings.size()==0){
+                percentDiscount=0L;
+            }
+            BookingHistoryDetail bookingHistoryDetail =new BookingHistoryDetail(bookingId,  booking.getBookingTime(), listFoodInBookings,deposit,
+                    saleId, totalMoneyFood,totalMoney,status,payDate,tableName,totalSet,percentDiscount);
         System.out.println(bookingId);
-            return billPay;
+            return bookingHistoryDetail;
     }
 
     public boolean checkWho(tbl_Customer customer,String bookingId){
@@ -272,34 +266,15 @@ public class BookingService {
         tbl_Customer customer=customerRepo.findCustomerByEmail(booking.getEmail());
         tbl_Customer admin=customerRepo.findCustomerByEmail("sunshine87lethanhnghi@gmail.com");
         tbl_Bill bill = billRepo.findByBookingId(payReq.getBookingId());
-//        float totalMoneyBill = 0L; //lấy ra tổng số tiền cho đặt món
-//        List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
-//        for(tbl_BillInfo data: billInfoList){
-//            tbl_Food food=foodRepo.findByFoodId(data.getFoodId());
-//            totalMoneyBill+=food.getFoodPrice()*data.getQuantity();
-//        }
-//
-//        tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
-//        if (bill == null || booking == null || deposit == null ) {
-//            MessageResponse response = new MessageResponse(EnumResponseStatusCode.NULL_POINTER);
-//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//        }
-//
-//        float percentDiscount=1L;
-//        tbl_Sale sales =
-//                saleRepo.findTopByBeneficiaryAndSaleStatusAndTotalBillLessThanEqualOrderByPercentDiscountDesc(customer.get().getBeneficiary(),1,totalMoneyBill);
-//        if(sales!=null){
-//            percentDiscount=sales.getPercentDiscount();
-//        }
-        BillPay billPay=getBillPay(payReq.getBookingId());
-        float moneyPay = billPay.getTotalMoney();
+        BookingHistoryDetail bookingHistoryDetail =getBillPay(payReq.getBookingId());
+        float moneyPay = bookingHistoryDetail.getTotalMoney();
         Long money=customer.getTotalMoney();
         customer.setTotalMoney((long) (money-moneyPay));
         tbl_Points point= pointsRepo.findTopByPriceGreaterThanEqualOrderByPriceAscCreatedDesc((long) moneyPay);
         money=admin.getTotalMoney();
         admin.setTotalMoney((long) (money+moneyPay));
         booking.setBookingStatus(1);
-        booking.setSaleId(billPay.getSaleId());
+        booking.setSaleId(bookingHistoryDetail.getSaleId());
 
         bill.setBillStatus(1);
         bill.setPayDate(new Date());

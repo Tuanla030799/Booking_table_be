@@ -8,13 +8,11 @@ import com.nuce.duantp.sunshine.dto.response.JwtResponse;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 
-import com.nuce.duantp.sunshine.dto.model.Image;
 import com.nuce.duantp.sunshine.dto.model.TokenLiving;
 import com.nuce.duantp.sunshine.dto.model.UserDetailsImpl;
 import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
-import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 //import com.phamtan.base.email.data_structure.EmailContentData;
 //import com.phamtan.base.email.request.EmailRequest;
@@ -25,7 +23,6 @@ import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 //import com.phamtan.base.email.service.EmailService;
 //import com.phamtan.base.enumeration.EmailEnum;
 import com.nuce.duantp.sunshine.service.ImageService;
-import freemarker.template.Configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,25 +53,28 @@ public class AuthService {
     private final ImageService imageService;
 
     public ResponseEntity<MessageResponse> registerConsumer(@RequestBody SignupRequest signupRequest) {
-        if (!CheckEmail.checkEmail(signupRequest.getEmail())) {
+        if (!CheckEmail.checkFormatEmail(signupRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_EMAIL_FORMAT));
         }
 
-        if (!CheckPass.checkPassword(signupRequest.getPassword())) {
+        if (!CheckPass.checkFormatPassword(signupRequest.getPassword())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_PASSWORD_FORMAT));
         }
 
-        if (!CheckPhoneNumber.checkPhone(signupRequest.getPhoneNumber())) {
+        if (!CheckPhoneNumber.checkFormatPhone(signupRequest.getPhoneNumber())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_PHONE_FORMAT));
         }
 
-        if (!CheckNameCustomer.checkName(signupRequest.getFullName())) {
+        if (!CheckNameCustomer.checkFormatName(signupRequest.getFullName())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_NAME_FORMAT));
         }
 
         try {
             if (userRepository.existsByEmail(signupRequest.getEmail())) {
                 return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.EMAIL_EXISTED));
+            }
+            if (userRepository.existsByPhoneNumber(signupRequest.getPhoneNumber())) {
+                return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.PHONE_NUMBER_EXISTED));
             }
             tbl_Customer customer=new tbl_Customer(signupRequest,passwordEncoder.encode(signupRequest.getPassword()));
 //            Image image = new Image();

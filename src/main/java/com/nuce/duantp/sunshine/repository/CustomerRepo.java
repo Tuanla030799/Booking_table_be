@@ -15,6 +15,7 @@ public interface CustomerRepo extends CrudRepository<tbl_Customer, Long> {
     Optional<tbl_Customer> findByEmail(String email);
 
     Boolean existsByEmail(String email);
+    Boolean existsByPhoneNumber(String phone);
 
     @Query("select c from tbl_Customer c where c.email=?1")
 

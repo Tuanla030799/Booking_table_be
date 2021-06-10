@@ -42,7 +42,7 @@ public class UserController {
         MyStringRandomGen msr = new MyStringRandomGen();
         String password = msr.generateRandomString();
         System.out.println(password);
-        while ((!CheckPass.checkPassword(password))) {
+        while ((!CheckPass.checkFormatPassword(password))) {
             password = msr.generateRandomString();
             System.out.println(password);
         }

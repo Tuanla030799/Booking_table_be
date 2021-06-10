@@ -1,7 +1,6 @@
 package com.nuce.duantp.sunshine.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nuce.duantp.sunshine.config.format.FormatChar;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,39 +15,36 @@ import java.util.List;
 @Data
 public class PayDetailResponse implements Serializable {
     private String bookingId;
-    private String customerName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date bookingTime;
-    List<BillReport> billReports;
+    List<ListFoodInBooking> listFoodInBookings;
     private String deposit;
-    private String saleTitle;
+    private String percentSale;
     private String sumMoneyFood;
     private String totalMoney;
     private String status;
-    public PayDetailResponse convertChar() {
-        this.customerName=FormatChar.covertToString(this.getCustomerName());
-        for(BillReport data:this.billReports){
-            data.setFoodName(FormatChar.covertToString(data.getFoodName()));
-        }
-        return  this;
-    }
-
-    public PayDetailResponse(BillPay billPay,String saleTitle) {
-        this.saleTitle=saleTitle;
-        this.bookingId= billPay.getBookingId();
-        this.customerName= billPay.getCustomerName();
-        this.bookingTime=billPay.getBookingTime();
-        this.billReports=billPay.getBillReports();
-        this.deposit= FormatMoney.formatMoney(String.valueOf(billPay.getDeposit()));
-        this.sumMoneyFood= FormatMoney.formatMoney(String.valueOf(billPay.getSumMoneyFood()));
+    private String payDate;
+    private int totalSet;
+    private String tableName;
+    public PayDetailResponse(BookingHistoryDetail bookingHistoryDetail) {
+        this.tableName=bookingHistoryDetail.getTableName();
+        this.totalSet=bookingHistoryDetail.getTotalSet();
+        this.percentSale= String.format("%.0f", bookingHistoryDetail.getPercentSale()*100)+" %";
+        this.bookingId= bookingHistoryDetail.getBookingId();
+        this.bookingTime= bookingHistoryDetail.getBookingTime();
+        this.listFoodInBookings = bookingHistoryDetail.getListFoodInBookings();
+        this.deposit= FormatMoney.formatMoney(String.valueOf(bookingHistoryDetail.getDeposit()));
+        this.sumMoneyFood= FormatMoney.formatMoney(String.valueOf(bookingHistoryDetail.getSumMoneyFood()));
         String totalMoneyPay="";
-        if(billPay.getTotalMoney()<0){
-            totalMoneyPay="Hoàn tiền "+FormatMoney.formatMoney(String.valueOf(Math.abs(billPay.getTotalMoney())));
+        if(bookingHistoryDetail.getTotalMoney()<0){
+            totalMoneyPay=
+                    "Hoàn tiền "+FormatMoney.formatMoney(String.valueOf(Math.abs(bookingHistoryDetail.getTotalMoney())));
         }
         else {
-            totalMoneyPay=FormatMoney.formatMoney(String.valueOf(billPay.getTotalMoney()));
+            totalMoneyPay=FormatMoney.formatMoney(String.valueOf(bookingHistoryDetail.getTotalMoney()));
         }
         this.totalMoney= totalMoneyPay;
-        this.status=billPay.getStatus();
+        this.status= bookingHistoryDetail.getStatus();
+        this.payDate= bookingHistoryDetail.getPayDate();
     }
 }

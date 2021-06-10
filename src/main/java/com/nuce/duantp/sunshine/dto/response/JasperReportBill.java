@@ -18,7 +18,7 @@ public class JasperReportBill implements Serializable {
     private String customerName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date bookingTime;
-    List<BillReport> billReports;
+    List<ListFoodInBooking> listFoodInBookings;
     private Long deposit;
     private float sale;
     private float sumMoney;
@@ -26,7 +26,7 @@ public class JasperReportBill implements Serializable {
 
     public JasperReportBill convertChar() {
         this.customerName=FormatChar.covertToString(this.getCustomerName());
-        for(BillReport data:this.billReports){
+        for(ListFoodInBooking data:this.listFoodInBookings){
             data.setFoodName(FormatChar.covertToString(data.getFoodName()));
         }
         return  this;

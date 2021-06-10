@@ -1,8 +1,7 @@
 package com.nuce.duantp.sunshine.dto.enums;
 
 public enum EnumResponseStatusCode {
-    ADD_ACCOUNT_SUCCESS("Thêm tai khoản ngân hàng thành công!"),
-    ACCOUNT_EXISTED("Tài khoản ngân hàng đã tồn tại!"),
+    PHONE_NUMBER_EXISTED("Số điện thoại đã tồn tại!"),
     DEPOSIT_EXISTED("Tổng số người đã tồn tại, bạn muốn cập nhật không ?"),
     EDIT_USER_SUCCESS("Thay đổi thông tin thành công"),
     EDIT_USER_FAILED("Thay đổi thông tin thất bại!"),

@@ -18,7 +18,6 @@ import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class UserService {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         try{
           if (passwordEncoder.matches(changePasswordReq.getOldPass(), customer.get().getPassword())) {
-            if (!CheckPass.checkPassword(changePasswordReq.getNewPass())) {
+            if (!CheckPass.checkFormatPassword(changePasswordReq.getNewPass())) {
               return ResponseEntity
                 .ok()
                 .body(new MessageResponse(EnumResponseStatusCode.INVALID_PASSWORD_FORMAT));
@@ -80,10 +79,10 @@ public class UserService {
 
     public ResponseEntity<?> updateUser(UpdateUserReq updateUserReq, HttpServletRequest req) {
         Optional<tbl_Customer> customerOptional = authTokenFilter.whoami(req);
-        if (!CheckPhoneNumber.checkPhone(updateUserReq.getPhoneNumber())) {
+        if (!CheckPhoneNumber.checkFormatPhone(updateUserReq.getPhoneNumber())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_PHONE_FORMAT));
         }
-        if (!CheckNameCustomer.checkName(updateUserReq.getFullName())) {
+        if (!CheckNameCustomer.checkFormatName(updateUserReq.getFullName())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_NAME_FORMAT));
         } else {
             tbl_Customer customer=customerOptional.get();

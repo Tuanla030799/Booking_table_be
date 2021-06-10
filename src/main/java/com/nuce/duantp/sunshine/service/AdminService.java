@@ -64,7 +64,7 @@ public class AdminService {
     public void exportBill(String bookingId) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
 
-        List<BillReport> listBillRp = new ArrayList<>();
+        List<ListFoodInBooking> listBillRp = new ArrayList<>();
         tbl_Booking booking = bookingRepository.findByBookingId(bookingId);
         tbl_Customer customer = customerRepo.findCustomerByEmail(booking.getEmail());
         tbl_Bill bill = billRepo.findByBookingId(bookingId);
@@ -75,11 +75,11 @@ public class AdminService {
         float totalMoney = 0L;
         for (tbl_BillInfo data : list) {
             tbl_Food food = foodRepo.findByFoodId(data.getFoodId());
-            BillReport billReport = new BillReport(stt, food.getFoodName(), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
+            ListFoodInBooking listFoodInBooking = new ListFoodInBooking(stt, food.getFoodName(), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
                     FormatMoney.formatMoney(String.valueOf(food.getFoodPrice() * data.getQuantity())), data.getQuantity());
-            listBillRp.add(billReport);
+            listBillRp.add(listFoodInBooking);
             stt++;
-            totalMoney += Float.parseFloat(billReport.getMoney());
+            totalMoney += Float.parseFloat(listFoodInBooking.getMoney());
         }
         float sumMoney = 0L;
         float salePr = 0L;
@@ -93,7 +93,7 @@ public class AdminService {
         JasperReportBill reportBill = new JasperReportBill(bookingId, customer.getFullName(), booking.getBookingTime(), listBillRp, deposit.getDeposit(), salePr, sumMoney, totalMoney);
         reportBill.convertChar();
         File file = ResourceUtils.getFile("classpath:exportBill.jrxml");
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportBill.getBillReports());
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportBill.getListFoodInBookings());
 
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         Map<String, Object> parameters = new HashMap<>();

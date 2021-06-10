@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BillReport {
+public class ListFoodInBooking {
     private int stt;
     private String foodName;
     private String price;

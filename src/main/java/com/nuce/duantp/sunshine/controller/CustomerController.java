@@ -2,10 +2,11 @@ package com.nuce.duantp.sunshine.controller;
 
 //import com.nuce.duantp.sunshine.dto.request.AddAccReq;
 
-import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetailRes;
+//import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetailRes;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.dto.model.tbl_Sale;
+import com.nuce.duantp.sunshine.dto.response.PayDetailResponse;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.service.CustomerService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
@@ -35,7 +36,7 @@ public class CustomerController {
     }
 
     @GetMapping("/booking-history-detail/{bookingId}")
-    public BookingHistoryDetailRes viewBookingHistoryDetail(HttpServletRequest req, @PathVariable String bookingId) {
+    public PayDetailResponse viewBookingHistoryDetail(HttpServletRequest req, @PathVariable String bookingId) {
         if (tokenLivingService.checkTokenLiving(req)) {
             return customerService.viewBookingHistoryDetail(bookingId);
         } else return null;
