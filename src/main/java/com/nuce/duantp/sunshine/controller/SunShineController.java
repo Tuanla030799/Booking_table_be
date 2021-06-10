@@ -25,8 +25,8 @@ public class SunShineController {
     }
 
     @GetMapping("/get-list-food")
-    public List<FoodHomeRes> getListFood(){
-        return sunShineService.getListFood();
+    public List<FoodHomeRes> getListFood(@RequestParam(name = "bookingId" ,defaultValue = " ")String bookingId){
+        return sunShineService.getListFood(bookingId);
     }
 
     @GetMapping("/get-food/{id}")

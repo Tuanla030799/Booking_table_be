@@ -165,9 +165,20 @@ public class BookingService {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         for (FoodReq data : orderFoodReq.getFoodList()) {
-            tbl_BillInfo billInfo = new tbl_BillInfo(bill.getBillId(), data.getQuantity(), data.getFoodId());
-            billInfoRepo.save(billInfo);
+            tbl_BillInfo billInfo = billInfoRepo.findByBillIdAndFoodId(bill.getBillId(), data.getFoodId());
+            if (billInfo == null) {
+                tbl_BillInfo billInfo1 = new tbl_BillInfo(bill.getBillId(), data.getQuantity(), data.getFoodId());
+                billInfoRepo.save(billInfo1);
+            } else {
+                int quantity = billInfo.getQuantity() + data.getQuantity();
+                billInfo.setQuantity(quantity);
+                billInfoRepo.save(billInfo);
+            }
         }
+//        for (FoodReq data : orderFoodReq.getFoodList()) {
+//            tbl_BillInfo billInfo = new tbl_BillInfo(bill.getBillId(), data.getQuantity(), data.getFoodId());
+//            billInfoRepo.save(billInfo);
+//        }
         LOGGER.warn("Booking table success by " + customer.getEmail() + "\n" + orderFoodReq, BookingService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);

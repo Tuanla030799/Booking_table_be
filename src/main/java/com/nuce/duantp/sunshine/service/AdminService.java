@@ -117,7 +117,9 @@ public class AdminService {
         for (FoodReq data : orderFoodReq.getFoodList()) {
             tbl_BillInfo billInfo = billInfoRepo.findByBillIdAndFoodId(bill.getBillId(), data.getFoodId());
             if (billInfo == null) {
-                bookingService.orderFood(orderFoodReq, booking.getEmail());
+                tbl_BillInfo billInfo1 = new tbl_BillInfo(bill.getBillId(), data.getQuantity(), data.getFoodId());
+                billInfoRepo.save(billInfo1);
+//                bookingService.orderFood(orderFoodReq, booking.getEmail());
             } else {
                 int quantity = billInfo.getQuantity() + data.getQuantity();
                 billInfo.setQuantity(quantity);

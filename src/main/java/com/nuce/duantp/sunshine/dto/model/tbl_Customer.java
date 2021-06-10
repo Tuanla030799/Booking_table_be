@@ -1,5 +1,6 @@
 package com.nuce.duantp.sunshine.dto.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nuce.duantp.sunshine.dto.request.SignupRequest;
 import com.nuce.duantp.sunshine.dto.request.UpdateUserReq;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
@@ -45,8 +48,15 @@ public class tbl_Customer {
     @Column(name="image")
     private String image;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @Column(name = "dateOfBirth")
+    private Date dateOfBirth;
+
     @Column(name="accStatus")
     private int accStatus;
+
+    @Column(name="sex")
+    private int sex;
 
     public tbl_Customer(SignupRequest signupRequest,String password) {
         this.email=signupRequest.getEmail();
@@ -59,6 +69,13 @@ public class tbl_Customer {
         this.image= String.valueOf(new Date().getTime());
         this.accStatus=1;
         this.image="https://www.dropbox.com/s/6gkxzppp1g3we6z/1622285305745.jpg?raw=1";
+        this.sex=signupRequest.getSex();
+        try {
+            this.dateOfBirth = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(signupRequest.getDateOfBirth());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public tbl_Customer(String email, String phoneNumber, String fullName, String password, Long totalMoney) {

@@ -128,14 +128,34 @@ public class SunShineService {
         return saleResList;
     }
 
-    public List<FoodHomeRes> getListFood() {
+    public List<FoodHomeRes> getListFood(String bookingId) {
         List<FoodHomeRes> list = new ArrayList<>();
         List<tbl_Food> foodList = foodRepo.findAllByFoodStatus(1);
         int stt=1;
-        for (tbl_Food data : foodList) {
-            FoodHomeRes foodHomeRes = new FoodHomeRes(data,stt);
-            list.add(foodHomeRes);
-            stt++;
+        if (!bookingId.equals(" ")){
+            tbl_Bill bill=billRepo.findByBookingId(bookingId);
+            if (bill==null){
+                return null;
+            }
+            List<tbl_BillInfo> billInfos=billInfoRepo.findAllByBillId(bill.getBillId());
+            for (tbl_Food data : foodList) {
+                int quantity=0;
+                for (tbl_BillInfo res:billInfos){
+                    if(data.getFoodId()==res.getFoodId()){
+                        quantity=res.getQuantity();
+                    }
+                }
+                FoodHomeRes foodHomeRes = new FoodHomeRes(data,stt,quantity);
+                list.add(foodHomeRes);
+                stt++;
+            }
+        }
+        else{
+            for (tbl_Food data : foodList) {
+                FoodHomeRes foodHomeRes = new FoodHomeRes(data,stt);
+                list.add(foodHomeRes);
+                stt++;
+            }
         }
         return list;
     }

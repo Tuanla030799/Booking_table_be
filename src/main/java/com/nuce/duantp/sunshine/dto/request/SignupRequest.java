@@ -25,6 +25,10 @@ public class SignupRequest {
     @NotBlank
     private String fullName;
 
-//    private MultipartFile file;
+    @NotBlank
+    private String dateOfBirth;
+
+    @NotBlank
+    private int sex;
 
 }
