@@ -48,7 +48,7 @@ public class tbl_Customer {
     @Column(name="image")
     private String image;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "dateOfBirth")
     private Date dateOfBirth;
 
@@ -71,7 +71,7 @@ public class tbl_Customer {
         this.image="https://www.dropbox.com/s/6gkxzppp1g3we6z/1622285305745.jpg?raw=1";
         this.sex=signupRequest.getSex();
         try {
-            this.dateOfBirth = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(signupRequest.getDateOfBirth());
+            this.dateOfBirth = new SimpleDateFormat("yyyy-MM-dd").parse(signupRequest.getDateOfBirth());
         } catch (ParseException e) {
             e.printStackTrace();
         }

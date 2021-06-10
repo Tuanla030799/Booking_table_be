@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class BookingHistoryDetail implements Serializable {
     private String bookingId;//
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date bookingTime;//
     List<ListFoodInBooking> listFoodInBookings;//
     private Long deposit;//
