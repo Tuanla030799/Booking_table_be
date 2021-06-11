@@ -15,9 +15,7 @@ public class UpdateUserReq {
     private String fullName;
     private String phoneNumber;
     private MultipartFile file;
-
     private String dateOfBirth;
-
     private int sex;
 
 
