@@ -18,5 +18,4 @@ public class UpdateUserReq {
     private String dateOfBirth;
     private int sex;
 
-
 }
