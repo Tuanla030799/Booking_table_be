@@ -266,6 +266,7 @@ public class AdminService {
         List<BookingHistoryRes> data = new ArrayList<>();
         int stt = 1;
         for (tbl_Booking booking : bookingList) {
+            tbl_Customer customer1=customerRepo.findCustomerByEmail(booking.getEmail());
             float money = 0L;
             if (booking.getBookingStatus() == 1) {
                 money = sunShineService.moneyPay(booking.getBookingId());
@@ -278,7 +279,8 @@ public class AdminService {
             String status = Validate.convertStatusBooking(booking.getBookingStatus());
             BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
                     status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(),
-                    FormatMoney.formatMoney(String.valueOf(refund)));
+                    FormatMoney.formatMoney(String.valueOf(refund)),customer1.getEmail(),
+                    customer1.getPhoneNumber().replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3"));
             data.add(data1);
             stt++;
         }

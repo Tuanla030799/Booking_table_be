@@ -27,6 +27,11 @@ public class BookingHistoryRes {
     private String bookingId;
 
     private String refund;
+
+    private String email;
+
+    private String phoneNumber;
+
 //
 //    public BookingHistoryRes(tbl_Booking booking) {
 //
