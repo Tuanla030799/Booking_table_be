@@ -24,7 +24,7 @@ public class tbl_Customer {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "email",unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "phoneNumber")
@@ -45,31 +45,31 @@ public class tbl_Customer {
     @Column(name = "beneficiary")
     private String beneficiary;
 
-    @Column(name="image")
+    @Column(name = "image")
     private String image;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "dateOfBirth")
     private Date dateOfBirth;
 
-    @Column(name="accStatus")
+    @Column(name = "accStatus")
     private int accStatus;
 
-    @Column(name="sex")
+    @Column(name = "sex")
     private int sex;
 
-    public tbl_Customer(SignupRequest signupRequest,String password) {
-        this.email=signupRequest.getEmail();
-        this.phoneNumber=signupRequest.getPhoneNumber();
-        this.fullName=signupRequest.getFullName();
-        this.password=password;
-        this.totalMoney=0L;
-        this.role="USERS";
-        this.beneficiary="CUSTOMER";
-        this.image= String.valueOf(new Date().getTime());
-        this.accStatus=1;
-        this.image="https://www.dropbox.com/s/6gkxzppp1g3we6z/1622285305745.jpg?raw=1";
-        this.sex=signupRequest.getSex();
+    public tbl_Customer(SignupRequest signupRequest, String password) {
+        this.email = signupRequest.getEmail();
+        this.phoneNumber = signupRequest.getPhoneNumber();
+        this.fullName = signupRequest.getFullName();
+        this.password = password;
+        this.totalMoney = 0L;
+        this.role = "USERS";
+        this.beneficiary = "CUSTOMER";
+        this.image = String.valueOf(new Date().getTime());
+        this.accStatus = 1;
+        this.image = "https://www.dropbox.com/s/6gkxzppp1g3we6z/1622285305745.jpg?raw=1";
+        this.sex = signupRequest.getSex();
         try {
             this.dateOfBirth = new SimpleDateFormat("yyyy-MM-dd").parse(signupRequest.getDateOfBirth());
         } catch (ParseException e) {
@@ -84,9 +84,9 @@ public class tbl_Customer {
         this.fullName = fullName;
         this.password = password;
         this.totalMoney = totalMoney;
-        this.role="USERS";
-        this.beneficiary="CUSTOMER";
-        this.accStatus=1;
+        this.role = "USERS";
+        this.beneficiary = "CUSTOMER";
+        this.accStatus = 1;
 
     }
 
@@ -95,9 +95,9 @@ public class tbl_Customer {
         this.phoneNumber = phoneNumber;
         this.fullName = fullName;
         this.password = password;
-        this.role="USERS";
-        this.beneficiary="CUSTOMER";
-        this.accStatus=1;
+        this.role = "USERS";
+        this.beneficiary = "CUSTOMER";
+        this.accStatus = 1;
 
     }
 
@@ -107,16 +107,24 @@ public class tbl_Customer {
         this.fullName = customer.fullName;
         this.password = customer.password;
         this.totalMoney = customer.totalMoney;
-        this.role="USERS";
-        this.beneficiary="CUSTOMER";
-        this.accStatus=1;
+        this.role = "USERS";
+        this.beneficiary = "CUSTOMER";
+        this.accStatus = 1;
 
     }
 
     public tbl_Customer updateCustomer(UpdateUserReq req) {
-        this.setPhoneNumber(req.getPhoneNumber());
-        this.setFullName(req.getFullName());
-        this.image= String.valueOf(new Date().getTime());
+        if (req.getFullName() != null && !req.getFullName().equals("")) this.setFullName(req.getFullName());
+        if (req.getPhoneNumber() != null && !req.getPhoneNumber().equals("")) this.setPhoneNumber(req.getPhoneNumber());
+        if (req.getFile() != null) this.image = String.valueOf(new Date().getTime());
+        if (!req.getDateOfBirth().equals("") && req.getDateOfBirth() != null) {
+            try {
+                this.dateOfBirth = new SimpleDateFormat("dd/MM/yyyy").parse(req.getDateOfBirth());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        if (req.getSex() == 1 || req.getSex() == 0) this.sex = req.getSex();
         return this;
     }
 }

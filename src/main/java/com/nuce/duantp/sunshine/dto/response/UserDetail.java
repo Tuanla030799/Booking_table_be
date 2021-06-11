@@ -32,9 +32,9 @@ public class UserDetail {
 
     private String status;
 
-    private String sex;
+    private int sex;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date dateOfBirth;
     public UserDetail(tbl_Customer customer) {
         this.email=customer.getEmail();
@@ -44,7 +44,7 @@ public class UserDetail {
         this.role=customer.getRole();
         this.image=customer.getImage();
         this.status=customer.getAccStatus()==1?"Đang hoạt động":"Đã bị khóa";
-        this.sex=customer.getSex()==1?"Nam":"Nữ";
+        this.sex=customer.getSex();
 
         this.dateOfBirth= TimeUtils.minusDate(customer.getDateOfBirth(), 7, "HOUR");
     }

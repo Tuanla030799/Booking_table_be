@@ -6,14 +6,19 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserReq {
-    private String phoneNumber;
-
     private String fullName;
-
+    private String phoneNumber;
     private MultipartFile file;
+
+    private String dateOfBirth;
+
+    private int sex;
+
+
 }

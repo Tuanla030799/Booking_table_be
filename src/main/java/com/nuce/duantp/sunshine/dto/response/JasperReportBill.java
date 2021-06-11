@@ -16,7 +16,7 @@ import java.util.List;
 public class JasperReportBill implements Serializable {
     private String bookingId;
     private String customerName;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss aa")
     private Date bookingTime;
     List<ListFoodInBooking> listFoodInBookings;
     private Long deposit;

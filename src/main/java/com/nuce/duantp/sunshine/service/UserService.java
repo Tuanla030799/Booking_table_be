@@ -79,23 +79,26 @@ public class UserService {
 
     public ResponseEntity<?> updateUser(UpdateUserReq updateUserReq, HttpServletRequest req) {
         Optional<tbl_Customer> customerOptional = authTokenFilter.whoami(req);
-        if (!CheckPhoneNumber.checkFormatPhone(updateUserReq.getPhoneNumber())) {
-            return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_PHONE_FORMAT));
-        }
+//        TODO:enable
+//        if (customerRepo.existsByPhoneNumber(updateUserReq.getPhoneNumber())) {
+//            return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.PHONE_NUMBER_EXISTED));
+//        }
         if (!CheckNameCustomer.checkFormatName(updateUserReq.getFullName())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_NAME_FORMAT));
         } else {
             tbl_Customer customer=customerOptional.get();
             customer.updateCustomer(updateUserReq);
-            Image image = new Image();
-            image.setName(customer.getImage());
-            image.setDescription(customer.getFullName());
-            image.setImagePath("/Avatar/" + customer.getImage() + ".jpg");
-            image.setType("AVATAR");
-            image.setSpecifyType("specifyType");
-            image.setIdParent("idParent");
-            imageService.createImage(image, updateUserReq.getFile());
-            customer.setImage(image.getUrl());
+            if(updateUserReq.getFile()!=null){
+                Image image = new Image();
+                image.setName(customer.getImage());
+                image.setDescription(customer.getFullName());
+                image.setImagePath("/Avatar/" + customer.getImage() + ".jpg");
+                image.setType("AVATAR");
+                image.setSpecifyType("specifyType");
+                image.setIdParent("idParent");
+                imageService.createImage(image, updateUserReq.getFile());
+                customer.setImage(image.getUrl());
+            }
             customerRepo.save(customer);
             LOGGER.warn("update info success by " + customer.getEmail()+"\n"+updateUserReq, UserService.class);
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));

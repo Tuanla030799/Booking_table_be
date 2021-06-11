@@ -223,7 +223,7 @@ public class BookingService {
             String status= Validate.convertStatusBooking(booking.getBookingStatus());
             String payDate="Chưa thanh toán.";
             if(bill.getPayDate()!=null){
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
                 payDate = dateFormat.format(bill.getPayDate());
             }
             int totalSet=booking.getTotalSeats();
