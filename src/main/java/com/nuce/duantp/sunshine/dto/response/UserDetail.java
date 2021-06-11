@@ -34,7 +34,7 @@ public class UserDetail {
 
     private int sex;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     public UserDetail(tbl_Customer customer) {
         this.email=customer.getEmail();

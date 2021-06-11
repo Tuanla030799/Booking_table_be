@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 public class PayDetailResponse implements Serializable {
     private String bookingId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss aa")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss aa")
     private Date bookingTime;
     List<ListFoodInBooking> listFoodInBookings;
     private String deposit;

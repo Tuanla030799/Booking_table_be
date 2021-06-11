@@ -119,7 +119,7 @@ public class tbl_Customer {
         if (req.getFile() != null) this.image = String.valueOf(new Date().getTime());
         if (!req.getDateOfBirth().equals("") && req.getDateOfBirth() != null) {
             try {
-                this.dateOfBirth = new SimpleDateFormat("yyyy/MM/dd").parse(req.getDateOfBirth());
+                this.dateOfBirth = new SimpleDateFormat("yyyy-MM-dd").parse(req.getDateOfBirth());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
