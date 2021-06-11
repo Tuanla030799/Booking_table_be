@@ -171,8 +171,7 @@ public class BookingService {
                 tbl_BillInfo billInfo1 = new tbl_BillInfo(bill.getBillId(), data.getQuantity(), data.getFoodId());
                 billInfoRepo.save(billInfo1);
             } else {
-                int quantity = billInfo.getQuantity() + data.getQuantity();
-                billInfo.setQuantity(quantity);
+                billInfo.setQuantity(data.getQuantity());
                 billInfoRepo.save(billInfo);
             }
         }
