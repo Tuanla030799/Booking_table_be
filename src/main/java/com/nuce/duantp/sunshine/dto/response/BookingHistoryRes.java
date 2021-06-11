@@ -32,6 +32,15 @@ public class BookingHistoryRes {
 
     private String phoneNumber;
 
+    public BookingHistoryRes(Date bookingTime, String deposit, String bookingStatus, String moneyPay, int stt, String bookingId, String refund) {
+        this.bookingTime = bookingTime;
+        this.deposit = deposit;
+        this.bookingStatus = bookingStatus;
+        this.moneyPay = moneyPay;
+        this.stt = stt;
+        this.bookingId = bookingId;
+        this.refund = refund;
+    }
 //
 //    public BookingHistoryRes(tbl_Booking booking) {
 //
