@@ -48,4 +48,5 @@ public class UserDetail {
         this.level=customer.getBeneficiary();
         this.dateOfBirth= TimeUtils.minusDate(customer.getDateOfBirth(), 7, "HOUR");
     }
+
 }
