@@ -266,6 +266,23 @@ public class AdminService {
         List<BookingHistoryRes> data = new ArrayList<>();
         int stt = 1;
         for (tbl_Booking booking : bookingList) {
+
+            tbl_Bill bill = billRepo.findByBookingId(booking.getBookingId());
+            List<ListFoodInBooking> listFoodInBookings =new ArrayList<>();
+            float totalMoneyFood = 0L; //lấy ra tổng số tiền cho đặt món
+            int stt1=1;
+            List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
+            for(tbl_BillInfo billInfo: billInfoList){
+                tbl_Food food=foodRepo.findByFoodId(billInfo.getFoodId());
+                ListFoodInBooking listFoodInBooking =new ListFoodInBooking(stt, food.getFoodName(),
+                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
+                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice()* billInfo.getQuantity())),
+                        billInfo.getQuantity());
+                listFoodInBookings.add(listFoodInBooking);
+                stt1++;
+                totalMoneyFood+=food.getFoodPrice()*billInfo.getQuantity();
+            }
+
             tbl_Customer customer1=customerRepo.findCustomerByEmail(booking.getEmail());
             float money = 0L;
             if (booking.getBookingStatus() == 1) {
@@ -280,7 +297,7 @@ public class AdminService {
             BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
                     status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(),
                     FormatMoney.formatMoney(String.valueOf(refund)),customer1.getEmail(),
-                    customer1.getPhoneNumber().replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3"));
+                    customer1.getPhoneNumber().replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3"),listFoodInBookings);
             data.add(data1);
             stt++;
         }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -32,7 +33,10 @@ public class BookingHistoryRes {
 
     private String phoneNumber;
 
-    public BookingHistoryRes(Date bookingTime, String deposit, String bookingStatus, String moneyPay, int stt, String bookingId, String refund) {
+    List<ListFoodInBooking> listFoodInBookings;
+
+    public BookingHistoryRes(Date bookingTime, String deposit, String bookingStatus, String moneyPay, int stt,
+                             String bookingId, String refund,List<ListFoodInBooking> listFoodInBookings) {
         this.bookingTime = bookingTime;
         this.deposit = deposit;
         this.bookingStatus = bookingStatus;
@@ -40,6 +44,7 @@ public class BookingHistoryRes {
         this.stt = stt;
         this.bookingId = bookingId;
         this.refund = refund;
+        this.listFoodInBookings=listFoodInBookings;
     }
 //
 //    public BookingHistoryRes(tbl_Booking booking) {

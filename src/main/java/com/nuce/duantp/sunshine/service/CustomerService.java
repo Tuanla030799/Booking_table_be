@@ -7,6 +7,7 @@ import com.nuce.duantp.sunshine.config.format.Validate;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetail;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.model.*;
+import com.nuce.duantp.sunshine.dto.response.ListFoodInBooking;
 import com.nuce.duantp.sunshine.dto.response.PayDetailResponse;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
@@ -33,6 +34,8 @@ public class CustomerService {
     private final SaleRepo saleRepo;
     private final DepositRepo depositRepo;
     private final BookingService bookingService;
+    private final BillInfoRepo billInfoRepo;
+    private final FoodRepo foodRepo;
     private final PointsRepo pointsRepo;
     private Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
 
@@ -42,6 +45,22 @@ public class CustomerService {
         List<BookingHistoryRes> data = new ArrayList<>();
         int stt = 1;
         for (tbl_Booking booking : bookingList) {
+
+            tbl_Bill bill = billRepo.findByBookingId(booking.getBookingId());
+            List<ListFoodInBooking> listFoodInBookings =new ArrayList<>();
+            float totalMoneyFood = 0L; //lấy ra tổng số tiền cho đặt món
+            int stt1=1;
+            List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
+            for(tbl_BillInfo billInfo: billInfoList){
+                tbl_Food food=foodRepo.findByFoodId(billInfo.getFoodId());
+                ListFoodInBooking listFoodInBooking =new ListFoodInBooking(stt, food.getFoodName(),
+                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
+                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice()* billInfo.getQuantity())),
+                        billInfo.getQuantity());
+                listFoodInBookings.add(listFoodInBooking);
+                stt1++;
+                totalMoneyFood+=food.getFoodPrice()*billInfo.getQuantity();
+            }
             float money = 0L;
             if (booking.getBookingStatus() == 1) {
                 money = sunShineService.moneyPay(booking.getBookingId());
@@ -57,7 +76,7 @@ public class CustomerService {
             BookingHistoryRes data1 = new BookingHistoryRes(date,
                     FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())), status,
                     FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(),
-                    FormatMoney.formatMoney(String.valueOf(refund)));
+                    FormatMoney.formatMoney(String.valueOf(refund)),listFoodInBookings);
             data.add(data1);
             stt++;
 
