@@ -320,4 +320,36 @@ public class AdminService {
         return user;
     }
 
+    public ResponseEntity<?> palBill(String bookingId){
+        BookingHistoryDetail bookingHistoryDetail =bookingService.getBillPay(bookingId);
+        tbl_Booking booking=bookingRepository.findByBookingId(bookingId);
+        tbl_Customer customer=customerRepo.findCustomerByEmail(booking.getEmail());
+        tbl_Bill bill=billRepo.findByBookingId(bookingId);
+        float moneyPay = bookingHistoryDetail.getTotalMoney();
+        Long money=customer.getTotalMoney();
+        tbl_Points point= pointsRepo.findTopByPriceGreaterThanEqualOrderByPriceAscCreatedDesc((long) moneyPay);
+        float pointPercent=0L;
+        if(point!=null) pointPercent=point.getPointPercent();
+        customer.setTotalMoney((long) (money+moneyPay*pointPercent));
+
+        booking.setBookingStatus(1);
+        booking.setSaleId(bookingHistoryDetail.getSaleId());
+        bill.setBillStatus(1);
+        bill.setPayDate(new Date());
+        bill.setPointId(point.getPointId());
+
+        billRepo.save(bill);
+        bookingRepository.save(booking);
+        customerRepo.save(customer);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.PAY_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> Charging(ChargingReq chargingReq){
+       tbl_Customer customer=customerRepo.findCustomerByEmail(chargingReq.getEmail());
+       customer.setTotalMoney((long) (customer.getTotalMoney()+chargingReq.getMoney()));
+       customerRepo.save(customer);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.CHARGING_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

@@ -1,10 +1,6 @@
 package com.nuce.duantp.sunshine.controller;
 
-import com.nuce.duantp.sunshine.dto.request.News;
-import com.nuce.duantp.sunshine.dto.request.CancelBookingReq;
-import com.nuce.duantp.sunshine.dto.request.DepositReq;
-import com.nuce.duantp.sunshine.dto.request.OrderFoodReq;
-import com.nuce.duantp.sunshine.dto.request.PointReq;
+import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.response.UserDetail;
@@ -225,6 +221,25 @@ public class AdminController {
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
 
+    }
+
+    @PostMapping("/pay-bill/{bookingId}")
+    public ResponseEntity<?> payBill(@PathVariable(name = "bookingId") String bookingId, HttpServletRequest req){
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.palBill(bookingId);
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("/Charging")
+    public ResponseEntity<?> payBill(@RequestBody ChargingReq chargingReq, HttpServletRequest req){
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.Charging(chargingReq);
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
 

@@ -268,8 +268,11 @@ public class BookingService {
         BookingHistoryDetail bookingHistoryDetail =getBillPay(payReq.getBookingId());
         float moneyPay = bookingHistoryDetail.getTotalMoney();
         Long money=customer.getTotalMoney();
-        customer.setTotalMoney((long) (money-moneyPay));
         tbl_Points point= pointsRepo.findTopByPriceGreaterThanEqualOrderByPriceAscCreatedDesc((long) moneyPay);
+        float pointPercent=0L;
+        if(point!=null) pointPercent=point.getPointPercent();
+        customer.setTotalMoney((long) (money-moneyPay+pointPercent));
+
         money=admin.getTotalMoney();
         admin.setTotalMoney((long) (money+moneyPay));
         booking.setBookingStatus(1);

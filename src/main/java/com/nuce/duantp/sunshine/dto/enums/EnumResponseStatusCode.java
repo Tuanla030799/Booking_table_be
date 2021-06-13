@@ -12,6 +12,7 @@ public enum EnumResponseStatusCode {
     ADD_FOOD_FAILED("Thêm món ăn thất bại!"),
     PAY_SUCCESS("Thanh toán thành công!"),
     PAY_FAILED("Tài khoản không đủ tiền!"),
+    CHARGING_SUCCESS("Nạp tiền thành công!"),
     CANCEL_BOOKING_SUCCESS("Huỷ đặt bàn thành công!"),
     EMPLOYEE_CANCEL_BOOKING_SUCCESS("Đợi nhân viên xác nhận!"),
     INVALID_EMAIL_FORMAT("Định dạng email không hợp lệ!"),
