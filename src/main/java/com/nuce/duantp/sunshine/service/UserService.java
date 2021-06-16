@@ -44,7 +44,7 @@ public class UserService {
           if (passwordEncoder.matches(changePasswordReq.getOldPass(), customer.get().getPassword())) {
             if (!CheckPass.checkFormatPassword(changePasswordReq.getNewPass())) {
               return ResponseEntity
-                .ok()
+                .badRequest()
                 .body(new MessageResponse(EnumResponseStatusCode.INVALID_PASSWORD_FORMAT));
             } else {
                 /*
@@ -66,7 +66,7 @@ public class UserService {
             }
           } else {
             return ResponseEntity
-              .ok()
+              .badRequest()
               .body(new MessageResponse(EnumResponseStatusCode.OLD_PASS_NOT_CORRECT));
           }
         }catch (Exception e){
