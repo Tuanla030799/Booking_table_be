@@ -16,13 +16,13 @@ public class TokenLivingService {
         /*
          * TODO: enable
          * */
-//        String authTokenHeader = req.getHeader("Authorization");
-//        String[] splits = authTokenHeader.split(" ");
-//
-//        TokenLiving tokenLiving= tokenLivingRepo.findByToken(splits[1]);
-//        if(tokenLiving==null){
-//            return false;
-//        }
+        String authTokenHeader = req.getHeader("Authorization");
+        String[] splits = authTokenHeader.split(" ");
+
+        TokenLiving tokenLiving= tokenLivingRepo.findByToken(splits[1]);
+        if(tokenLiving==null){
+            return false;
+        }
         return true;
     }
 }
