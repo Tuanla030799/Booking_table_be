@@ -1,6 +1,8 @@
 package com.nuce.duantp.sunshine.controller;
 
 import com.nuce.duantp.sunshine.dto.model.Image;
+import com.nuce.duantp.sunshine.dto.model.OneSignalMessage;
+import com.nuce.duantp.sunshine.repository.DeviceRepository;
 import com.nuce.duantp.sunshine.service.DropBoxService;
 import com.nuce.duantp.sunshine.service.ImageService;
 //import com.phamtan.base.email.data_structure.EmailContentData;
@@ -13,11 +15,41 @@ import com.nuce.duantp.sunshine.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/test")
 public class testCon {
+//    @Autowired
+//    private RestTemplate template;
+//
+//    @Autowired
+//    private DeviceRepository deviceRepository;
+//    private String url = "https://onesignal.com/api/v1/notifications";
+//    private String appId = "13948c48-b3ba-4662-a872-f93786f6c00c";
+//
+//    @PostMapping("/hello-world")
+//    public String pushNotify() {
+//        String str = "hello world";
+//        OneSignalMessage message = new OneSignalMessage();
+//        message.setAppId(appId);
+//        message.setUrl(url);
+//        List<String> playerId = deviceRepository.findPlayerId();
+//
+//        message.setIncludePlayerIds(playerId);
+//        message.getContents().put("en", str);
+//        template.postForEntity(message.getUrl(), message, String.class);
+//        return str;
+//    }
+
+
+
+
+
+
 //    //private Account account ;
 //    @Autowired
 //    private ReportService service;
