@@ -3,6 +3,7 @@ package com.nuce.duantp.sunshine.controller;
 import com.nuce.duantp.sunshine.dto.request.*;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
+import com.nuce.duantp.sunshine.dto.response.PayDetailResponse;
 import com.nuce.duantp.sunshine.dto.response.UserDetail;
 import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
 import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
@@ -11,13 +12,17 @@ import com.nuce.duantp.sunshine.service.AdminService;
 import com.nuce.duantp.sunshine.service.BookingService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -242,5 +247,40 @@ public class AdminController {
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/disable-customer/{email}")
+    public ResponseEntity<?> disableCustomer(@PathVariable(name = "email") String email, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.disableAccCustomer(email);
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
 
+    }
+
+    @GetMapping("/search-customer/{string}")
+    public ResponseEntity<?> searchCustomer(@PathVariable(name = "string") String string, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.searchCustomer(string);
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+    }
+
+//    @GetMapping("/get-file-report")
+//    public ByteArrayResource getFileReport(HttpServletRequest req) {
+//        List<BookingHistoryRes> payDetailResponses =adminService.viewBookingHistory(req);
+//        return reportServiceImpl.exportReport(vimoRiskTransList);
+//    }
+
+//    @GetMapping("/export-excel")
+//    public ResponseEntity<byte[]> exportToExcel(@RequestParam(name = "type")String type,
+//                                                @RequestParam(name = "date") String date) {
+//        VimoRiskTransResponse vimoRiskTransList = vimoRiskTransService.searchRisk(searchRiskReqDTO, PageRequest.of(1, (int) vimoRiskTransService.totalSearchRick(searchRiskReqDTO)));
+//        ByteArrayResource resource = reportServiceImpl.exportReport(vimoRiskTransList.getRiskTransList());
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+//                .body(resource.getByteArray());
+//    }
 }

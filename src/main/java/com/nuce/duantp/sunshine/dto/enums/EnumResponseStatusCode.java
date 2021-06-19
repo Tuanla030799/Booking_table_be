@@ -20,6 +20,7 @@ public enum EnumResponseStatusCode {
     INVALID_NAME_FORMAT("Định dạng tên không hợp lệ!"),
     INVALID_PASSWORD_FORMAT("Định dạng password không hợp lệ!"),
     EMAIL_EXISTED("Email đã tồn tại!"),
+    EMAIL_NOT_EXIST("Email không tồn tại!"),
     BILL_NOT_EXIST("Đơn hàng không tồn tại!"),
     SUCCESS("Thành công!"),
     TABLE_OFF("Hết bàn! Vui lòng chọn thời gian hoặc số lượng ngươi khác."),
@@ -28,6 +29,7 @@ public enum EnumResponseStatusCode {
     OLD_PASS_NOT_CORRECT("Password cũ không đúng!"),
     DISABLE_FOOD_SUCCESS("Xoá món ăn thành công !"),
     DISABLE_NEWS_SUCCESS("Xoá tin tức thành công !"),
+    DISABLE_ACC_SUCCESS("Khoá tài khoản thành công !"),
     ADD_NEWS_SUCCESS("Thêm tin tức thành công !"),
     DISABLE_SALE_SUCCESS("Xoá sale thành công !"),
     ADD_SALE_SUCCESS("Thêm sale thành công !"),
@@ -37,6 +39,7 @@ public enum EnumResponseStatusCode {
     LOCK_ACC("Tài khoản đã bị khóa"),
     TOTAL_SEAT_FALSE("Số lượng người phải lớn hơn 0."),
     TIME_PAY_FALSE("Bạn đã thanh toán trước, hãy chuyển qua hủy đặt bàn."),
+    SEARCH_NULL("Không tìm thấy"),
     PAID("Thanh toán không thành công (bàn đã thanh toán hoặc đã hủy)"),
     TEST("Test");
 
