@@ -1,5 +1,6 @@
 package com.nuce.duantp.sunshine.service;
 
+import com.nuce.duantp.sunshine.JasperReports.ReportService;
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.LogCodeSql;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
@@ -17,6 +18,8 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
@@ -31,7 +35,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
-public class AdminService {
+public class AdminService  {
     private final DepositRepo depositRepo;
     private final PointsRepo pointsRepo;
     private final AuthTokenFilter authTokenFilter;
@@ -184,14 +188,14 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableFood(List<String> foodIdList, String email) {
-        for (String foodId : foodIdList) {
-            tbl_Food food = foodRepo.findByFoodId(Long.valueOf(foodId));
+    public ResponseEntity<?> disableFood(Long foodIdList, String email) {
+
+            tbl_Food food = foodRepo.findByFoodId(foodIdList);
             food.setFoodStatus(0);
             foodRepo.save(food);
-        }
-        LOGGER.warn("enable Food by " + email + "\n" + foodIdList, AdminService.class);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_FOOD_SUCCESS);
+
+        LOGGER.warn("disable Food by " + email + "\n" + foodIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.DISABLE_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -216,14 +220,12 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableNews(List<String> newsIdList, String email) {
-        for (String newId : newsIdList) {
-            tbl_News news = newsRepo.findByNewsId(Long.valueOf(newId));
+    public ResponseEntity<?> enableNews(Long newsIdList, String email) {
+            tbl_News news = newsRepo.findByNewsId(newsIdList);
             news.setNewsStatus(0);
             newsRepo.save(news);
-        }
-        LOGGER.warn("enable News by " + email + "\n" + newsIdList, AdminService.class);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_NEWS_SUCCESS);
+        LOGGER.warn("disable News by " + email + "\n" + newsIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.DISABLE_NEWS_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -249,13 +251,14 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableSale(List<String> saleIdList, String email) {
-        for (String saleId : saleIdList) {
-            tbl_Sale sale = saleRepo.findBySaleId(Long.valueOf(saleId));
+    public ResponseEntity<?> disableSale(Long saleIdList, String email) {
+
+            tbl_Sale sale = saleRepo.findBySaleId(saleIdList);
+            sale.setSaleStatus(0);
             saleRepo.save(sale);
-        }
-        LOGGER.warn("enable sale by " + email + "\n" + saleIdList, AdminService.class);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_SALE_SUCCESS);
+
+        LOGGER.warn("disable sale by " + email + "\n" + saleIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.DISABLE_SALE_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -305,7 +308,7 @@ public class AdminService {
     }
 
     public List<UserDetail> getListUser(){
-        List<tbl_Customer> customerList= (List<tbl_Customer>) customerRepo.findAll();
+        List<tbl_Customer> customerList= customerRepo.getAllCustomer();
         List<UserDetail> list =new ArrayList<>();
         for(tbl_Customer data: customerList){
             UserDetail userDetail=new UserDetail(data);
@@ -352,4 +355,56 @@ public class AdminService {
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.CHARGING_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    public  ResponseEntity<?> disableAccCustomer(String email){
+        tbl_Customer customer=customerRepo.findCustomerByEmail(email);
+        if(customer==null){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.EMAIL_NOT_EXIST);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        customer.setAccStatus(0);
+        customerRepo.save(customer);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.DISABLE_ACC_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public  ResponseEntity<?> searchCustomer(String str){
+        tbl_Customer customer=customerRepo.findCustomerByEmail(str);
+        if(customer==null){
+           customer=customerRepo.findByPhoneNumber(str);
+        }
+        if(customer==null){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.SEARCH_NULL);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        if(customer!=null){
+            UserDetail userDetail=new UserDetail(customer);
+            return new ResponseEntity<>(userDetail,HttpStatus.OK);
+        }
+
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.SEARCH_NULL);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+//    @Override
+//    public ByteArrayResource exportReport(List<VimoRiskTrans> vimoRiskTransList) {
+//        try {
+//
+//            writeHeaderLine();
+//            writeDetailLines(vimoRiskTransList);
+//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//            try {
+//                workbook.write(bos);
+//            } finally {
+//                bos.close();
+//            }
+//            byte[] excelFileAsBytes = bos.toByteArray();
+//            ByteArrayResource resource = new ByteArrayResource(excelFileAsBytes);
+//            workbook.close();
+//            bos.close();
+//            return resource;
+//        } catch (Exception ex) {
+//            ex.getMessage();
+//        }
+//        return null;
+//    }
 }

@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchFoodRespon {
+    private  Long foodId;
+
     private String foodName;
 
     private String foodImage;
@@ -18,6 +20,7 @@ public class SearchFoodRespon {
     private String foodPrice;
 
     public SearchFoodRespon(tbl_Food food) {
+        this.foodId=food.getFoodId();
         this.foodImage=food.getFoodImage();
         this.foodName=food.getFoodName();
         this.foodPrice= FormatMoney.formatMoney(String.valueOf(food.getFoodPrice()));
