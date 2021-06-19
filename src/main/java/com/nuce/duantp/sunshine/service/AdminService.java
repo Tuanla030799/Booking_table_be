@@ -216,7 +216,7 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> disableNews(Long newsIdList, String email) {
+    public ResponseEntity<?> enableNews(Long newsIdList, String email) {
             tbl_News news = newsRepo.findByNewsId(newsIdList);
             news.setNewsStatus(0);
             newsRepo.save(news);

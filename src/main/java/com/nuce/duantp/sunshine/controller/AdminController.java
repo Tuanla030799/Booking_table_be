@@ -216,7 +216,7 @@ public class AdminController {
     public ResponseEntity<?> disableSale(@PathVariable(name = "saleId") Long saleId, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.enableSale(saleId, customer.get().getEmail());
+            return adminService.disableSale(saleId, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
