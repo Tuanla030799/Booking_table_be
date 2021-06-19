@@ -273,7 +273,6 @@ public class AdminController {
 //        List<BookingHistoryRes> payDetailResponses =adminService.viewBookingHistory(req);
 //        return reportServiceImpl.exportReport(vimoRiskTransList);
 //    }
-
 //    @GetMapping("/export-excel")
 //    public ResponseEntity<byte[]> exportToExcel(@RequestParam(name = "type")String type,
 //                                                @RequestParam(name = "date") String date) {
