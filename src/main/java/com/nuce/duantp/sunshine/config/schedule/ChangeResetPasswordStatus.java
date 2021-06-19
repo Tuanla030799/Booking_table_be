@@ -8,6 +8,6 @@ public class ChangeResetPasswordStatus implements Runnable {
 
     @Override
     public void run() {
-        System.out.printf("job");
+//        System.out.printf("job");
     }
 }

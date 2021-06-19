@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.service;
 
-import com.nuce.duantp.sunshine.dto.ChargeRequest;
+import com.nuce.duantp.sunshine.dto.request.ChargeRequest;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;

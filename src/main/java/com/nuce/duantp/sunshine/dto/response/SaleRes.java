@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.dto.response;
 
-import com.nuce.duantp.sunshine.model.tbl_Sale;
+import com.nuce.duantp.sunshine.dto.model.tbl_Sale;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

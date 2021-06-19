@@ -1,8 +1,8 @@
 package com.nuce.duantp.sunshine.security.services.impl;
 
 
-import com.nuce.duantp.sunshine.model.UserDetailsImpl;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
+import com.nuce.duantp.sunshine.dto.model.UserDetailsImpl;
+import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

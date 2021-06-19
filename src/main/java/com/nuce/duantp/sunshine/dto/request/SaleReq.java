@@ -11,8 +11,6 @@ public class SaleReq {
 
     private String saleDetail;
 
-    private String saleImage;
-
     private String beneficiary; //người được hưởng khuyễn mãi
 
     private float percentDiscount;

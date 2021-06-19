@@ -1,22 +1,49 @@
 package com.nuce.duantp.sunshine.controller;
 
-import com.nuce.duantp.sunshine.dto.response.PromotionsRes;
+import com.nuce.duantp.sunshine.dto.response.FoodHomeRes;
+import com.nuce.duantp.sunshine.dto.response.PageHomeRes;
+import com.nuce.duantp.sunshine.dto.response.SaleHomeRes;
+import com.nuce.duantp.sunshine.dto.model.tbl_Food;
+import com.nuce.duantp.sunshine.dto.response.SearchFoodRespon;
+import com.nuce.duantp.sunshine.repository.FoodRepo;
 import com.nuce.duantp.sunshine.service.SunShineService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/sunshine")
+@CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 public class SunShineController {
     @Autowired
     private SunShineService sunShineService;
+    @Autowired
+    private FoodRepo foodRepo;
+    @GetMapping("/home")
+    public PageHomeRes pageHome(){
+        return sunShineService.pageHome();
+    }
 
-    @GetMapping("/get-all-news")
-    public List<PromotionsRes> getAllPromotions(){
-        return  sunShineService.getAllPromotions();
+    @GetMapping("/get-list-food")
+    public List<FoodHomeRes> getListFood(@RequestParam(name = "bookingId" ,defaultValue = " ")String bookingId){
+        return sunShineService.getListFood(bookingId);
+    }
+
+    @GetMapping("/get-food/{id}")
+    public FoodHomeRes getFood(@PathVariable(name = "id" )Long id){
+        tbl_Food food=foodRepo.findByFoodId(id);
+        FoodHomeRes foodHomeRes=new FoodHomeRes(food,1);
+        return foodHomeRes;
+    }
+
+    @GetMapping("/get-list-sale")
+    public List<SaleHomeRes> getListSale(){
+        return sunShineService.getListSale();
+    }
+
+    @GetMapping("/search-food/{name}")
+    public List<SearchFoodRespon> searchFoodRespons(@PathVariable(name = "name")String name){
+        return sunShineService.searchFoodRespons(name);
     }
 }

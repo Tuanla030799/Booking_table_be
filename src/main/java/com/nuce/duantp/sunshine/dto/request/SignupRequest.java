@@ -3,6 +3,7 @@ package com.nuce.duantp.sunshine.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -24,5 +25,10 @@ public class SignupRequest {
     @NotBlank
     private String fullName;
 
+    @NotBlank
+    private String dateOfBirth;
+
+    @NotBlank
+    private int sex;
 
 }

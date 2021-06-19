@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.security.jwt;
 
-import com.nuce.duantp.sunshine.model.tbl_Customer;
+import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.security.services.impl.UserDetailsServiceImpl;
 import org.slf4j.Logger;

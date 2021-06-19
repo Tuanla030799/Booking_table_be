@@ -1,40 +1,36 @@
 package com.nuce.duantp.sunshine.controller;
 
 import com.nuce.duantp.sunshine.dto.request.*;
+import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.tbl_Booking;
-import com.nuce.duantp.sunshine.model.tbl_Customer;
-import com.nuce.duantp.sunshine.repository.BookingRepository;
+import com.nuce.duantp.sunshine.dto.response.UserDetail;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.service.AdminService;
 import com.nuce.duantp.sunshine.service.BookingService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 @RequestMapping("/api/admin")
 public class AdminController {
-    @Autowired
-    AdminService adminService;
-    @Autowired
-    BookingService bookingService;
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-    @Autowired
-    TokenLivingService tokenLivingService;
-    @Autowired
-    BookingRepository bookingRepository;
+
+    private final AdminService adminService;
+    private final  BookingService bookingService;
+    private final  AuthTokenFilter authTokenFilter;
+    private final TokenLivingService tokenLivingService;
 
     @GetMapping("/export-file")
     public ResponseEntity<?> exportFile(@RequestBody String fileName, HttpServletRequest req) {
@@ -55,11 +51,30 @@ public class AdminController {
 
     }
 
+    @GetMapping("/export-bill/{bookingId}")
+    public ResponseEntity<?> exportBill(@PathVariable(name = "bookingId") String bookingId, HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            try {
+                adminService.exportBill(bookingId);
+                MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.SUCCESS, EnumResponseStatusCode.SUCCESS.label);
+                return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+            } catch (Exception e) {
+                e.printStackTrace();
+                MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.BAD_REQUEST, EnumResponseStatusCode.BAD_REQUEST.label);
+                return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+            }
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
     @PostMapping("/cancel-booking-admin")
     public ResponseEntity<?> cancelBookingAdmin(@RequestBody CancelBookingReq cancelBookingReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return bookingService.cancelBookingAdmin(cancelBookingReq,customer.get().getEmail());
+            return bookingService.cancelBookingAdmin(cancelBookingReq, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -70,7 +85,7 @@ public class AdminController {
     public ResponseEntity<?> addDeposit(@RequestBody @Validated DepositReq depositReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.changeDeposit(depositReq,customer.get().getEmail());
+            return adminService.changeDeposit(depositReq, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -81,41 +96,37 @@ public class AdminController {
     public ResponseEntity<?> addPoint(@RequestBody @Validated PointReq pointReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.changePoint(pointReq,customer.get().getEmail());
+            return adminService.changePoint(pointReq, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
 
     }
+
     @PostMapping("/order-food")
     public ResponseEntity<?> orderFood(@RequestBody OrderFoodReq orderFoodReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        if(tokenLivingService.checkTokenLiving(req)&& customer.get().getRole().equals("ADMIN")){
-            return bookingService.orderFood(orderFoodReq,customer.get().getEmail());
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return bookingService.orderFood(orderFoodReq, customer.get().getEmail());
         }
-        MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/get-list-booking")
-    public List<String> getListBooking(HttpServletRequest req){
+    public List<BookingHistoryRes> getListBooking(HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        if(tokenLivingService.checkTokenLiving(req)&& customer.get().getRole().equals("ADMIN")){
-            List<tbl_Booking> list=bookingRepository.findByBookingStatus(0);
-            List<String> stringList = new ArrayList<>();
-            for(tbl_Booking booking:list){
-                stringList.add(booking.getBookingId());
-            }
-            return stringList;
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.viewBookingHistory(req);
         }
-        return  null;
+        return null;
     }
 
     @PostMapping("/add-food-in-booking")
     public ResponseEntity<?> addFoodInBooking(@RequestBody OrderFoodReq orderFoodReq, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addFoodInBooking(orderFoodReq,customer.get().getEmail());
+            return adminService.addFoodInBooking(orderFoodReq, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -123,10 +134,10 @@ public class AdminController {
     }
 
     @PostMapping("/add-food-in-menu")
-    public ResponseEntity<?> addFoodInMenu(@RequestBody AddFoodReq addFoodReq, HttpServletRequest req) {
+    public ResponseEntity<?> addFoodInMenu(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "foodName") String foodName, @RequestParam("describe") String describe, @RequestParam(value = "foodPrice") Long foodPrice, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addFoodInMenu(addFoodReq,customer.get().getEmail());
+            return adminService.addFoodInMenu(foodName, foodPrice, describe, customer.get().getEmail(), file);
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -137,7 +148,7 @@ public class AdminController {
     public ResponseEntity<?> enableFood(@RequestBody List<String> foodIdList, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.enableFood(foodIdList,customer.get().getEmail());
+            return adminService.enableFood(foodIdList, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -145,10 +156,10 @@ public class AdminController {
     }
 
     @PostMapping("/add-news")
-    public ResponseEntity<?> addNews(@RequestBody NewsReq newsReq, HttpServletRequest req) {
+    public ResponseEntity<?> addNews(@ModelAttribute News news, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addNews(newsReq,customer.get().getEmail());
+            return adminService.addNews(news, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -159,7 +170,7 @@ public class AdminController {
     public ResponseEntity<?> enableNews(@RequestBody List<String> newsIdList, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.enableNews(newsIdList,customer.get().getEmail());
+            return adminService.enableNews(newsIdList, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -167,13 +178,37 @@ public class AdminController {
     }
 
     @PostMapping("/add-sale")
-    public ResponseEntity<?> addSale(@RequestBody SaleReq saleReq, HttpServletRequest req) {
+    public ResponseEntity<?> addSale(@RequestParam(value = "file") MultipartFile file, @RequestParam(value =
+            "saleTitle") String saleTitle, @RequestParam("saleDetail") String saleDetail,
+                                     @RequestParam("beneficiary") String beneficiary,
+                                     @RequestParam("totalBill") float totalBill,
+                                     @RequestParam("percentDiscount") float percentDiscount, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.addSale(saleReq,customer.get().getEmail());
+            return adminService.addSale(saleTitle, saleDetail, beneficiary, percentDiscount,totalBill, file,
+                    customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+
+    }
+    @GetMapping("/list-user")
+    public List<UserDetail> getListUser(HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.getListUser();
+        }
+        return null;
+
+    }
+
+    @GetMapping("/user-detail/{email}")
+    public UserDetail userDetail(@PathVariable(name = "email") String email,HttpServletRequest req) {
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.userDetail(email);
+        }
+        return null;
 
     }
 
@@ -181,11 +216,31 @@ public class AdminController {
     public ResponseEntity<?> enableSale(@RequestBody List<String> saleIdList, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.enableSale(saleIdList,customer.get().getEmail());
+            return adminService.enableSale(saleIdList, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
 
     }
+
+    @PostMapping("/pay-bill/{bookingId}")
+    public ResponseEntity<?> payBill(@PathVariable(name = "bookingId") String bookingId, HttpServletRequest req){
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.palBill(bookingId);
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("/Charging")
+    public ResponseEntity<?> payBill(@RequestBody ChargingReq chargingReq, HttpServletRequest req){
+        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+        if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
+            return adminService.Charging(chargingReq);
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

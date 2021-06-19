@@ -2,7 +2,7 @@ package com.nuce.duantp.sunshine.config.schedule;
 
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.dto.request.CancelBookingReq;
-import com.nuce.duantp.sunshine.model.tbl_Booking;
+import com.nuce.duantp.sunshine.dto.model.tbl_Booking;
 import com.nuce.duantp.sunshine.repository.BookingRepository;
 import com.nuce.duantp.sunshine.service.BookingService;
 import org.slf4j.Logger;
@@ -22,6 +22,10 @@ public class AutoCancelBooking implements Runnable {
     private Logger LOGGER = LoggerFactory.getLogger(AutoCancelBooking.class);
     @Override
     public void run() {
+        /*
+        * TODO: kiểm tra xem bàn đã đã đến hay chưa
+        *
+        * */
         List<tbl_Booking> list=bookingRepository.findByBookingStatusAndBookingTimeLessThan(0,new Date());
         for(tbl_Booking data:list){
             Date date = new Date();

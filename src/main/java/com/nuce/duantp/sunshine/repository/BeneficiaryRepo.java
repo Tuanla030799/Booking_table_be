@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.repository;
 
-import com.nuce.duantp.sunshine.model.tbl_Beneficiary;
+import com.nuce.duantp.sunshine.dto.model.tbl_Beneficiary;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

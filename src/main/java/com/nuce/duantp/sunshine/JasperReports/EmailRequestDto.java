@@ -13,5 +13,4 @@ public class EmailRequestDto {
     private String subject;
     private String name;
     private String url;
-//    private String fileName;
 }

@@ -1,111 +1,98 @@
 package com.nuce.duantp.sunshine.service;
 
-import com.nuce.duantp.sunshine.dto.request.AddAccReq;
-import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetailRes;
+import com.nuce.duantp.sunshine.config.TimeUtils;
+import com.nuce.duantp.sunshine.config.format.FormatMoney;
+import com.nuce.duantp.sunshine.config.format.Validate;
+//import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetailRes;
+import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetail;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
-import com.nuce.duantp.sunshine.dto.response.MessageResponse;
-import com.nuce.duantp.sunshine.dto.response.PointHistoryRes;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.*;
+import com.nuce.duantp.sunshine.dto.model.*;
+import com.nuce.duantp.sunshine.dto.response.ListFoodInBooking;
+import com.nuce.duantp.sunshine.dto.response.PayDetailResponse;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
+@RequiredArgsConstructor
 public class CustomerService {
-    @Autowired
-    CustomerRepo customerRepo;
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-    @Autowired
-    BookingRepository bookingRepository;
-    @Autowired
-    BillRepo billRepo;
-    @Autowired
-    private ResponseStatusCodeRepo responseStatusCodeRepo;
-    @Autowired
-    SunShineService sunShineService;
-    @Autowired
-    SaleRepo saleRepo;
-    @Autowired
-    private AccountRepo accountRepo;
+    private final CustomerRepo customerRepo;
+    private final AuthTokenFilter authTokenFilter;
+    private final BookingRepository bookingRepository;
+    private final BillRepo billRepo;
+    private final SunShineService sunShineService;
+    private final SaleRepo saleRepo;
+    private final DepositRepo depositRepo;
+    private final BookingService bookingService;
+    private final BillInfoRepo billInfoRepo;
+    private final FoodRepo foodRepo;
+    private final PointsRepo pointsRepo;
     private Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
-
-    public List<PointHistoryRes> viewHistoryPointUse(HttpServletRequest req) {
-        ModelMapper mapper = new ModelMapper();
-        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        List<tbl_Booking> bookingList = bookingRepository.findAllByEmailAndBookingStatus(customer.get().getEmail(), 1);
-        List<PointHistoryRes> pointHistoryResList = new ArrayList<>();
-        for (tbl_Booking data : bookingList) {
-            tbl_Bill bill = billRepo.findAllByBookingIdAndDiscountGreaterThan(data.getBookingId(), 0L);
-            PointHistoryRes pointHistoryRes = mapper.map(bill, PointHistoryRes.class);
-            pointHistoryResList.add(pointHistoryRes);
-        }
-        return pointHistoryResList;
-    }
 
     public List<BookingHistoryRes> viewBookingHistory(HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        List<tbl_Booking> bookingList = bookingRepository.findByEmail(customer.get().getEmail());
+        List<tbl_Booking> bookingList = bookingRepository.getListBookingByEmail(customer.get().getEmail());
         List<BookingHistoryRes> data = new ArrayList<>();
+        int stt = 1;
         for (tbl_Booking booking : bookingList) {
+
+            tbl_Bill bill = billRepo.findByBookingId(booking.getBookingId());
+            List<ListFoodInBooking> listFoodInBookings =new ArrayList<>();
+            float totalMoneyFood = 0L; //lấy ra tổng số tiền cho đặt món
+            int stt1=1;
+            List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
+            for(tbl_BillInfo billInfo: billInfoList){
+                tbl_Food food=foodRepo.findByFoodId(billInfo.getFoodId());
+                ListFoodInBooking listFoodInBooking =new ListFoodInBooking(stt, food.getFoodName(),
+                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
+                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice()* billInfo.getQuantity())),
+                        billInfo.getQuantity());
+                listFoodInBookings.add(listFoodInBooking);
+                stt1++;
+                totalMoneyFood+=food.getFoodPrice()*billInfo.getQuantity();
+            }
             float money = 0L;
             if (booking.getBookingStatus() == 1) {
                 money = sunShineService.moneyPay(booking.getBookingId());
             }
-            BookingHistoryRes data1 = new BookingHistoryRes(booking, money);
-            data.add(data1);
-        }
-        return data;
-    }
-
-    public BookingHistoryDetailRes viewBookingHistoryDetail(String bookingId) {
-        tbl_Booking booking = bookingRepository.findByBookingId(bookingId);
-        float money = 0L;
-        if (booking.getBookingStatus() == 1) {
-            money = sunShineService.moneyPay(booking.getBookingId());
-        }
-        tbl_Bill bill = billRepo.findByBookingId(booking.getBookingId());
-        BookingHistoryDetailRes data = new BookingHistoryDetailRes(booking, bill, money);
-        return data;
-    }
-
-    public ResponseEntity<?> addAccount(AddAccReq addAccReq, HttpServletRequest req) {
-        Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
-        tbl_BankAccount account= accountRepo.findByAccountNo(addAccReq.getAccountNo());
-        if(account==null){
-            List<tbl_BankAccount> bankAccountList=accountRepo.findByEmail(addAccReq.getEmail());
-            for(tbl_BankAccount data:bankAccountList){
-                data.setStatus(0);
-                accountRepo.save(data);
+            tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
+            float refund = deposit.getDeposit() - money;
+            if (refund < 0) refund = 0L;
+            if (booking.getBookingStatus() == 0) {
+                refund = 0L;
             }
-            tbl_BankAccount acc=new tbl_BankAccount(addAccReq.getAccountNo(),1000000L,1,addAccReq.getEmail());
-            accountRepo.save(acc);
-            LOGGER.warn("Add AccountAno by " + customer.get().getEmail() + "\n" + addAccReq, CustomerService.class);
-            MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_ACCOUNT_SUCCESS);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
+            String status = Validate.convertStatusBooking(booking.getBookingStatus());
+            BookingHistoryRes data1 = new BookingHistoryRes(date,
+                    FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())), status,
+                    FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(),
+                    FormatMoney.formatMoney(String.valueOf(refund)),listFoodInBookings);
+            data.add(data1);
+            stt++;
+
         }
-
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ACCOUNT_EXISTED);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-
+        return data;
     }
 
-    public List<tbl_Sale> getListSaleForUser(String email){
-        tbl_Customer customer=customerRepo.findCustomerByEmail(email);
-        List<tbl_Sale> saleList=saleRepo.findBySaleStatusAndBeneficiary(1,customer.getBeneficiary());
+    public PayDetailResponse viewBookingHistoryDetail(String bookingId) {
+        BookingHistoryDetail bookingHistoryDetail = bookingService.getBillPay(bookingId);
+        PayDetailResponse payDetailResponse = new PayDetailResponse(bookingHistoryDetail);
+        return payDetailResponse;
+    }
+
+    public List<tbl_Sale> getListSaleForUser(String email) {
+        tbl_Customer customer = customerRepo.findCustomerByEmail(email);
+        List<tbl_Sale> saleList = saleRepo.findBySaleStatusAndBeneficiary(1, customer.getBeneficiary());
         return saleList;
     }
 }

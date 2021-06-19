@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.security.jwt;
 
-import com.nuce.duantp.sunshine.model.UserDetailsImpl;
+import com.nuce.duantp.sunshine.dto.model.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories
 @EnableTransactionManagement
 //@EnableAutoConfiguration(exclude = KafkaAutoConfiguration.class)
-@ComponentScan(basePackages = {"com.phamtan.base","com.nuce.duantp"})
+//@ComponentScan(basePackages = {"com.phamtan.base","com.nuce.duantp"})
 public class DoanApplication {
 
     public static void main(String[] args) {

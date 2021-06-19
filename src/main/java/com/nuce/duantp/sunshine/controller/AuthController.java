@@ -3,15 +3,15 @@ package com.nuce.duantp.sunshine.controller;
 import com.nuce.duantp.sunshine.dto.request.LoginRequest;
 import com.nuce.duantp.sunshine.dto.request.SignupRequest;
 import com.nuce.duantp.sunshine.dto.response.MessageResponse;
-import com.nuce.duantp.sunshine.enums.EnumResponseStatusCode;
-import com.nuce.duantp.sunshine.model.TokenLiving;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.model.TokenLiving;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
 import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
 import com.nuce.duantp.sunshine.scoped.User;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
 import com.nuce.duantp.sunshine.security.services.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,36 +21,20 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
+@RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 @RequestMapping("/api/auth")
 public class AuthController {
-
-
-    @Autowired
-    AuthService authService;
-
-    @Autowired
-    AuthTokenFilter authTokenFilter;
-
-    @Autowired
-    PasswordEncoder encoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    CustomerRepo customerRepo;
-
+    private final AuthService authService;
+//    private final AuthTokenFilter authTokenFilter;
+//    private final PasswordEncoder encoder;
+//    private final  JwtUtils jwtUtils;
+//    private final  PasswordEncoder passwordEncoder;
+//    private final CustomerRepo customerRepo;
     @Resource(name = "userBean")
     User user;
-
-    @Autowired
-    TokenLivingRepo tokenLivingRepo;
+    private final TokenLivingRepo tokenLivingRepo;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateConsumer(@Valid @RequestBody LoginRequest loginRequest) {
@@ -72,8 +56,4 @@ public class AuthController {
         MessageResponse messageResponse=new MessageResponse(EnumResponseStatusCode.SUCCESS);
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
-
-
-
-
 }

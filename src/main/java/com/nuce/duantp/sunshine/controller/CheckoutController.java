@@ -1,6 +1,6 @@
 package com.nuce.duantp.sunshine.controller;
 
-import com.nuce.duantp.sunshine.dto.ChargeRequest;
+import com.nuce.duantp.sunshine.dto.request.ChargeRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
