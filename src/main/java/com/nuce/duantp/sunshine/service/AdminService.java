@@ -184,12 +184,12 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableFood(List<String> foodIdList, String email) {
-        for (String foodId : foodIdList) {
-            tbl_Food food = foodRepo.findByFoodId(Long.valueOf(foodId));
+    public ResponseEntity<?> enableFood(Long foodIdList, String email) {
+
+            tbl_Food food = foodRepo.findByFoodId(foodIdList);
             food.setFoodStatus(0);
             foodRepo.save(food);
-        }
+
         LOGGER.warn("enable Food by " + email + "\n" + foodIdList, AdminService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -216,12 +216,10 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableNews(List<String> newsIdList, String email) {
-        for (String newId : newsIdList) {
-            tbl_News news = newsRepo.findByNewsId(Long.valueOf(newId));
+    public ResponseEntity<?> enableNews(Long newsIdList, String email) {
+            tbl_News news = newsRepo.findByNewsId(newsIdList);
             news.setNewsStatus(0);
             newsRepo.save(news);
-        }
         LOGGER.warn("enable News by " + email + "\n" + newsIdList, AdminService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_NEWS_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -249,11 +247,12 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableSale(List<String> saleIdList, String email) {
-        for (String saleId : saleIdList) {
-            tbl_Sale sale = saleRepo.findBySaleId(Long.valueOf(saleId));
+    public ResponseEntity<?> enableSale(Long saleIdList, String email) {
+
+            tbl_Sale sale = saleRepo.findBySaleId(saleIdList);
+            sale.setSaleStatus(0);
             saleRepo.save(sale);
-        }
+
         LOGGER.warn("enable sale by " + email + "\n" + saleIdList, AdminService.class);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_SALE_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);

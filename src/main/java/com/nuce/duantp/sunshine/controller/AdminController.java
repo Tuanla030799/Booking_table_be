@@ -144,11 +144,11 @@ public class AdminController {
 
     }
 
-    @PostMapping("/enable-food")
-    public ResponseEntity<?> enableFood(@RequestBody List<String> foodIdList, HttpServletRequest req) {
+    @GetMapping("/enable-food/{foodId}")
+    public ResponseEntity<?> enableFood(@PathVariable(name = "foodId")Long foodId, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.enableFood(foodIdList, customer.get().getEmail());
+            return adminService.enableFood(foodId, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -167,7 +167,7 @@ public class AdminController {
     }
 
     @PostMapping("/enable-news")
-    public ResponseEntity<?> enableNews(@RequestBody List<String> newsIdList, HttpServletRequest req) {
+    public ResponseEntity<?> enableNews(@RequestBody Long newsIdList, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
             return adminService.enableNews(newsIdList, customer.get().getEmail());
@@ -212,11 +212,11 @@ public class AdminController {
 
     }
 
-    @PostMapping("/enable-sale")
-    public ResponseEntity<?> enableSale(@RequestBody List<String> saleIdList, HttpServletRequest req) {
+    @GetMapping("/enable-sale/{saleId}")
+    public ResponseEntity<?> enableSale(@PathVariable(name = "saleId") Long saleId, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
-            return adminService.enableSale(saleIdList, customer.get().getEmail());
+            return adminService.enableSale(saleId, customer.get().getEmail());
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
