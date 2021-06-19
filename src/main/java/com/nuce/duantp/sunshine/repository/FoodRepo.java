@@ -11,5 +11,7 @@ public interface FoodRepo extends CrudRepository<tbl_Food, Long> {
        tbl_Food findByFoodId(Long foodId);
 
        List<tbl_Food> findAllByFoodStatus(int status);
+
+       List<tbl_Food> findAllByFoodNameIgnoreCaseContaining(String name);
 }
 

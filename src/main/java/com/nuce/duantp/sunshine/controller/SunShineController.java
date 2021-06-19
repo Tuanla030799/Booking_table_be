@@ -4,6 +4,7 @@ import com.nuce.duantp.sunshine.dto.response.FoodHomeRes;
 import com.nuce.duantp.sunshine.dto.response.PageHomeRes;
 import com.nuce.duantp.sunshine.dto.response.SaleHomeRes;
 import com.nuce.duantp.sunshine.dto.model.tbl_Food;
+import com.nuce.duantp.sunshine.dto.response.SearchFoodRespon;
 import com.nuce.duantp.sunshine.repository.FoodRepo;
 import com.nuce.duantp.sunshine.service.SunShineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,4 +42,8 @@ public class SunShineController {
         return sunShineService.getListSale();
     }
 
+    @GetMapping("/search-food/{name}")
+    public List<SearchFoodRespon> searchFoodRespons(@PathVariable(name = "name")String name){
+        return sunShineService.searchFoodRespons(name);
+    }
 }
