@@ -171,4 +171,15 @@ public class SunShineService {
         }
         return saleHomeRes;
     }
+
+    public List<SearchFoodRespon> searchFoodRespons(String str){
+        List<SearchFoodRespon> list=new ArrayList<>();
+        List<tbl_Food>foodList= foodRepo.findAllByFoodNameIgnoreCaseContaining(str);
+        for(tbl_Food data:foodList){
+            SearchFoodRespon respon=new SearchFoodRespon(data);
+            list.add(respon);
+        }
+
+        return list;
+    }
 }
