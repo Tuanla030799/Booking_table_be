@@ -23,27 +23,27 @@ import java.util.List;
 @RestController
 @RequestMapping("/test")
 public class testCon {
-//    @Autowired
-//    private RestTemplate template;
-//
-//    @Autowired
-//    private DeviceRepository deviceRepository;
-//    private String url = "https://onesignal.com/api/v1/notifications";
-//    private String appId = "13948c48-b3ba-4662-a872-f93786f6c00c";
-//
-//    @PostMapping("/hello-world")
-//    public String pushNotify() {
-//        String str = "hello world";
-//        OneSignalMessage message = new OneSignalMessage();
-//        message.setAppId(appId);
-//        message.setUrl(url);
-//        List<String> playerId = deviceRepository.findPlayerId();
-//
-//        message.setIncludePlayerIds(playerId);
-//        message.getContents().put("en", str);
-//        template.postForEntity(message.getUrl(), message, String.class);
-//        return str;
-//    }
+    @Autowired
+    private RestTemplate template;
+
+    @Autowired
+    private DeviceRepository deviceRepository;
+    private String url = "https://onesignal.com/api/v1/notifications";
+    private String appId = "58ab7001-5eb5-4c21-9fcb-629267ca2729";
+
+    @PostMapping("/hello-world")
+    public String pushNotify() {
+        String str = "hello world";
+        OneSignalMessage message = new OneSignalMessage();
+        message.setAppId(appId);
+        message.setUrl(url);
+        List<String> playerId = deviceRepository.findPlayerId();
+
+        message.setIncludePlayerIds(playerId);
+        message.getContents().put("en", str);
+        template.postForEntity(message.getUrl(), message, String.class);
+        return str;
+    }
 
 
 

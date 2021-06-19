@@ -6,6 +6,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 @EnableJpaAuditing
 @SpringBootApplication
 @EnableJpaRepositories
@@ -18,6 +20,9 @@ public class DoanApplication {
         SpringApplication.run(DoanApplication.class, args);
 
     }
-
+    @RequestMapping("/")
+    public String test(){
+        return "index";
+    }
 
 }
