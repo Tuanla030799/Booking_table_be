@@ -78,23 +78,23 @@ public class testCon {
 
     @GetMapping("/test")
     void test() throws IOException, MessagingException, URISyntaxException {
-        Template template = configuration.getTemplate("email.ftl");
-        EmailRequest emailRequest = new EmailRequest();
-        List<EmailContentData> contents = new ArrayList<>();
-        EmailContentData emailContentData = EmailContentData.builder().key(EmailEnum.FILE).name("duan.pdf").data("D:\\Nuce\\doantonghop\\src\\main\\resources\\static\\generateReport.pdf").build();
-        EmailContentData imageConten = EmailContentData.builder().key(EmailEnum.IMAGE).name("asbnotebook").data("D:\\Nuce\\doantonghop\\src\\main\\resources\\static\\asbnotebook.png").build();
-        EmailContentData nameContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("name").data("do thi dieulinh").build();
-        EmailContentData valueContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("value").data(" value ").build();
-        contents.add(emailContentData);
-        contents.add(nameContentData);
-        contents.add(valueContentData);
-        contents.add(imageConten);
-
-        emailRequest.setTo("tranphuduan@gmail.com");
-        emailRequest.setFrom("tranphuduan@gmail.com");
-        emailRequest.setSubject("Hello ");
-        emailRequest.setContent(contents);
-        emailService.sendMailWithAttachments(emailRequest, template);
+//        Template template = configuration.getTemplate("email.ftl");
+//        EmailRequest emailRequest = new EmailRequest();
+//        List<EmailContentData> contents = new ArrayList<>();
+//        EmailContentData emailContentData = EmailContentData.builder().key(EmailEnum.FILE).name("duan.pdf").data("D:\\Nuce\\doantonghop\\src\\main\\resources\\static\\generateReport.pdf").build();
+//        EmailContentData imageConten = EmailContentData.builder().key(EmailEnum.IMAGE).name("asbnotebook").data("D:\\Nuce\\doantonghop\\src\\main\\resources\\static\\asbnotebook.png").build();
+//        EmailContentData nameContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("name").data("do thi dieulinh").build();
+//        EmailContentData valueContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("value").data(" value ").build();
+//        contents.add(emailContentData);
+//        contents.add(nameContentData);
+//        contents.add(valueContentData);
+//        contents.add(imageConten);
+//
+//        emailRequest.setTo("tranphuduan@gmail.com");
+//        emailRequest.setFrom("tranphuduan@gmail.com");
+//        emailRequest.setSubject("Hello ");
+//        emailRequest.setContent(contents);
+//        emailService.sendMailWithAttachments(emailRequest, template);
 
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.setAppId(appId);
