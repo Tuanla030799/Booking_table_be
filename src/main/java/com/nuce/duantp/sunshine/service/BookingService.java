@@ -146,7 +146,7 @@ public class BookingService {
             customer.get().setTotalMoney(money-deposit.getDeposit());
             tbl_Customer admin=customerRepo.findCustomerByEmail("sunshine87lethanhnghi@gmail.com");
             admin.setTotalMoney(admin.getTotalMoney()+deposit.getDeposit());
-            tbl_Bill bill = new tbl_Bill(bookingId,1L, bookingId,  0);
+            tbl_Bill bill = new tbl_Bill(bookingId,1L, bookingId);
             billRepo.save(bill);
             customerRepo.save(customer.get());
             customerRepo.save(admin);
@@ -280,7 +280,7 @@ public class BookingService {
         booking.setBookingStatus(2);
         booking.setSaleId(bookingHistoryDetail.getSaleId());
 
-        bill.setBillStatus(2);
+//        bill.setBillStatus(2);
         bill.setPayDate(new Date());
         bill.setPointId(point.getPointId());
 
@@ -304,7 +304,7 @@ public class BookingService {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         else if(billInfoList.size()==0){
-            bill.setBillStatus(3);
+//            bill.setBillStatus(3);
             booking.setBookingStatus(3);
             customer.get().setTotalMoney((long) (customer.get().getTotalMoney()+deposit.getDeposit()*0.3));
             tbl_Customer admin=customerRepo.findCustomerByEmail("sunshine87lethanhnghi@gmail.com");
@@ -341,7 +341,7 @@ public class BookingService {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         else {
-            bill.setBillStatus(2);
+//            bill.setBillStatus(2);
             booking.setBookingStatus(2);
             customer.setTotalMoney((long) (customer.getTotalMoney()+deposit.getDeposit()*0.3));
             tbl_Customer admin=customerRepo.findCustomerByEmail("sunshine87lethanhnghi@gmail.com");

@@ -1,6 +1,5 @@
 package com.nuce.duantp.sunshine.service;
 
-import com.nuce.duantp.sunshine.JasperReports.ReportService;
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.LogCodeSql;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
@@ -18,8 +17,6 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,12 +24,9 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -54,7 +48,7 @@ public class AdminService {
     private final BeneficiaryRepo beneficiaryRepo;
     private final SunShineService sunShineService;
 
-    public void exportReport(String year) throws FileNotFoundException, JRException {
+    public void exportReport(int year) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
         List<StatisticalResponse> list = new ArrayList<>();
         List<tbl_Booking> listBooking = bookingRepository.findAll();
@@ -67,7 +61,8 @@ public class AdminService {
                Calendar calendar = Calendar.getInstance();
                calendar.setTime(data.getBookingTime());
                int month = calendar.get(Calendar.MONTH);
-               if(month==i){
+               int y=calendar.get(Calendar.YEAR);
+               if(month==i-1&&y==year){
                    flag=true;
                    if(data.getBookingStatus()==4||data.getBookingStatus()==0||data.getBookingStatus()==1){
                        tbl_Deposit deposit=depositRepo.findByDepositId(data.getDepositId());
@@ -89,19 +84,18 @@ public class AdminService {
            if(flag==true){
                percent=totalBooking*100/listBooking.size();
                StatisticalResponse statisticalResponse=new StatisticalResponse(i,totalBooking,
-                       FormatMoney.formatMoney(String.valueOf(totalBooking)),String.valueOf(percent));
+                       FormatMoney.formatMoney(String.valueOf(sumMoney)),String.format("%.0f", percent) + "%");
                list.add(statisticalResponse);
            }
        }
-
         File file = ResourceUtils.getFile("classpath:YReport.jrxml");
-        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("createdBy", "Java Techie");
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-        JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + year + ".pdf");
 
+        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("year", year);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+        JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + "year" + year + ".pdf");
     }
 
     public ResponseEntity<?> exportBill(String bookingId) throws FileNotFoundException, JRException {
@@ -118,7 +112,7 @@ public class AdminService {
         float totalMoney = 0L;
         for (tbl_BillInfo data : list) {
             tbl_Food food = foodRepo.findByFoodId(data.getFoodId());
-            ListFoodInBooking listFoodInBooking = new ListFoodInBooking(stt, food.getFoodName(), FormatMoney.formatMoneyBill(String.valueOf(food.getFoodPrice())), FormatMoney.formatMoneyBill(String.valueOf(food.getFoodPrice() * data.getQuantity())), data.getQuantity());
+            ListFoodInBooking listFoodInBooking = new ListFoodInBooking(stt, food.getFoodName(), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice() * data.getQuantity())), data.getQuantity());
             listBillRp.add(listFoodInBooking);
             stt++;
             totalMoney += food.getFoodPrice() * data.getQuantity();
@@ -146,10 +140,10 @@ public class AdminService {
         parameters.put("customerName", reportBill.getCustomerName());
         parameters.put("bookingTime", reportBill.getBookingTime());
         parameters.put("payTime", reportBill.getPayTime());
-        parameters.put("deposit", FormatMoney.formatMoneyBill(String.valueOf(reportBill.getDeposit())));
+        parameters.put("deposit", FormatMoney.formatMoney(String.valueOf(reportBill.getDeposit())));
         parameters.put("sale", String.format("%.0f", reportBill.getSale() * 100) + "%");
-        parameters.put("sumMoney", FormatMoney.formatMoneyBill(String.valueOf(reportBill.getSumMoney())));
-        parameters.put("totalMoney", FormatMoney.formatMoneyBill(String.valueOf(reportBill.getTotalMoney())));
+        parameters.put("sumMoney", FormatMoney.formatMoney(String.valueOf(reportBill.getSumMoney())));
+        parameters.put("totalMoney", FormatMoney.formatMoney(String.valueOf(reportBill.getTotalMoney())));
 //        jasperReport.setProperty();
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
@@ -369,7 +363,7 @@ public class AdminService {
 
         booking.setBookingStatus(1);
         booking.setSaleId(bookingHistoryDetail.getSaleId());
-        bill.setBillStatus(1);
+//        bill.setBillStatus(1);
         bill.setPayDate(new Date());
         bill.setPointId(point.getPointId());
 

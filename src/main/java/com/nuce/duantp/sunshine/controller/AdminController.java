@@ -37,8 +37,8 @@ public class AdminController {
     private final  AuthTokenFilter authTokenFilter;
     private final TokenLivingService tokenLivingService;
 
-    @GetMapping("/export-file")
-    public ResponseEntity<?> exportFile(@RequestBody String year, HttpServletRequest req) {
+    @GetMapping("/export-file/{year}")
+    public ResponseEntity<?> exportFile(@PathVariable(name = "year") int year, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
             try {
