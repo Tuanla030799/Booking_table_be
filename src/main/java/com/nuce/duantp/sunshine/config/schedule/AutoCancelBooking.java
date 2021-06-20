@@ -32,10 +32,25 @@ public class AutoCancelBooking implements Runnable {
             Date date = new Date();
             Date date1 = TimeUtils.minusDate(data.getBookingTime(), 1, "MINUTE");
             if(date.compareTo(date1)>0){
-                CancelBookingReq cancelBookingReq=new CancelBookingReq(data.getBookingId());
-                bookingService.cancelBookingAdmin(cancelBookingReq,data.getEmail());
+                data.setBookingStatus(4);
+                bookingRepository.save(data);
                 LOGGER.warn("Job auto cancel booking with bookingId =  " + data.getBookingId(),
                         AutoCancelBooking.class);
+
+            }
+        }
+
+        List<tbl_Booking> list1=bookingRepository.findByBookingStatusAndConfirmBookingAndBookingTimeLessThan(1,0,
+                new Date());
+        for(tbl_Booking data:list1){
+            Date date = new Date();
+            Date date1 = TimeUtils.minusDate(data.getBookingTime(), 1, "MINUTE");
+            if(date.compareTo(date1)>0){
+                data.setBookingStatus(4);
+                bookingRepository.save(data);
+                LOGGER.warn("Job auto cancel booking with bookingId =  " + data.getBookingId(),
+                        AutoCancelBooking.class);
+
             }
         }
     }

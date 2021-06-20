@@ -14,6 +14,9 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, String> {
     @Override
     List<tbl_Booking> findAll();
 
+    @Query("SELECT u FROM tbl_Booking u where u.bookingStatus != 0 ")
+    List<tbl_Booking> getAll();
+
     List<tbl_Booking> findByBookingStatusAndTableNameAndBookingTimeBetween(int status, String tableName, Date timeStart, Date timeEnd);
 
     List<tbl_Booking> findAllByEmailAndBookingStatus(String email, int status);

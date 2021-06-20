@@ -127,7 +127,7 @@ create table `tbl_bill`
     `PointID`    bigint,
     `BookingID`  NVARCHAR(255),
     `Discount`   BIGINT DEFAULT 0,
-    `BillStatus` int    default 0,
+--     `BillStatus` int    default 0,
     `PayDate`    datetime,
     constraint fk_BillPoints foreign key (PointID) references tbl_point (PointID),
     constraint fk_BillBooking foreign key (BookingID) references tbl_booking (BookingID)
@@ -258,10 +258,10 @@ values ('ADMIN', N'Nhân Viên');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
 VALUES ('pvminh@gmail.com',
         '0796164361',
-        N'Phí Văn Minh', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000000, 'USERS', 'CUSTOMER');
+        N'Phí Văn Minh', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 10000000, 'USERS', 'CUSTOMER');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
 VALUES ('sunshine87lethanhnghi@gmail.com', '0999999999', N'Nhà hàng Sunshine',
-        '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000000, 'ADMIN', 'VIP');
+        '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 0, 'ADMIN', 'VIP');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
 VALUES ('haind1@vimo.vn', '0978675678', N'Nguyễn Đình Hải',
         '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000000, 'USERS', 'CUSTOMER');
