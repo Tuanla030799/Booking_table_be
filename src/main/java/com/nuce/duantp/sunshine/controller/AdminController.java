@@ -61,9 +61,8 @@ public class AdminController {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
             try {
-                adminService.exportBill(bookingId);
-                MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.SUCCESS, EnumResponseStatusCode.SUCCESS.label);
-                return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+                return adminService.exportBill(bookingId);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.BAD_REQUEST, EnumResponseStatusCode.BAD_REQUEST.label);
@@ -72,7 +71,6 @@ public class AdminController {
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
-
     }
 
     @PostMapping("/cancel-booking-admin")
@@ -149,7 +147,7 @@ public class AdminController {
 
     }
 
-    @GetMapping("/disable-food/{foodId}")
+    @PostMapping("/disable-food/{foodId}")
     public ResponseEntity<?> disableFood(@PathVariable(name = "foodId")Long foodId, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
@@ -217,7 +215,7 @@ public class AdminController {
 
     }
 
-    @GetMapping("/disable-sale/{saleId}")
+    @PostMapping("/disable-sale/{saleId}")
     public ResponseEntity<?> disableSale(@PathVariable(name = "saleId") Long saleId, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
@@ -247,7 +245,7 @@ public class AdminController {
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/disable-customer/{email}")
+    @PostMapping("/disable-customer/{email}")
     public ResponseEntity<?> disableCustomer(@PathVariable(name = "email") String email, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {

@@ -7,6 +7,10 @@ public class FormatMoney {
         DecimalFormat formatter = new DecimalFormat("###,###,###");
         return formatter.format(Double.parseDouble(m))+" VNĐ";
     }
+    public  static String formatMoneyBill(String m){
+        DecimalFormat formatter = new DecimalFormat("###,###,###");
+        return formatter.format(Double.parseDouble(m))+" vnd";
+    }
     private static String removeLastChar(String str) {
         return str.substring(0, str.length() - 4);
     }
