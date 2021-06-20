@@ -25,7 +25,7 @@ public interface BookingRepository extends JpaRepository<tbl_Booking, String> {
 
     tbl_Booking findByBookingId(String bookingId);
 
-    List<tbl_Booking> findByBookingStatusAndBookingTimeLessThan(int status, Date bookingTime);
+    List<tbl_Booking> findByBookingStatusAndConfirmBookingAndBookingTimeLessThan(int status,int cf, Date bookingTime);
 
     //    List<tbl_Booking> findAllByOrderByBookingStatusDesc();
     @Query("SELECT u FROM tbl_Booking u order by u.bookingStatus asc ,u.bookingTime desc")
