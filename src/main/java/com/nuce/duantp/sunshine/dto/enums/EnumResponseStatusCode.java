@@ -42,6 +42,8 @@ public enum EnumResponseStatusCode {
     TIME_PAY_FALSE("Bạn đã thanh toán trước, hãy chuyển qua hủy đặt bàn."),
     SEARCH_NULL("Không tìm thấy"),
     PAID("Thanh toán không thành công (bàn đã thanh toán hoặc đã hủy)"),
+    TOO_MANY_REQUESTS("Vui lòng chờ thêm 15 phút"),
+    BACK_TO_FUTURE("Bạn đã quên quá 5 lần, vui lòng trả lại vào hôm sau"),
     TEST("Test");
 
     public final String label;

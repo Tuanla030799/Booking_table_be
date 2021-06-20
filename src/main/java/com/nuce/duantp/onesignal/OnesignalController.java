@@ -6,6 +6,7 @@ import com.phamtan.base.onesingnal.service.OneSignalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,19 +16,19 @@ import java.util.HashMap;
 import java.util.Map;
 @RestController
 @RequestMapping("/test")
-public class OnesignalService {
+public class OnesignalController {
     @Value("${phamtan.onesignal.app-id}")
     private String appId;
     @Autowired
     private OneSignalService oneSignalService;
     @GetMapping("/test")
-    public void sendNotify() throws  URISyntaxException {
+    public void sendNotify(@RequestBody String mess) throws  URISyntaxException {
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.setAppId(appId);
-        notificationRequest.setChromeWebIcon("https://picsum.photos/200");
+        notificationRequest.setChromeWebIcon("https://www.dropbox.com/s/5l351xmohotdjj6/1624163183514.jpg?raw=1");
         HashMap<String, Map<String, String>> data = new HashMap<>();
         Map<String, String> content1 = new HashMap<>();
-        content1.put("en", "do thi dieu linh");
+        content1.put("en", "Yêu cầu huỷ đặt bàn của khách\n"+" mã đặt bàn "+mess);
         notificationRequest.setContents(content1);
         DataDetail dataDetail = new DataDetail();
         dataDetail.setKey("foo");

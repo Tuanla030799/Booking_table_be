@@ -1,6 +1,7 @@
 package com.nuce.duantp.sunshine.service;
 
 
+import com.nuce.duantp.onesignal.OnesignalController;
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import com.nuce.duantp.sunshine.config.format.Validate;
@@ -18,8 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -41,9 +44,10 @@ public class BookingService {
     private final PointsRepo pointsRepo;
     private final BillInfoRepo billInfoRepo;
     private final CustomerRepo customerRepo;
+    private final OnesignalController onesignalController;
     private final FoodRepo foodRepo;
     private Logger LOGGER = LoggerFactory.getLogger(BookingService.class);
-
+//    private final KafkaTemplate<String, String> kafkaTemplate;
     public ResponseEntity<?> getDeposit(BookingReq bookingReq, HttpServletRequest req) {
         Date date = new Date();
         String bookingId = String.valueOf(date.getTime());
@@ -320,6 +324,12 @@ public class BookingService {
         else {
             booking.setBookingStatus(1);
             bookingRepository.save(booking);
+            try {
+                onesignalController.sendNotify(booking.getBookingId());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+//            kafkaTemplate.send("test_sender_email", booking.getBookingId());
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.EMPLOYEE_CANCEL_BOOKING_SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }

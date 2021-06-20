@@ -1,4 +1,4 @@
-package com.nuce.duantp.sunshine.service;//package sunshine.service;
+//package com.nuce.duantp.sunshine.service;
 //
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.mail.javamail.JavaMailSender;
@@ -12,7 +12,7 @@ package com.nuce.duantp.sunshine.service;//package sunshine.service;
 //
 //@Service
 //@EnableAsync
-//public class EmailService {
+//public class SendEmailService {
 //
 //    @Autowired
 //    private JavaMailSender javaMailSender;

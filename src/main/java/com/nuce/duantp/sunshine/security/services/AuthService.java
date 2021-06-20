@@ -2,27 +2,24 @@ package com.nuce.duantp.sunshine.security.services;
 
 
 import com.nuce.duantp.sunshine.config.format.*;
-import com.nuce.duantp.sunshine.dto.request.LoginRequest;
-import com.nuce.duantp.sunshine.dto.request.SignupRequest;
-import com.nuce.duantp.sunshine.dto.response.JwtResponse;
-import com.nuce.duantp.sunshine.dto.response.MessageResponse;
+import com.nuce.duantp.sunshine.controller.SendEmailController;
 import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
-
+import com.nuce.duantp.sunshine.dto.model.ResetPassword;
 import com.nuce.duantp.sunshine.dto.model.TokenLiving;
 import com.nuce.duantp.sunshine.dto.model.UserDetailsImpl;
 import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
+import com.nuce.duantp.sunshine.dto.request.LoginRequest;
+import com.nuce.duantp.sunshine.dto.request.SendEmailReq;
+import com.nuce.duantp.sunshine.dto.request.SignupRequest;
+import com.nuce.duantp.sunshine.dto.response.JwtResponse;
+import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.repository.CustomerRepo;
+import com.nuce.duantp.sunshine.repository.ResetPasswordRepo;
 import com.nuce.duantp.sunshine.repository.TokenLivingRepo;
 import com.nuce.duantp.sunshine.security.jwt.JwtUtils;
-//import com.phamtan.base.email.data_structure.EmailContentData;
-//import com.phamtan.base.email.request.EmailRequest;
-//import com.phamtan.base.email.service.EmailService;
-//import com.phamtan.base.enumeration.EmailEnum;
-//import com.phamtan.base.email.data_structure.EmailContentData;
-//import com.phamtan.base.email.request.EmailRequest;
-//import com.phamtan.base.email.service.EmailService;
-//import com.phamtan.base.enumeration.EmailEnum;
 import com.nuce.duantp.sunshine.service.ImageService;
+import com.phamtan.base.email.service.EmailService;
+import freemarker.template.Configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +31,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -48,9 +44,12 @@ public class AuthService {
     private final  AuthenticationManager authenticationManager;
     private final CustomerRepo customerRepo;
 //    private final  AuthTokenFilter authTokenFilter;
-//    private final Configuration configuration;
+    private final Configuration configuration;
     private final TokenLivingRepo tokenLivingRepo;
     private final ImageService imageService;
+    private final ResetPasswordRepo resetPasswordRepo;
+    private final EmailService emailService;
+    private final SendEmailController sendEmailController;
 
     public ResponseEntity<MessageResponse> registerConsumer(@RequestBody SignupRequest signupRequest) {
         if (!CheckEmail.checkFormatEmail(signupRequest.getEmail())) {
@@ -87,7 +86,8 @@ public class AuthService {
 //            imageService.createImage(image, signupRequest.getFile());
 //            customer.setImage(image.getUrl());
             userRepository.save(customer);
-
+            ResetPassword resetPassword=new ResetPassword(customer.getEmail());
+            resetPasswordRepo.save(resetPassword);
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -96,27 +96,29 @@ public class AuthService {
         }
     }
 
-    public ResponseEntity<MessageResponse> ForgotPassword(String email, String password) {
+    public ResponseEntity<MessageResponse> ForgotPassword(String email) {
         try {
             tbl_Customer customer = userRepository.findCustomerByEmail(email);
+            ResetPassword resetPassword=resetPasswordRepo.findByEmail(customer.getEmail());
+            if(resetPassword.getCount()==0){
+                MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.BACK_TO_FUTURE);
+                return new ResponseEntity<>(messageResponse, HttpStatus.TOO_MANY_REQUESTS);
+            }
+            if(resetPassword.isStatus()==false){
+                MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOO_MANY_REQUESTS);
+                return new ResponseEntity<>(messageResponse, HttpStatus.TOO_MANY_REQUESTS);
+            }
+            MyStringRandomGen msr = new MyStringRandomGen();
+            String password = msr.generateRandomString();
+            while ((!CheckPass.checkFormatPassword(password))) {
+                password = msr.generateRandomString();
+                System.out.println(password);
+            }
             customer.setPassword(passwordEncoder.encode(password));
             userRepository.save(customer);
-//            Template template = configuration.getTemplate("email.ftl");
-//            EmailRequest emailRequest = new EmailRequest();
-//            List<EmailContentData> contents = new ArrayList<>();
-//
-//            EmailContentData nameContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("name").data("Mat Khau").build();
-//            EmailContentData valueContentData = EmailContentData.builder().key(EmailEnum.TEXT).name("value").data(password).build();
-//
-//            contents.add(nameContentData);
-//            contents.add(valueContentData);
-//
-//
-//            emailRequest.setTo(email);
-//            emailRequest.setFrom(email);
-//            emailRequest.setSubject("Hello ");
-//            emailRequest.setContent(contents);
-//            emailService.sendMailWithAttachments(emailRequest, template);
+            SendEmailReq sendEmailReq=new SendEmailReq(email,email,"Lấy lại mật khẩu",password,customer.getFullName()
+                    ,"forgotPass.ftl");
+            sendEmailController.sendEmail(sendEmailReq);
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
         } catch (Exception e) {
             e.printStackTrace();

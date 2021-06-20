@@ -98,7 +98,13 @@ CREATE TABLE `tbl_customer`
     constraint tbl_customerRole foreign key (role) references tbl_role (role)
 
 );
-
+CREATE TABLE `ResetPassword`
+(
+    `Id`          bigint primary key AUTO_INCREMENT,
+    `Email`       NVARCHAR(40) unique,
+    `count`  int default 5,
+    `status`   BOOLEAN default true
+);
 
 CREATE TABLE `tbl_booking`
 (
@@ -254,7 +260,9 @@ values ('USERS', N'Khách Hàng');
 insert into tbl_role(role, roleName)
 values ('ADMIN', N'Nhân Viên');
 
-
+insert into ResetPassword(email,count,status) value ('pvminh@gmail.com',5,true);
+insert into ResetPassword(email,count,status) value ('sunshine87lethanhnghi@gmail.com',5,true);
+insert into ResetPassword(email,count,status) value ('tranphuduan@gmail.com',5,true);
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
 VALUES ('pvminh@gmail.com',
         '0796164361',
@@ -263,7 +271,7 @@ INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, rol
 VALUES ('sunshine87lethanhnghi@gmail.com', '0999999999', N'Nhà hàng Sunshine',
         '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 0, 'ADMIN', 'VIP');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
-VALUES ('haind1@vimo.vn', '0978675678', N'Nguyễn Đình Hải',
+VALUES ('tranphuduan@gmail.com', '0978675678', N'Nguyễn Đình Hải',
         '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000000, 'USERS', 'CUSTOMER');
 
 insert into tbl_Food(foodName, describes, foodImage, foodPrice, foodStatus)

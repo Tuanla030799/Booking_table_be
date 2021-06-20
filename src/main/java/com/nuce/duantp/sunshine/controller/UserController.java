@@ -37,16 +37,9 @@ public class UserController {
 
     }
 
-    @GetMapping("/forgot-password/{email}")
+    @PostMapping("/forgot-password/{email}")
     public ResponseEntity<MessageResponse> forgotPassword(@PathVariable String email) {
-        MyStringRandomGen msr = new MyStringRandomGen();
-        String password = msr.generateRandomString();
-        System.out.println(password);
-        while ((!CheckPass.checkFormatPassword(password))) {
-            password = msr.generateRandomString();
-            System.out.println(password);
-        }
-        return authService.ForgotPassword(email, password);
+        return authService.ForgotPassword(email);
     }
 
     @PutMapping("/update-user")

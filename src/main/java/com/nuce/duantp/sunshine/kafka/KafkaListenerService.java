@@ -1,6 +1,7 @@
 //package com.nuce.duantp.sunshine.kafka;
 //
 //import com.fasterxml.jackson.core.JsonProcessingException;
+//import com.nuce.duantp.onesignal.OnesignalController;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.kafka.annotation.KafkaListener;
@@ -18,19 +19,28 @@
 //public class KafkaListenerService {
 //    @Autowired
 //    JavaMailSender javaMailSender;
+//    @Autowired
+//    OnesignalController onesignalController;
+////    @KafkaListener(groupId = "test_notify_risk", topics = "test_sender_email", containerFactory =
+////            "kafkaListenerContainerStringTransactionFactory")
+////    public void checkRisk(@Payload String mess) throws MessagingException, NoSuchFieldException,
+////            IllegalAccessException, URISyntaxException, JsonProcessingException {
+//////        KafkaConvertResult<String > kafkaConvertResult = new KafkaConvertResult<>(String.class);
+////        SimpleMailMessage message = new SimpleMailMessage();
+////        message.setFrom("sunshine87lethanhnghi@gmail.com");
+////        message.setTo("tranphuduan@gmail.com");
+////        message.setSubject("");
+////        message.setText(mess);
+////        javaMailSender.send(message);
+////    }
 //
-//    @KafkaListener(groupId = "sender_email_group", topics = "sender_email", containerFactory =
+//    @KafkaListener(groupId = "test_notify_risk", topics = "test_sender_email", containerFactory =
 //            "kafkaListenerContainerStringTransactionFactory")
-//    public void checkRisk(@Payload String mess) throws MessagingException, NoSuchFieldException,
-//            IllegalAccessException, URISyntaxException, JsonProcessingException {
-////        KafkaConvertResult<String > kafkaConvertResult = new KafkaConvertResult<>(String.class);
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom("sunshine87lethanhnghi@gmail.com");
-//        message.setTo("tranphuduan@gmail.com");
-//        message.setSubject("");
-//        message.setText(mess);
-//        javaMailSender.send(message);
+//    public void checkRisk(@Payload String mess) {
+//        try {
+//            onesignalController.sendNotify(mess);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
 //    }
-//
-//
 //}

@@ -21,7 +21,7 @@
 //    @Bean
 //    public Map<String, Object> notificationProducerConfigs() {
 //        Map<String, Object> props = new HashMap<>();
-//        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+//        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "104.248.147.217:9092");
 //        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 //        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 //
@@ -30,7 +30,7 @@
 //
 //    @Bean
 //    public NewTopic vimoCalcDeposit() {
-//        return TopicBuilder.name("sender_email").build();
+//        return TopicBuilder.name("test_sender_email").build();
 //    }
 //
 //    @Bean
