@@ -16,6 +16,7 @@
     <parameter name="bookingId" class="java.lang.String"/>
     <parameter name="customerName" class="java.lang.String"/>
     <parameter name="bookingTime" class="java.util.Date"/>
+    <parameter name="payTime" class="java.util.Date"/>
     <parameter name="totalMoney" class="java.lang.String"/>
     <parameter name="sale" class="java.lang.String"/>
     <parameter name="sumMoney" class="java.lang.String"/>
@@ -87,21 +88,31 @@
                 <text><![CDATA[Ho & Ten:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="250" y="140" width="40" height="31" uuid="eddf3e04-12df-45af-a4f8-9ef29823b330"/>
-                <text><![CDATA[Ngay: ]]></text>
+                <reportElement x="220" y="144" width="97" height="27" uuid="eddf3e04-12df-45af-a4f8-9ef29823b330"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Ngay thanh toan: ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="220" y="113" width="97" height="27" uuid="eddf3e04-12df-45af-a4f8-9ef29823b330"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Ngay dat: ]]></text>
             </staticText>
             <textField>
                 <reportElement x="77" y="115" width="100" height="26" uuid="fd126f8d-1965-4061-82d0-1cf64df61ce0"/>
                 <textFieldExpression><![CDATA[$P{bookingId}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="77" y="142" width="128" height="30" uuid="23f70a60-efb0-4d2b-abe0-0209662025a1"/>
+                <reportElement x="77" y="142" width="100" height="29" uuid="23f70a60-efb0-4d2b-abe0-0209662025a1"/>
                 <textElement textAlignment="Left">
                 </textElement>
                 <textFieldExpression><![CDATA[$P{customerName}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="290" y="140" width="100" height="31" uuid="6189f9bc-721c-4ea3-8371-93ba6cf2dfa5"/>
+                <reportElement x="320" y="144" width="100" height="27" uuid="6189f9bc-721c-4ea3-8371-93ba6cf2dfa5"/>
+                <textFieldExpression><![CDATA[$P{payTime}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="320" y="113" width="100" height="27" uuid="6189f9bc-721c-4ea3-8371-93ba6cf2dfa5"/>
                 <textFieldExpression><![CDATA[$P{bookingTime}]]></textFieldExpression>
             </textField>
             <staticText>

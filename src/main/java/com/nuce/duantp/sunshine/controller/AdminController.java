@@ -61,9 +61,8 @@ public class AdminController {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
             try {
-                adminService.exportBill(bookingId);
-                MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.SUCCESS, EnumResponseStatusCode.SUCCESS.label);
-                return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+                return adminService.exportBill(bookingId);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.BAD_REQUEST, EnumResponseStatusCode.BAD_REQUEST.label);

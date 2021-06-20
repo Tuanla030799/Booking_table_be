@@ -34,6 +34,7 @@ public enum EnumResponseStatusCode {
     DISABLE_SALE_SUCCESS("Xoá sale thành công !"),
     ADD_SALE_SUCCESS("Thêm sale thành công !"),
     NULL_POINTER("Có giá trị trống"),
+    BILL_NULL("Hoá đơn chưa thanh toán."),
     MIN_TIME("Bạn đã chọn thơi gian trong quá khứ, vui lòng thử lại"),
     MAX_TIME("Bạn đã chọn không được quá 10 ngày."),
     LOCK_ACC("Tài khoản đã bị khóa"),

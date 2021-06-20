@@ -31,6 +31,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -65,7 +67,7 @@ public class AdminService  {
 
     }
 
-    public void exportBill(String bookingId) throws FileNotFoundException, JRException {
+    public  ResponseEntity<?> exportBill(String bookingId) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
 
         List<ListFoodInBooking> listBillRp = new ArrayList<>();
@@ -93,8 +95,12 @@ public class AdminService  {
         } else {
             sumMoney = totalMoney - deposit.getDeposit();
         }
-
-        JasperReportBill reportBill = new JasperReportBill(bookingId, customer.getFullName(), booking.getBookingTime(), listBillRp, deposit.getDeposit(), salePr, sumMoney, totalMoney);
+        if(bill.getPayDate()==null){
+            MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.BILL_NULL);
+            return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+        }
+        JasperReportBill reportBill = new JasperReportBill(bookingId, customer.getFullName(),
+                booking.getBookingTime(), listBillRp, deposit.getDeposit(), salePr, sumMoney, totalMoney,bill.getPayDate());
         reportBill.convertChar();
         File file = ResourceUtils.getFile("classpath:exportBill.jrxml");
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportBill.getListFoodInBookings());
@@ -104,6 +110,7 @@ public class AdminService  {
         parameters.put("bookingId", reportBill.getBookingId());
         parameters.put("customerName", reportBill.getCustomerName());
         parameters.put("bookingTime", reportBill.getBookingTime());
+        parameters.put("payTime", reportBill.getPayTime());
         parameters.put("deposit", FormatMoney.formatMoneyBill(String.valueOf(reportBill.getDeposit())));
         parameters.put("sale", String.format("%.0f", reportBill.getSale()*100)+"%");
         parameters.put("sumMoney", FormatMoney.formatMoneyBill(String.valueOf(reportBill.getSumMoney())));
@@ -112,7 +119,8 @@ public class AdminService  {
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
         JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + "bill" + reportBill.getBookingId() + ".pdf");
-
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.SUCCESS, EnumResponseStatusCode.SUCCESS.label);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     public ResponseEntity<?> addFoodInBooking(OrderFoodReq orderFoodReq, String email) {
