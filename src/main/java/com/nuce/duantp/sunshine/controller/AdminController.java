@@ -149,7 +149,7 @@ public class AdminController {
 
     }
 
-    @GetMapping("/disable-food/{foodId}")
+    @PostMapping("/disable-food/{foodId}")
     public ResponseEntity<?> disableFood(@PathVariable(name = "foodId")Long foodId, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
@@ -217,7 +217,7 @@ public class AdminController {
 
     }
 
-    @GetMapping("/disable-sale/{saleId}")
+    @PostMapping("/disable-sale/{saleId}")
     public ResponseEntity<?> disableSale(@PathVariable(name = "saleId") Long saleId, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
@@ -247,7 +247,7 @@ public class AdminController {
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/disable-customer/{email}")
+    @PostMapping("/disable-customer/{email}")
     public ResponseEntity<?> disableCustomer(@PathVariable(name = "email") String email, HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         if (tokenLivingService.checkTokenLiving(req) && customer.get().getRole().equals("ADMIN")) {
