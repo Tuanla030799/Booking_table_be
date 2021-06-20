@@ -52,10 +52,11 @@ public class BookingService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if(date.compareTo(new Date())<0){
-            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+//        TODO: enable
+//        if(date.compareTo(new Date())<0){
+//            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
+//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//        }
         if(bookingReq.getTotalSeats()<=0){
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.TOTAL_SEAT_FALSE);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -129,10 +130,11 @@ public class BookingService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if(date.compareTo(new Date())<0){
-            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+//        TODO:enable
+//        if(date.compareTo(new Date())<0){
+//            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
+//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//        }
         if (date.getHours() >= 8 && date.getHours() < 23) {
             tbl_Booking booking = new tbl_Booking
                     (bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(),
@@ -275,10 +277,10 @@ public class BookingService {
 
         money=admin.getTotalMoney();
         admin.setTotalMoney((long) (money+moneyPay));
-        booking.setBookingStatus(1);
+        booking.setBookingStatus(2);
         booking.setSaleId(bookingHistoryDetail.getSaleId());
 
-        bill.setBillStatus(1);
+        bill.setBillStatus(2);
         bill.setPayDate(new Date());
         bill.setPointId(point.getPointId());
 
@@ -302,8 +304,8 @@ public class BookingService {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         else if(billInfoList.size()==0){
-            bill.setBillStatus(2);
-            booking.setBookingStatus(2);
+            bill.setBillStatus(3);
+            booking.setBookingStatus(3);
             customer.get().setTotalMoney((long) (customer.get().getTotalMoney()+deposit.getDeposit()*0.3));
             tbl_Customer admin=customerRepo.findCustomerByEmail("sunshine87lethanhnghi@gmail.com");
             admin.setTotalMoney((long) (admin.getTotalMoney()-deposit.getDeposit()*0.3));
@@ -316,6 +318,8 @@ public class BookingService {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else {
+            booking.setBookingStatus(1);
+            bookingRepository.save(booking);
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.EMPLOYEE_CANCEL_BOOKING_SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
