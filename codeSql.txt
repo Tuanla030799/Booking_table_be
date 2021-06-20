@@ -45,3 +45,6 @@ insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
 	values ('Ghẹ xanh Hàm Ninh Phú Quốc','Ghẹ thì ở đâu cũng có rồi nhưng để có ghẹ chất lượng, ngon và an toàn cho sức khỏe thì đến Phú Quốc,','https://www.dropbox.com/s/tqt6qpo0p911wlo/1622718506651.jpg?raw=1','250000',1);
 insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)
 	values ('Ghẹ xanh Hàm Ninh Phú Quốc','Ghẹ thì ở đâu cũng có rồi nhưng để có ghẹ chất lượng, ngon và an toàn cho sức khỏe thì đến Phú Quốc,','https://www.dropbox.com/s/crlqokzqek08isq/1622719347610.jpg?raw=1','250000',1);
+
+update tbl_Customer as cus set cus.image='https://www.dropbox.com/s/a37pt6kp0pch92y/1624162975498.jpg?raw=1' where cus.email='sunshine87lethanhnghi@gmail.com'
+update tbl_Customer as cus set cus.image='https://www.dropbox.com/s/5l351xmohotdjj6/1624163183514.jpg?raw=1' where cus.email='sunshine87lethanhnghi@gmail.com'

@@ -23,7 +23,8 @@ public class JasperReportBill implements Serializable {
     private float sale;
     private float sumMoney;
     private float totalMoney;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss aa")
+    private Date payTime;
     public JasperReportBill convertChar() {
         this.customerName=FormatChar.covertToString(this.getCustomerName());
         for(ListFoodInBooking data:this.listFoodInBookings){

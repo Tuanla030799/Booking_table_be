@@ -47,21 +47,58 @@ public class AdminService {
     private final ImageService imageService;
     private final BeneficiaryRepo beneficiaryRepo;
     private final SunShineService sunShineService;
-    public void exportReport(String fileName) throws FileNotFoundException, JRException {
+
+    public void exportReport(int year) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
-        List<tbl_Customer> employees = (List<tbl_Customer>) customerRepo.findAll();
+        List<StatisticalResponse> list = new ArrayList<>();
+        List<tbl_Booking> listBooking = bookingRepository.findAll();
+       for(int i=1;i<=12;i++){
+           float sumMoney=0;
+           int totalBooking=0;
+           float percent=0;
+           boolean flag=false;
+           for(tbl_Booking data:listBooking){
+               Calendar calendar = Calendar.getInstance();
+               calendar.setTime(data.getBookingTime());
+               int month = calendar.get(Calendar.MONTH);
+               int y=calendar.get(Calendar.YEAR);
+               if(month==i-1&&y==year){
+                   flag=true;
+                   if(data.getBookingStatus()==4||data.getBookingStatus()==0||data.getBookingStatus()==1){
+                       tbl_Deposit deposit=depositRepo.findByDepositId(data.getDepositId());
+                       sumMoney+=deposit.getDeposit();
+                       totalBooking++;
+                   }
+                   if(data.getBookingStatus()==3){
+                       tbl_Deposit deposit=depositRepo.findByDepositId(data.getDepositId());
+                       sumMoney+=deposit.getDeposit()*0.7;
+                       totalBooking++;
+                   }
+                   if(data.getBookingStatus()==2){
+                       BookingHistoryDetail bookingHistoryDetail = bookingService.getBillPay(data.getBookingId());
+                       sumMoney+=bookingHistoryDetail.getTotalMoney()+bookingHistoryDetail.getDeposit();
+                       totalBooking++;
+                   }
+               }
+           }
+           if(flag==true){
+               percent=totalBooking*100/listBooking.size();
+               StatisticalResponse statisticalResponse=new StatisticalResponse(i,totalBooking,
+                       FormatMoney.formatMoney(String.valueOf(sumMoney)),String.format("%.0f", percent) + "%");
+               list.add(statisticalResponse);
+           }
+       }
+        File file = ResourceUtils.getFile("classpath:YReport.jrxml");
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
 
-        File file = ResourceUtils.getFile("classpath:employees.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(employees);
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("createdBy", "Java Techie");
+        parameters.put("year", String.valueOf(year));
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-        JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + fileName + ".pdf");
-
+        JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + "year" + year + ".pdf");
     }
 
-    public void exportBill(String bookingId) throws FileNotFoundException, JRException {
+    public ResponseEntity<?> exportBill(String bookingId) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
 
         List<ListFoodInBooking> listBillRp = new ArrayList<>();
@@ -75,11 +112,10 @@ public class AdminService {
         float totalMoney = 0L;
         for (tbl_BillInfo data : list) {
             tbl_Food food = foodRepo.findByFoodId(data.getFoodId());
-            ListFoodInBooking listFoodInBooking = new ListFoodInBooking(stt, food.getFoodName(), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
-                    FormatMoney.formatMoney(String.valueOf(food.getFoodPrice() * data.getQuantity())), data.getQuantity());
+            ListFoodInBooking listFoodInBooking = new ListFoodInBooking(stt, food.getFoodName(), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice() * data.getQuantity())), data.getQuantity());
             listBillRp.add(listFoodInBooking);
             stt++;
-            totalMoney += Float.parseFloat(listFoodInBooking.getMoney());
+            totalMoney += food.getFoodPrice() * data.getQuantity();
         }
         float sumMoney = 0L;
         float salePr = 0L;
@@ -89,8 +125,11 @@ public class AdminService {
         } else {
             sumMoney = totalMoney - deposit.getDeposit();
         }
-
-        JasperReportBill reportBill = new JasperReportBill(bookingId, customer.getFullName(), booking.getBookingTime(), listBillRp, deposit.getDeposit(), salePr, sumMoney, totalMoney);
+        if (bill.getPayDate() == null) {
+            MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.BILL_NULL);
+            return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+        }
+        JasperReportBill reportBill = new JasperReportBill(bookingId, customer.getFullName(), booking.getBookingTime(), listBillRp, deposit.getDeposit(), salePr, sumMoney, totalMoney, bill.getPayDate());
         reportBill.convertChar();
         File file = ResourceUtils.getFile("classpath:exportBill.jrxml");
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportBill.getListFoodInBookings());
@@ -100,15 +139,17 @@ public class AdminService {
         parameters.put("bookingId", reportBill.getBookingId());
         parameters.put("customerName", reportBill.getCustomerName());
         parameters.put("bookingTime", reportBill.getBookingTime());
-        parameters.put("deposit", reportBill.getDeposit());
-        parameters.put("sale", reportBill.getSale());
-        parameters.put("sumMoney", reportBill.getSumMoney());
-        parameters.put("totalMoney", reportBill.getTotalMoney());
+        parameters.put("payTime", reportBill.getPayTime());
+        parameters.put("deposit", FormatMoney.formatMoney(String.valueOf(reportBill.getDeposit())));
+        parameters.put("sale", String.format("%.0f", reportBill.getSale() * 100) + "%");
+        parameters.put("sumMoney", FormatMoney.formatMoney(String.valueOf(reportBill.getSumMoney())));
+        parameters.put("totalMoney", FormatMoney.formatMoney(String.valueOf(reportBill.getTotalMoney())));
 //        jasperReport.setProperty();
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
         JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + "bill" + reportBill.getBookingId() + ".pdf");
-
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.SUCCESS, EnumResponseStatusCode.SUCCESS.label);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     public ResponseEntity<?> addFoodInBooking(OrderFoodReq orderFoodReq, String email) {
@@ -177,25 +218,24 @@ public class AdminService {
         food.setFoodImage(image.getUrl());
         foodRepo.save(food);
         LOGGER.warn("add food by " + email + "\n" + foodName, AdminService.class);
-        String query="insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)" +
-                "\n\tvalues (\'"+food.getFoodName()+"\',\'"+food.getDescribes()+"\',\'"+food.getFoodImage()+"\',\'"+food.getFoodPrice()+"\',"+1+");\n";
+        String query = "insert into tbl_Food(foodName,describes,foodImage,foodPrice,foodStatus)" + "\n\tvalues (\'" + food.getFoodName() + "\',\'" + food.getDescribes() + "\',\'" + food.getFoodImage() + "\',\'" + food.getFoodPrice() + "\'," + 1 + ");\n";
         LogCodeSql.writeCodeSql(query);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableFood(List<String> foodIdList, String email) {
-        for (String foodId : foodIdList) {
-            tbl_Food food = foodRepo.findByFoodId(Long.valueOf(foodId));
-            food.setFoodStatus(0);
-            foodRepo.save(food);
-        }
-        LOGGER.warn("enable Food by " + email + "\n" + foodIdList, AdminService.class);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_FOOD_SUCCESS);
+    public ResponseEntity<?> disableFood(Long foodIdList, String email) {
+
+        tbl_Food food = foodRepo.findByFoodId(foodIdList);
+        food.setFoodStatus(0);
+        foodRepo.save(food);
+
+        LOGGER.warn("disable Food by " + email + "\n" + foodIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.DISABLE_FOOD_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> addNews(News news,String email) {
+    public ResponseEntity<?> addNews(News news, String email) {
         tbl_News tbl_news = new tbl_News(news.getNewsTitle(), news.getNewsDetail());
         Image image = new Image();
         image.setName(tbl_news.getNewsImage());
@@ -208,29 +248,24 @@ public class AdminService {
         tbl_news.setNewsImage(image.getUrl());
         newsRepo.save(tbl_news);
         LOGGER.warn("add News by " + email + "\n" + news.getNewsTitle(), AdminService.class);
-        String query="insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)" +
-                "\n\tvalues (\'"+tbl_news.getNewsTitle()+"\',\'"+tbl_news.getNewsDetail()+"\',\'"+tbl_news.getNewsImage()+"\',"+1+");\n";
+        String query = "insert into tbl_News(newsTitle,newsDetail,newsImage,newsStatus)" + "\n\tvalues (\'" + tbl_news.getNewsTitle() + "\',\'" + tbl_news.getNewsDetail() + "\',\'" + tbl_news.getNewsImage() + "\'," + 1 + ");\n";
 
         LogCodeSql.writeCodeSql(query);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_NEWS_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableNews(List<String> newsIdList, String email) {
-        for (String newId : newsIdList) {
-            tbl_News news = newsRepo.findByNewsId(Long.valueOf(newId));
-            news.setNewsStatus(0);
-            newsRepo.save(news);
-        }
-        LOGGER.warn("enable News by " + email + "\n" + newsIdList, AdminService.class);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_NEWS_SUCCESS);
+    public ResponseEntity<?> enableNews(Long newsIdList, String email) {
+        tbl_News news = newsRepo.findByNewsId(newsIdList);
+        news.setNewsStatus(0);
+        newsRepo.save(news);
+        LOGGER.warn("disable News by " + email + "\n" + newsIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.DISABLE_NEWS_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> addSale(String saleTitle, String saleDetail, String beneficiary, float percentDiscount,
-                                     float totalBill,
-                                     MultipartFile file, String email) {
-        tbl_Sale sale = new tbl_Sale(saleTitle, saleDetail, beneficiary, percentDiscount,totalBill);
+    public ResponseEntity<?> addSale(String saleTitle, String saleDetail, String beneficiary, float percentDiscount, float totalBill, MultipartFile file, String email) {
+        tbl_Sale sale = new tbl_Sale(saleTitle, saleDetail, beneficiary, percentDiscount, totalBill);
         Image image = new Image();
         image.setName(sale.getSaleImage());
         image.setDescription(saleTitle);
@@ -242,20 +277,20 @@ public class AdminService {
         sale.setSaleImage(image.getUrl());
         saleRepo.save(sale);
         LOGGER.warn("add sale by " + email + "\n" + saleTitle, AdminService.class);
-        String query="insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)" +
-                "\n\tvalues (\'"+sale.getSaleTitle()+"\',\'"+sale.getSaleDetail()+"\',\'"+sale.getSaleImage()+"\',\'"+sale.getBeneficiary()+"\',"+sale.getPercentDiscount()+","+1+");\n";
+        String query = "insert into tbl_Sale(saleTitle,saleDetail,saleImage,beneficiary,percentDiscount,saleStatus)" + "\n\tvalues (\'" + sale.getSaleTitle() + "\',\'" + sale.getSaleDetail() + "\',\'" + sale.getSaleImage() + "\',\'" + sale.getBeneficiary() + "\'," + sale.getPercentDiscount() + "," + 1 + ");\n";
         LogCodeSql.writeCodeSql(query);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.ADD_SALE_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> enableSale(List<String> saleIdList, String email) {
-        for (String saleId : saleIdList) {
-            tbl_Sale sale = saleRepo.findBySaleId(Long.valueOf(saleId));
-            saleRepo.save(sale);
-        }
-        LOGGER.warn("enable sale by " + email + "\n" + saleIdList, AdminService.class);
-        MessageResponse response = new MessageResponse(EnumResponseStatusCode.ENABLE_SALE_SUCCESS);
+    public ResponseEntity<?> disableSale(Long saleIdList, String email) {
+
+        tbl_Sale sale = saleRepo.findBySaleId(saleIdList);
+        sale.setSaleStatus(0);
+        saleRepo.save(sale);
+
+        LOGGER.warn("disable sale by " + email + "\n" + saleIdList, AdminService.class);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.DISABLE_SALE_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -268,73 +303,67 @@ public class AdminService {
         for (tbl_Booking booking : bookingList) {
 
             tbl_Bill bill = billRepo.findByBookingId(booking.getBookingId());
-            List<ListFoodInBooking> listFoodInBookings =new ArrayList<>();
+            List<ListFoodInBooking> listFoodInBookings = new ArrayList<>();
             float totalMoneyFood = 0L; //lấy ra tổng số tiền cho đặt món
-            int stt1=1;
-            List<tbl_BillInfo> billInfoList=billInfoRepo.findAllByBillId(bill.getBillId());
-            for(tbl_BillInfo billInfo: billInfoList){
-                tbl_Food food=foodRepo.findByFoodId(billInfo.getFoodId());
-                ListFoodInBooking listFoodInBooking =new ListFoodInBooking(stt, food.getFoodName(),
-                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
-                        FormatMoney.formatMoney(String.valueOf(food.getFoodPrice()* billInfo.getQuantity())),
-                        billInfo.getQuantity());
+            int stt1 = 1;
+            List<tbl_BillInfo> billInfoList = billInfoRepo.findAllByBillId(bill.getBillId());
+            for (tbl_BillInfo billInfo : billInfoList) {
+                tbl_Food food = foodRepo.findByFoodId(billInfo.getFoodId());
+                ListFoodInBooking listFoodInBooking = new ListFoodInBooking(stt, food.getFoodName(), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice() * billInfo.getQuantity())), billInfo.getQuantity());
                 listFoodInBookings.add(listFoodInBooking);
                 stt1++;
-                totalMoneyFood+=food.getFoodPrice()*billInfo.getQuantity();
+                totalMoneyFood += food.getFoodPrice() * billInfo.getQuantity();
             }
 
-            tbl_Customer customer1=customerRepo.findCustomerByEmail(booking.getEmail());
+            tbl_Customer customer1 = customerRepo.findCustomerByEmail(booking.getEmail());
             float money = 0L;
             if (booking.getBookingStatus() == 1) {
                 money = sunShineService.moneyPay(booking.getBookingId());
             }
             tbl_Deposit deposit = depositRepo.findByDepositId(booking.getDepositId());
-            float refund=deposit.getDeposit()-money;
-            if(refund<0) refund=0L;
+            float refund = deposit.getDeposit() - money;
+            if (refund < 0) refund = 0L;
 
             Date date = TimeUtils.minusDate(Timestamp.valueOf(String.valueOf(booking.getBookingTime())), 7, "HOUR");
             String status = Validate.convertStatusBooking(booking.getBookingStatus());
-            BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())),
-                    status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(),
-                    FormatMoney.formatMoney(String.valueOf(refund)),customer1.getEmail(),
-                    customer1.getPhoneNumber().replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3"),listFoodInBookings);
+            BookingHistoryRes data1 = new BookingHistoryRes(date, FormatMoney.formatMoney(String.valueOf(deposit.getDeposit())), status, FormatMoney.formatMoney(String.valueOf(money)), stt, booking.getBookingId(), FormatMoney.formatMoney(String.valueOf(refund)), customer1.getEmail(), customer1.getPhoneNumber().replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3"), listFoodInBookings);
             data.add(data1);
             stt++;
         }
         return data;
     }
 
-    public List<UserDetail> getListUser(){
-        List<tbl_Customer> customerList= (List<tbl_Customer>) customerRepo.findAll();
-        List<UserDetail> list =new ArrayList<>();
-        for(tbl_Customer data: customerList){
-            UserDetail userDetail=new UserDetail(data);
+    public List<UserDetail> getListUser() {
+        List<tbl_Customer> customerList = customerRepo.getAllCustomer();
+        List<UserDetail> list = new ArrayList<>();
+        for (tbl_Customer data : customerList) {
+            UserDetail userDetail = new UserDetail(data);
             list.add(userDetail);
         }
         return list;
     }
 
-    public UserDetail userDetail(String email){
-        tbl_Customer customer=customerRepo.findCustomerByEmail(email);
-        UserDetail user=new UserDetail(customer);
+    public UserDetail userDetail(String email) {
+        tbl_Customer customer = customerRepo.findCustomerByEmail(email);
+        UserDetail user = new UserDetail(customer);
         return user;
     }
 
-    public ResponseEntity<?> palBill(String bookingId){
-        BookingHistoryDetail bookingHistoryDetail =bookingService.getBillPay(bookingId);
-        tbl_Booking booking=bookingRepository.findByBookingId(bookingId);
-        tbl_Customer customer=customerRepo.findCustomerByEmail(booking.getEmail());
-        tbl_Bill bill=billRepo.findByBookingId(bookingId);
+    public ResponseEntity<?> palBill(String bookingId) {
+        BookingHistoryDetail bookingHistoryDetail = bookingService.getBillPay(bookingId);
+        tbl_Booking booking = bookingRepository.findByBookingId(bookingId);
+        tbl_Customer customer = customerRepo.findCustomerByEmail(booking.getEmail());
+        tbl_Bill bill = billRepo.findByBookingId(bookingId);
         float moneyPay = bookingHistoryDetail.getTotalMoney();
-        Long money=customer.getTotalMoney();
-        tbl_Points point= pointsRepo.findTopByPriceGreaterThanEqualOrderByPriceAscCreatedDesc((long) moneyPay);
-        float pointPercent=0L;
-        if(point!=null) pointPercent=point.getPointPercent();
-        customer.setTotalMoney((long) (money+moneyPay*pointPercent));
+        Long money = customer.getTotalMoney();
+        tbl_Points point = pointsRepo.findTopByPriceGreaterThanEqualOrderByPriceAscCreatedDesc((long) moneyPay);
+        float pointPercent = 0L;
+        if (point != null) pointPercent = point.getPointPercent();
+        customer.setTotalMoney((long) (money + moneyPay * pointPercent));
 
         booking.setBookingStatus(1);
         booking.setSaleId(bookingHistoryDetail.getSaleId());
-        bill.setBillStatus(1);
+//        bill.setBillStatus(1);
         bill.setPayDate(new Date());
         bill.setPointId(point.getPointId());
 
@@ -345,11 +374,63 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> Charging(ChargingReq chargingReq){
-       tbl_Customer customer=customerRepo.findCustomerByEmail(chargingReq.getEmail());
-       customer.setTotalMoney((long) (customer.getTotalMoney()+chargingReq.getMoney()));
-       customerRepo.save(customer);
+    public ResponseEntity<?> Charging(ChargingReq chargingReq) {
+        tbl_Customer customer = customerRepo.findCustomerByEmail(chargingReq.getEmail());
+        customer.setTotalMoney((long) (customer.getTotalMoney() + chargingReq.getMoney()));
+        customerRepo.save(customer);
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.CHARGING_SUCCESS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    public ResponseEntity<?> disableAccCustomer(String email) {
+        tbl_Customer customer = customerRepo.findCustomerByEmail(email);
+        if (customer == null) {
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.EMAIL_NOT_EXIST);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        customer.setAccStatus(0);
+        customerRepo.save(customer);
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.DISABLE_ACC_SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> searchCustomer(String str) {
+        tbl_Customer customer = customerRepo.findCustomerByEmail(str);
+        if (customer == null) {
+            customer = customerRepo.findByPhoneNumber(str);
+        }
+        if (customer == null) {
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.SEARCH_NULL);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        if (customer != null) {
+            UserDetail userDetail = new UserDetail(customer);
+            return new ResponseEntity<>(userDetail, HttpStatus.OK);
+        }
+
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.SEARCH_NULL);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+//    @Override
+//    public ByteArrayResource exportReport(List<VimoRiskTrans> vimoRiskTransList) {
+//        try {
+//
+//            writeHeaderLine();
+//            writeDetailLines(vimoRiskTransList);
+//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//            try {
+//                workbook.write(bos);
+//            } finally {
+//                bos.close();
+//            }
+//            byte[] excelFileAsBytes = bos.toByteArray();
+//            ByteArrayResource resource = new ByteArrayResource(excelFileAsBytes);
+//            workbook.close();
+//            bos.close();
+//            return resource;
+//        } catch (Exception ex) {
+//            ex.getMessage();
+//        }
+//        return null;
+//    }
 }

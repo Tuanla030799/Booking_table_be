@@ -30,8 +30,8 @@ public class tbl_Bill {
     @Column(name = "bookingId")
     private String bookingId;
 
-    @Column(name = "billStatus")
-    private int billStatus;
+//    @Column(name = "billStatus")
+//    private int billStatus;
 
     @Column(name = "payDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
@@ -43,10 +43,10 @@ public class tbl_Bill {
         this.bookingId=bill.getBookingId();
     }
 
-    public tbl_Bill(String billId, Long pointId, String bookingId,  int billStatus) {
+    public tbl_Bill(String billId, Long pointId, String bookingId) {
         this.billId = billId;
         this.pointId = pointId;
         this.bookingId = bookingId;
-        this.billStatus = billStatus;
+//        this.billStatus = billStatus;
     }
 }

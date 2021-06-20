@@ -127,7 +127,7 @@ create table `tbl_bill`
     `PointID`    bigint,
     `BookingID`  NVARCHAR(255),
     `Discount`   BIGINT DEFAULT 0,
-    `BillStatus` int    default 0,
+--     `BillStatus` int    default 0,
     `PayDate`    datetime,
     constraint fk_BillPoints foreign key (PointID) references tbl_point (PointID),
     constraint fk_BillBooking foreign key (BookingID) references tbl_booking (BookingID)
@@ -258,10 +258,10 @@ values ('ADMIN', N'Nhân Viên');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
 VALUES ('pvminh@gmail.com',
         '0796164361',
-        N'Phí Văn Minh', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000000, 'USERS', 'CUSTOMER');
+        N'Phí Văn Minh', '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 10000000, 'USERS', 'CUSTOMER');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
 VALUES ('sunshine87lethanhnghi@gmail.com', '0999999999', N'Nhà hàng Sunshine',
-        '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000000, 'ADMIN', 'VIP');
+        '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 0, 'ADMIN', 'VIP');
 INSERT INTO tbl_customer(Email, PhoneNumber, FullName, Password, TotalMoney, role, beneficiary)
 VALUES ('haind1@vimo.vn', '0978675678', N'Nguyễn Đình Hải',
         '$2a$10$v.MczrO5SeLbLwKEuIih1OPOfSldACzBd9RUKAExt4ALbtC34e5w2', 5000000, 'USERS', 'CUSTOMER');
@@ -331,3 +331,15 @@ insert into tbl_News(newsTitle, newsDetail, newsImage, newsStatus)
 values ('New123', 'New123', 'https://www.dropbox.com/s/vd6g49pesbveohw/1621758486786.jpg?raw=1', 1);
 insert into tbl_News(newsTitle, newsDetail, newsImage, newsStatus)
 values ('New1234', 'New1234', 'https://www.dropbox.com/s/9x3xd39zfzuwd3j/1621758495452.jpg?raw=1', 1);
+
+insert into conf_schedules(active, bean, code, cron, description, name)
+values(1,'changeResetPasswordStatus','1','15 0/1 * * * *','test schedule in database','spam email');
+
+insert into conf_schedules(active, bean, code, cron, description, name)
+values(1,'removeLiveToken','1','15 0/1 * * * *','test schedule in database','job xoa TokenLiving');
+
+insert into conf_schedules(active, bean, code, cron, description, name)
+values(1,'autoCancelBooking','1','15 0/1 * * * *','test schedule in database','job auto cancelbooking');
+
+insert into conf_schedules(active, bean, code, cron, description, name)
+values(1,'autoUpdateBeneficiary','1','15 0/1 * * * *','test schedule in database','job auto UpdateBeneficiary');
