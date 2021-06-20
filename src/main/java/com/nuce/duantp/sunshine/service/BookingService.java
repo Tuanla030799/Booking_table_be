@@ -333,10 +333,6 @@ public class BookingService {
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.EMPLOYEE_CANCEL_BOOKING_SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        /*
-         * TODO
-         *  xử lý phần nhân viên xác nhận bằng thread
-         * */
     }
 
 
