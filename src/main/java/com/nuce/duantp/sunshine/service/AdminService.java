@@ -93,7 +93,7 @@ public class AdminService {
 
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("year", year);
+        parameters.put("year", "2020");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
         JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\" + "year" + year + ".pdf");
     }
