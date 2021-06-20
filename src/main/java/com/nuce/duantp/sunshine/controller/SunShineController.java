@@ -9,6 +9,7 @@ import com.nuce.duantp.sunshine.service.SunShineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,16 @@ public class SunShineController {
     private FoodRepo foodRepo;
     @Autowired
     private SaleRepo saleRepo;
-
+    @GetMapping("/get-list-sale")
+    public List<SaleResponse> getListSale(){
+        List<tbl_Sale> sale=saleRepo.getAllSale();
+        List<SaleResponse> list = new ArrayList<>();
+        for(tbl_Sale data:sale){
+            SaleResponse response=new SaleResponse(data);
+            list.add(response);
+        }
+        return list;
+    }
     @GetMapping("/home")
     public PageHomeRes pageHome(){
         return sunShineService.pageHome();
@@ -39,10 +49,10 @@ public class SunShineController {
         return foodHomeRes;
     }
 
-    @GetMapping("/get-list-sale")
-    public List<SaleHomeRes> getListSale(){
-        return sunShineService.getListSale();
-    }
+//    @GetMapping("/get-list-sale")
+//    public List<SaleHomeRes> getListSale(){
+//        return sunShineService.getListSale();
+//    }
 
     @GetMapping("/search-food/{name}")
     public List<SearchFoodRespon> searchFoodRespons(@PathVariable(name = "name")String name){
@@ -61,7 +71,6 @@ public class SunShineController {
         SaleDetail saleDetail = new SaleDetail(sale);
         return saleDetail;
     }
-
 
 
 
