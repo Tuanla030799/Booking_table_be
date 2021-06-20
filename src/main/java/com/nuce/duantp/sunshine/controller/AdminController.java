@@ -72,7 +72,6 @@ public class AdminController {
         }
         MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
-
     }
 
     @PostMapping("/cancel-booking-admin")

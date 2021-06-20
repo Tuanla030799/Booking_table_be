@@ -3,6 +3,7 @@ package com.nuce.duantp.sunshine.service;
 import com.nuce.duantp.sunshine.config.format.CheckNameCustomer;
 import com.nuce.duantp.sunshine.config.format.CheckPass;
 import com.nuce.duantp.sunshine.config.format.CheckPhoneNumber;
+import com.nuce.duantp.sunshine.config.format.LogCodeSql;
 import com.nuce.duantp.sunshine.dto.model.Image;
 import com.nuce.duantp.sunshine.dto.model.TokenLiving;
 import com.nuce.duantp.sunshine.dto.request.ChangePasswordReq;
@@ -99,6 +100,9 @@ public class UserService {
                 imageService.createImage(image, updateUserReq.getFile());
                 customer.setImage(image.getUrl());
             }
+            String query=
+                    "update tbl_Customer as cus set cus.image='" +customer.getImage()+"' where cus.email='"+customer.getEmail()+"'\n";
+            LogCodeSql.writeCodeSql(query);
             customerRepo.save(customer);
             LOGGER.warn("update info success by " + customer.getEmail()+"\n"+updateUserReq, UserService.class);
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));

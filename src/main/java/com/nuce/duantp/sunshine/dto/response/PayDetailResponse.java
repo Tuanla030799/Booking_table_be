@@ -31,7 +31,7 @@ public class PayDetailResponse implements Serializable {
     public PayDetailResponse(BookingHistoryDetail bookingHistoryDetail) {
         this.tableName=bookingHistoryDetail.getTableName();
         this.totalSet=bookingHistoryDetail.getTotalSet();
-        this.percentSale= String.format("%.0f", bookingHistoryDetail.getPercentSale()*100)+" %";
+        this.percentSale= String.format("%.0f", bookingHistoryDetail.getPercentSale()*100)+"%";
         this.bookingId= bookingHistoryDetail.getBookingId();
         this.bookingTime= TimeUtils.minusDate(bookingHistoryDetail.getBookingTime(), 7, "HOUR");
         this.listFoodInBookings = bookingHistoryDetail.getListFoodInBookings();

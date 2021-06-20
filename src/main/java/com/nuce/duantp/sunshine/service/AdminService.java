@@ -79,11 +79,11 @@ public class AdminService  {
         float totalMoney = 0L;
         for (tbl_BillInfo data : list) {
             tbl_Food food = foodRepo.findByFoodId(data.getFoodId());
-            ListFoodInBooking listFoodInBooking = new ListFoodInBooking(stt, food.getFoodName(), FormatMoney.formatMoney(String.valueOf(food.getFoodPrice())),
-                    FormatMoney.formatMoney(String.valueOf(food.getFoodPrice() * data.getQuantity())), data.getQuantity());
+            ListFoodInBooking listFoodInBooking = new ListFoodInBooking(stt, food.getFoodName(), FormatMoney.formatMoneyBill(String.valueOf(food.getFoodPrice())),
+                    FormatMoney.formatMoneyBill(String.valueOf(food.getFoodPrice() * data.getQuantity())), data.getQuantity());
             listBillRp.add(listFoodInBooking);
             stt++;
-            totalMoney += Float.parseFloat(listFoodInBooking.getMoney());
+            totalMoney += food.getFoodPrice() * data.getQuantity();
         }
         float sumMoney = 0L;
         float salePr = 0L;
@@ -104,10 +104,10 @@ public class AdminService  {
         parameters.put("bookingId", reportBill.getBookingId());
         parameters.put("customerName", reportBill.getCustomerName());
         parameters.put("bookingTime", reportBill.getBookingTime());
-        parameters.put("deposit", reportBill.getDeposit());
-        parameters.put("sale", reportBill.getSale());
-        parameters.put("sumMoney", reportBill.getSumMoney());
-        parameters.put("totalMoney", reportBill.getTotalMoney());
+        parameters.put("deposit", FormatMoney.formatMoneyBill(String.valueOf(reportBill.getDeposit())));
+        parameters.put("sale", String.format("%.0f", reportBill.getSale()*100)+"%");
+        parameters.put("sumMoney", FormatMoney.formatMoneyBill(String.valueOf(reportBill.getSumMoney())));
+        parameters.put("totalMoney", FormatMoney.formatMoneyBill(String.valueOf(reportBill.getTotalMoney())));
 //        jasperReport.setProperty();
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
