@@ -44,7 +44,7 @@ public class BookingService {
     private final PointsRepo pointsRepo;
     private final BillInfoRepo billInfoRepo;
     private final CustomerRepo customerRepo;
-    private final OnesignalController onesignalController;
+    private final KafkaTemplate<String, String> kafkaTemplate;
     private final FoodRepo foodRepo;
     private Logger LOGGER = LoggerFactory.getLogger(BookingService.class);
 //    private final KafkaTemplate<String, String> kafkaTemplate;
@@ -324,12 +324,8 @@ public class BookingService {
         else {
             booking.setBookingStatus(1);
             bookingRepository.save(booking);
-            try {
-                onesignalController.sendNotify(booking.getBookingId());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-//            kafkaTemplate.send("test_sender_email", booking.getBookingId());
+
+            kafkaTemplate.send("test_topic", booking.getBookingId());
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.EMPLOYEE_CANCEL_BOOKING_SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
