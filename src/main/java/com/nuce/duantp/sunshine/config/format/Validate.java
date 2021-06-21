@@ -28,4 +28,35 @@ public class Validate {
 
        return response;
     }
+
+    public static String convertStatusAcc(int status) {
+        String response="";
+        switch (status){
+            case 0:
+                response ="Đã bị khóa";
+                break;
+            case 1:
+                response="Đang hoạt động";
+                break;
+            default:
+                response ="";
+                break;
+        }
+        return response;
+    }
+    public static String convertStatusSale(int status) {
+        String response="";
+        switch (status){
+            case 0:
+                response ="Hết khuyến mãi";
+                break;
+            case 1:
+                response="Còn khuyến mãi";
+                break;
+            default:
+                response ="";
+                break;
+        }
+        return response;
+    }
 }

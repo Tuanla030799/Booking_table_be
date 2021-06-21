@@ -1,6 +1,7 @@
 package com.nuce.duantp.sunshine.dto.response;
 
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
+import com.nuce.duantp.sunshine.config.format.Validate;
 import com.nuce.duantp.sunshine.dto.model.tbl_Sale;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +33,7 @@ public class SaleResponse {
         this.saleId=sale.getSaleId();
         this.saleTitle=sale.getSaleTitle();
         this.saleImage=sale.getSaleImage();
-        this.saleStatus=sale.getSaleStatus()==1?"Còn khuyến mãi":"Hết khuyến mãi";
+        this.saleStatus= Validate.convertStatusSale(sale.getSaleStatus());
         this.beneficiary=sale.getBeneficiary();
         this.percentDiscount=String.format("%.0f", sale.getPercentDiscount() * 100) + "%";
         this.totalBill= FormatMoney.formatMoney(String.valueOf(sale.getTotalBill()));

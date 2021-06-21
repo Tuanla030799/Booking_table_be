@@ -3,6 +3,7 @@ package com.nuce.duantp.sunshine.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
+import com.nuce.duantp.sunshine.config.format.Validate;
 import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,7 +44,7 @@ public class UserDetail {
         this.totalMoney= FormatMoney.formatMoney(String.valueOf(customer.getTotalMoney()));
         this.role=customer.getRole();
         this.image=customer.getImage();
-        this.status=customer.getAccStatus()==1?"Đang hoạt động":"Đã bị khóa";
+        this.status= Validate.convertStatusAcc(customer.getAccStatus());
         this.sex=customer.getSex();
         this.level=customer.getBeneficiary();
         this.dateOfBirth= TimeUtils.minusDate(customer.getDateOfBirth(), 7, "HOUR");
