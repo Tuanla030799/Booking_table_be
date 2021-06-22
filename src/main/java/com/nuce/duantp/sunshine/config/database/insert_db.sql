@@ -103,7 +103,7 @@ CREATE TABLE `tbl_customer`
 CREATE TABLE `tbl_booking`
 (
     `BookingID`     NVARCHAR(255) unique primary key,
-    `bookingStatus` int      DEFAULT 0,
+    `bookingStatus` int      DEFAULT 1,
     `BookingTime`   datetime,
     `Created`       DATETIME DEFAULT NOW(),
     `DepositId`     bigint   DEFAULT 0,
