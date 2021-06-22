@@ -361,7 +361,7 @@ public class AdminService {
         if (point != null) pointPercent = point.getPointPercent();
         customer.setTotalMoney((long) (money + moneyPay * pointPercent));
 
-        booking.setBookingStatus(1);
+        booking.setBookingStatus(2);
         booking.setSaleId(bookingHistoryDetail.getSaleId());
 //        bill.setBillStatus(1);
         bill.setPayDate(new Date());

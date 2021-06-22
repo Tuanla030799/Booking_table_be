@@ -6,10 +6,10 @@ public class Validate {
     public static String convertStatusBooking(int status) {
         String response="";
        switch (status){
-           case 0:
+           case 1:
                response ="Chưa thánh toán";
                break;
-           case 1:
+           case 0:
                response="Chờ admin xác nhận";
                break;
            case 2:

@@ -318,7 +318,7 @@ public class BookingService {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else {
-            booking.setBookingStatus(1);
+            booking.setBookingStatus(0);
             bookingRepository.save(booking);
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.EMPLOYEE_CANCEL_BOOKING_SUCCESS);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -342,7 +342,7 @@ public class BookingService {
         }
         else {
 //            bill.setBillStatus(2);
-            booking.setBookingStatus(2);
+            booking.setBookingStatus(3);
             customer.setTotalMoney((long) (customer.getTotalMoney()+deposit.getDeposit()*0.3));
             tbl_Customer admin=customerRepo.findCustomerByEmail("sunshine87lethanhnghi@gmail.com");
             admin.setTotalMoney((long) (admin.getTotalMoney()-deposit.getDeposit()*0.3));
