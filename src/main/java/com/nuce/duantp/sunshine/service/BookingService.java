@@ -131,10 +131,10 @@ public class BookingService {
             e.printStackTrace();
         }
 //        TODO:enable
-//        if(date.compareTo(new Date())<0){
-//            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
-//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//        }
+        if(date.compareTo(new Date())<0){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         if (date.getHours() >= 8 && date.getHours() < 23) {
             tbl_Booking booking = new tbl_Booking
                     (bookingId, customer.get().getEmail(), date, bookingReq.getTotalSeats(), deposit.getDepositId(),

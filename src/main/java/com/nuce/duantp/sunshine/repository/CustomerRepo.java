@@ -23,7 +23,6 @@ public interface CustomerRepo extends CrudRepository<tbl_Customer, Long> {
     @Query("select c from tbl_Customer c where c.email=?1")
 
     tbl_Customer findCustomerByEmail(String email);
-
     tbl_Customer findByPhoneNumber(String phone);
     List<tbl_Customer> findAllByRole(String role);
 

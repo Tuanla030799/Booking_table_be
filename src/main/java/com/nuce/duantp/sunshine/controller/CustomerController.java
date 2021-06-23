@@ -3,14 +3,19 @@ package com.nuce.duantp.sunshine.controller;
 //import com.nuce.duantp.sunshine.dto.request.AddAccReq;
 
 //import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetailRes;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.request.CustomerChargingReq;
 import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
 import com.nuce.duantp.sunshine.dto.model.tbl_Customer;
 import com.nuce.duantp.sunshine.dto.model.tbl_Sale;
+import com.nuce.duantp.sunshine.dto.response.MessageResponse;
 import com.nuce.duantp.sunshine.dto.response.PayDetailResponse;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import com.nuce.duantp.sunshine.service.CustomerService;
 import com.nuce.duantp.sunshine.service.TokenLivingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,4 +55,15 @@ public class CustomerController {
         }
         return null;
     }
+
+    @PostMapping("/charging")
+    public ResponseEntity<?> getListSaleForUser(@RequestBody CustomerChargingReq chargingReq, HttpServletRequest req) {
+        if (tokenLivingService.checkTokenLiving(req)) {
+            Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
+            return customerService.customerCharging(chargingReq,customer.get().getEmail());
+        }
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.TOKEN_DIE);
+        return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }

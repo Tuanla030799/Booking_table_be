@@ -4,16 +4,17 @@ import com.nuce.duantp.sunshine.config.TimeUtils;
 import com.nuce.duantp.sunshine.config.format.FormatMoney;
 import com.nuce.duantp.sunshine.config.format.Validate;
 //import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetailRes;
-import com.nuce.duantp.sunshine.dto.response.BookingHistoryDetail;
-import com.nuce.duantp.sunshine.dto.response.BookingHistoryRes;
+import com.nuce.duantp.sunshine.dto.enums.EnumResponseStatusCode;
+import com.nuce.duantp.sunshine.dto.request.CustomerChargingReq;
+import com.nuce.duantp.sunshine.dto.response.*;
 import com.nuce.duantp.sunshine.dto.model.*;
-import com.nuce.duantp.sunshine.dto.response.ListFoodInBooking;
-import com.nuce.duantp.sunshine.dto.response.PayDetailResponse;
 import com.nuce.duantp.sunshine.repository.*;
 import com.nuce.duantp.sunshine.security.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ public class CustomerService {
     private final BillInfoRepo billInfoRepo;
     private final FoodRepo foodRepo;
     private final PointsRepo pointsRepo;
+    private final ChargingRepo chargingRepo;
     private Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
 
     public List<BookingHistoryRes> viewBookingHistory(HttpServletRequest req) {
@@ -94,5 +96,13 @@ public class CustomerService {
         tbl_Customer customer = customerRepo.findCustomerByEmail(email);
         List<tbl_Sale> saleList = saleRepo.findBySaleStatusAndBeneficiary(1, customer.getBeneficiary());
         return saleList;
+    }
+    public ResponseEntity<?> customerCharging(CustomerChargingReq chargingReq,String email) {
+        tbl_Customer customer = customerRepo.findCustomerByEmail(email);
+        Charging charging=new Charging(chargingReq,customer.getEmail());
+        chargingRepo.save(charging);
+        //TODO: notify admin
+        MessageResponse messageResponse = new MessageResponse(EnumResponseStatusCode.CUSTOMER_CHARGING);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 }

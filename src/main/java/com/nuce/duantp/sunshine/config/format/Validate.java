@@ -59,4 +59,23 @@ public class Validate {
         }
         return response;
     }
+
+    public static String convertStatusCharging(int status) {
+        String response="";
+        switch (status){
+            case 0:
+                response ="Y/c xác nhận";
+                break;
+            case 1:
+                response="Thành công";
+                break;
+            case 2:
+                response="Thất bại";
+                break;
+            default:
+                response ="";
+                break;
+        }
+        return response;
+    }
 }

@@ -88,7 +88,7 @@ public class AuthService {
 //            customer.setImage(image.getUrl());
             userRepository.save(customer);
 
-            return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
+            return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.CREATE_SUCCESS));
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageResponse message = new MessageResponse(EnumResponseStatusCode.BAD_REQUEST);

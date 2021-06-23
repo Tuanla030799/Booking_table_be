@@ -47,6 +47,7 @@ public class AdminService {
     private final ImageService imageService;
     private final BeneficiaryRepo beneficiaryRepo;
     private final SunShineService sunShineService;
+    private final ChargingRepo chargingRepo;
 
     public void exportReport(int year) throws FileNotFoundException, JRException {
         String path = "./src/main/resources/static";
@@ -294,7 +295,6 @@ public class AdminService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     public List<BookingHistoryRes> viewBookingHistory(HttpServletRequest req) {
         Optional<tbl_Customer> customer = authTokenFilter.whoami(req);
         List<tbl_Booking> bookingList = bookingRepository.getListBookingAdmin();
@@ -411,26 +411,50 @@ public class AdminService {
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.SEARCH_NULL);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-//    @Override
-//    public ByteArrayResource exportReport(List<VimoRiskTrans> vimoRiskTransList) {
-//        try {
-//
-//            writeHeaderLine();
-//            writeDetailLines(vimoRiskTransList);
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//            try {
-//                workbook.write(bos);
-//            } finally {
-//                bos.close();
-//            }
-//            byte[] excelFileAsBytes = bos.toByteArray();
-//            ByteArrayResource resource = new ByteArrayResource(excelFileAsBytes);
-//            workbook.close();
-//            bos.close();
-//            return resource;
-//        } catch (Exception ex) {
-//            ex.getMessage();
-//        }
-//        return null;
-//    }
+    public ResponseEntity<?> chargingResponse(){
+        List<Charging> chargingList= (List<Charging>) chargingRepo.findAll();
+        List<CustomerChargingResponse> list=new ArrayList<>();
+        for(Charging data:chargingList){
+            CustomerChargingResponse req= new CustomerChargingResponse(data);
+            list.add(req);
+        }
+        return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+    }
+    public ResponseEntity<?> confirmCharging(Long id,int status){
+        if(status==1||status==2){
+            Optional<Charging> charging=chargingRepo.findById(id);
+            if(charging.isPresent()){
+                if(charging.get().getStatus()==2){
+                    MessageResponse response = new MessageResponse(EnumResponseStatusCode.INVALID_OPERATION);
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
+                tbl_Customer customer=customerRepo.findByPhoneNumber(charging.get().getPhoneNumber());
+                charging.get().setStatus(status);
+                chargingRepo.save(charging.get());
+                if(customer==null){
+                    //TODO: gửi mess cho khách hàng
+                    MessageResponse response = new MessageResponse(EnumResponseStatusCode.ACC_NOT_EXIST);
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
+                if(status==1){
+                    //TODO: gửi mess cho khách hàng
+                    customer.setTotalMoney((long) (customer.getTotalMoney()+charging.get().getMoney()));
+                    customerRepo.save(customer);
+                    MessageResponse response = new MessageResponse(EnumResponseStatusCode.CHARGING_SUCCESS);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+                if(status==2){
+                    //TODO: gửi mess cho khách hàng
+                    MessageResponse response = new MessageResponse(EnumResponseStatusCode.CANCEL_CHARGING_SUCCESS);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            }
+            else {
+                MessageResponse response = new MessageResponse(EnumResponseStatusCode.TRANSACTION_NOT_FOUND);
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+        }
+        MessageResponse response = new MessageResponse(EnumResponseStatusCode.STATUS_NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
