@@ -29,10 +29,11 @@ public class KafkaListenerService {
 //    }
 
     @KafkaListener(groupId = "test_notify", topics = "test_topic")
-    public void senderBookingCancel(@Payload String bookingId) {
+    public void senderBookingCancel(@Payload String bookingId) throws URISyntaxException {
         try {
             onesignalController.sendNotify(bookingId);
         } catch (URISyntaxException e) {
+            onesignalController.sendNotify(bookingId);
             e.printStackTrace();
         }
     }
