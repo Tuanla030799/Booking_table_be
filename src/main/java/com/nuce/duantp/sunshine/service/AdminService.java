@@ -418,7 +418,7 @@ public class AdminService {
             CustomerChargingResponse req= new CustomerChargingResponse(data);
             list.add(req);
         }
-        return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
     public ResponseEntity<?> confirmCharging(Long id,int status){
         if(status==1||status==2){
