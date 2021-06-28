@@ -53,42 +53,41 @@ public class AdminService {
         String path = "./src/main/resources/static";
         List<StatisticalResponse> list = new ArrayList<>();
         List<tbl_Booking> listBooking = bookingRepository.findAll();
-       for(int i=1;i<=12;i++){
-           float sumMoney=0;
-           int totalBooking=0;
-           float percent=0;
-           boolean flag=false;
-           for(tbl_Booking data:listBooking){
-               Calendar calendar = Calendar.getInstance();
-               calendar.setTime(data.getBookingTime());
-               int month = calendar.get(Calendar.MONTH);
-               int y=calendar.get(Calendar.YEAR);
-               if(month==i-1&&y==year){
-                   flag=true;
-                   if(data.getBookingStatus()==4||data.getBookingStatus()==0||data.getBookingStatus()==1){
-                       tbl_Deposit deposit=depositRepo.findByDepositId(data.getDepositId());
-                       sumMoney+=deposit.getDeposit();
-                       totalBooking++;
-                   }
-                   if(data.getBookingStatus()==3){
-                       tbl_Deposit deposit=depositRepo.findByDepositId(data.getDepositId());
-                       sumMoney+=deposit.getDeposit()*0.7;
-                       totalBooking++;
-                   }
-                   if(data.getBookingStatus()==2){
-                       BookingHistoryDetail bookingHistoryDetail = bookingService.getBillPay(data.getBookingId());
-                       sumMoney+=bookingHistoryDetail.getTotalMoney()+bookingHistoryDetail.getDeposit();
-                       totalBooking++;
-                   }
-               }
-           }
-           if(flag==true){
-               percent=totalBooking*100/listBooking.size();
-               StatisticalResponse statisticalResponse=new StatisticalResponse(i,totalBooking,
-                       FormatMoney.formatMoney(String.valueOf(sumMoney)),String.format("%.0f", percent) + "%");
-               list.add(statisticalResponse);
-           }
-       }
+        for (int i = 1; i <= 12; i++) {
+            float sumMoney = 0;
+            int totalBooking = 0;
+            float percent = 0;
+            boolean flag = false;
+            for (tbl_Booking data : listBooking) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(data.getBookingTime());
+                int month = calendar.get(Calendar.MONTH);
+                int y = calendar.get(Calendar.YEAR);
+                if (month == i - 1 && y == year) {
+                    flag = true;
+                    if (data.getBookingStatus() == 4 || data.getBookingStatus() == 0 || data.getBookingStatus() == 1) {
+                        tbl_Deposit deposit = depositRepo.findByDepositId(data.getDepositId());
+                        sumMoney += deposit.getDeposit();
+                        totalBooking++;
+                    }
+                    if (data.getBookingStatus() == 3) {
+                        tbl_Deposit deposit = depositRepo.findByDepositId(data.getDepositId());
+                        sumMoney += deposit.getDeposit() * 0.7;
+                        totalBooking++;
+                    }
+                    if (data.getBookingStatus() == 2) {
+                        BookingHistoryDetail bookingHistoryDetail = bookingService.getBillPay(data.getBookingId());
+                        sumMoney += bookingHistoryDetail.getTotalMoney() + bookingHistoryDetail.getDeposit();
+                        totalBooking++;
+                    }
+                }
+            }
+            if (flag == true) {
+                percent = totalBooking * 100 / listBooking.size();
+                StatisticalResponse statisticalResponse = new StatisticalResponse(i, totalBooking, FormatMoney.formatMoney(String.valueOf(sumMoney)), String.format("%.0f", percent) + "%");
+                list.add(statisticalResponse);
+            }
+        }
         File file = ResourceUtils.getFile("classpath:YReport.jrxml");
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
 
@@ -411,45 +410,46 @@ public class AdminService {
         MessageResponse response = new MessageResponse(EnumResponseStatusCode.SEARCH_NULL);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-    public ResponseEntity<?> chargingResponse(){
-        List<Charging> chargingList= (List<Charging>) chargingRepo.findAll();
-        List<CustomerChargingResponse> list=new ArrayList<>();
-        for(Charging data:chargingList){
-            CustomerChargingResponse req= new CustomerChargingResponse(data);
+
+    public ResponseEntity<?> chargingResponse() {
+        List<Charging> chargingList = chargingRepo.findAllByOrderByStatusAscCreatedAsc();
+        List<CustomerChargingResponse> list = new ArrayList<>();
+        for (Charging data : chargingList) {
+            CustomerChargingResponse req = new CustomerChargingResponse(data);
             list.add(req);
         }
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
-    public ResponseEntity<?> confirmCharging(Long id,int status){
-        if(status==1||status==2){
-            Optional<Charging> charging=chargingRepo.findById(id);
-            if(charging.isPresent()){
-                if(charging.get().getStatus()==2){
+
+    public ResponseEntity<?> confirmCharging(Long id, int status) {
+        if (status == 1 || status == 2) {
+            Optional<Charging> charging = chargingRepo.findById(id);
+            if (charging.isPresent()) {
+                if (charging.get().getStatus() == 2) {
                     MessageResponse response = new MessageResponse(EnumResponseStatusCode.INVALID_OPERATION);
                     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
                 }
-                tbl_Customer customer=customerRepo.findByPhoneNumber(charging.get().getPhoneNumber());
+                tbl_Customer customer = customerRepo.findByPhoneNumber(charging.get().getPhoneNumber());
                 charging.get().setStatus(status);
                 chargingRepo.save(charging.get());
-                if(customer==null){
+                if (customer == null) {
                     //TODO: gửi mess cho khách hàng
                     MessageResponse response = new MessageResponse(EnumResponseStatusCode.ACC_NOT_EXIST);
                     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
                 }
-                if(status==1){
+                if (status == 1) {
                     //TODO: gửi mess cho khách hàng
-                    customer.setTotalMoney((long) (customer.getTotalMoney()+charging.get().getMoney()));
+                    customer.setTotalMoney((long) (customer.getTotalMoney() + charging.get().getMoney()));
                     customerRepo.save(customer);
                     MessageResponse response = new MessageResponse(EnumResponseStatusCode.CHARGING_SUCCESS);
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
-                if(status==2){
+                if (status == 2) {
                     //TODO: gửi mess cho khách hàng
                     MessageResponse response = new MessageResponse(EnumResponseStatusCode.CANCEL_CHARGING_SUCCESS);
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
-            }
-            else {
+            } else {
                 MessageResponse response = new MessageResponse(EnumResponseStatusCode.TRANSACTION_NOT_FOUND);
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
