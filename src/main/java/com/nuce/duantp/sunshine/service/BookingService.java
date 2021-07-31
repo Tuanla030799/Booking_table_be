@@ -53,10 +53,10 @@ public class BookingService {
             e.printStackTrace();
         }
 //        TODO: enable
-//        if(date.compareTo(new Date())<0){
-//            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
-//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//        }
+        if(date.compareTo(new Date())<0){
+            MessageResponse response = new MessageResponse(EnumResponseStatusCode.MIN_TIME);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         if(bookingReq.getTotalSeats()<=0){
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.TOTAL_SEAT_FALSE);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -260,7 +260,7 @@ public class BookingService {
 //            MessageResponse response = new MessageResponse(EnumResponseStatusCode.TIME_PAY_FALSE);
 //            return new ResponseEntity<>(response, HttpStatus.OK);
 //        }
-        if(booking.getBookingStatus()==1){
+        if(booking.getBookingStatus()!=1){
             MessageResponse response = new MessageResponse(EnumResponseStatusCode.PAID);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }

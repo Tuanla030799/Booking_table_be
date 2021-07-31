@@ -81,9 +81,9 @@ public class UserService {
     public ResponseEntity<?> updateUser(UpdateUserReq updateUserReq, HttpServletRequest req) {
         Optional<tbl_Customer> customerOptional = authTokenFilter.whoami(req);
 //        TODO:enable
-//        if (customerRepo.existsByPhoneNumber(updateUserReq.getPhoneNumber())) {
-//            return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.PHONE_NUMBER_EXISTED));
-//        }
+        if (customerRepo.existsByPhoneNumber(updateUserReq.getPhoneNumber())) {
+            return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.PHONE_NUMBER_EXISTED));
+        }
         if (!CheckNameCustomer.checkFormatName(updateUserReq.getFullName())) {
             return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.INVALID_NAME_FORMAT));
         } else {
