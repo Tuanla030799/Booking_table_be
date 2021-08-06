@@ -120,7 +120,7 @@ public class AuthService {
             return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.SUCCESS));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.ok().body(new MessageResponse(EnumResponseStatusCode.BAD_REQUEST));
+            return ResponseEntity.badRequest().body(new MessageResponse(EnumResponseStatusCode.BAD_REQUEST));
         }
 
     }

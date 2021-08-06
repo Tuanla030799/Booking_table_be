@@ -64,3 +64,4 @@ update tbl_Customer as cus set cus.image='https://www.dropbox.com/s/gawg7ejc1tw0
 update tbl_Customer as cus set cus.image='https://www.dropbox.com/s/gawg7ejc1tw0h71/1624690104484.jpg?raw=1' where cus.email='tuan22762@nuce.edu.vn.com'
 update tbl_Customer as cus set cus.image='https://www.dropbox.com/s/2832lw8pbnia8cb/1624698169839.jpg?raw=1' where cus.email='tuan22762@nuce.edu.vn.com'
 update tbl_Customer as cus set cus.image='https://www.dropbox.com/s/5aqkgjnsay1r7xq/1627724231566.jpg?raw=1' where cus.email='nam@gmai.com'
+update tbl_Customer as cus set cus.image='https://www.dropbox.com/s/clfakdrkk2xureq/1627790817250.jpg?raw=1' where cus.email='tuan221762@nuce.edu'
